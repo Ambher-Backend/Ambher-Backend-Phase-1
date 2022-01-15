@@ -1,0 +1,22 @@
+controllers: (helpers for routers)
+1. This is the place where you handle the data coming from the routers.
+2. Basic DB Read/Write
+3. Calling libs and Services for complex logics.
+4. Each router file has a controller file
+
+routers 
+1. This is the place where you define the route, do basic parameter validation and
+call the controllers for the result and send it back as response.
+
+
+services 
+1. This is place where you write complex database/business logics
+
+models
+1. This is the place where you define tables
+
+lib 
+2. This is the place where you define utility files, like sending mails, otps,
+common utils
+
+middlewares(as the name suggests)
