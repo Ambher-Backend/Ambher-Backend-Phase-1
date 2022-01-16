@@ -4,8 +4,30 @@
   "description": "Backend Repository of Ambher",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ambher-Backend/Ambher-Backend-Phase-1"
+  },
+  "bugs": {
+    "url": "https://github.com/Ambher-Backend/Ambher-Backend-Phase-1/issues"
   },
   "author": "Ambher",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "morgan": "^1.10.0",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.13.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "dotenv": "^12.0.3",
+    "nodemon": "^2.0.15",
+    "sequelize-cli": "^6.4.1"
+  }
 }
