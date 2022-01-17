@@ -1,37 +1,39 @@
-const Admin = require('../models/admin');
 const jwt = require('jsonwebtoken');
-const utils = require('../lib/common_uitls');
 const dotenv = require('dotenv');
+
+//internal imports
+const commonUtils = require('../lib/common_uitls');
+const Admin = require('../models/admin');
 
 dotenv.config();
 
 const AdminAuth = async (req, res, next) => {
-    try {
-        if (!req.body.token){
-            throw new Error("Token not present");
-        }
-        if(req.body.isVerified === false) {
-            throw new Error ("Admin account not verified");
-        }
-        if(req.body.isBlocked === true) {
-            throw new Error("Blocked for "+req.body.BlockedReason);
-        }
-        const token = req.body.currentToken;
-        const decoded = jwt.verify(token,process.env.INTERNAL_AUTH_ID);
-        const admin = await Admin.findOne({
-            _id: decoded._id,
-            currentToken: token
-        });
-        if(!admin) {
-            throw new Error ("Admin Auth Error");
-        }
-        req.admin = admin;
-        req.token = token;
-        next();
-    }
-    catch (err) {
-        res.send(utils.responseUtil(401,err.message,null));
-    }
+	try {
+		if (!req.body.currentToken){
+			throw new Error("Token not present");
+		}  
+		const token = req.body.currentToken;
+		const decoded = jwt.verify(token,process.env.JWT_KEY);
+		const admin = await Admin.findOne({
+			_id: decoded._id,
+			currentToken: token
+		});
+		if(!admin) {
+			throw new Error ("Admin Auth Error");
+		}
+		if(admin.isVerified === false) {
+			throw new Error ("Admin account not verified");
+		}
+		if(admin.isBlocked === true) {
+			throw new Error("Blocked for " + admin.blockedReason);
+		}
+		req.user = admin;
+		req.currentToken = token;
+		next();
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(401,err.message,null));
+	}
 };
 
 module.exports = AdminAuth;
