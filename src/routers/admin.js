@@ -73,10 +73,10 @@ router.post('/create-dummy-data', async (req, res) => {
 		await helper.generateDummyAdmins(req.body);
 		res.send(commonUtils.responseUtil(201, null, 'Data Created'));
 	} catch(err) {
-			console.log(err);
-			commonUtils.errorLog(err.message);
-			res.send(commonUtils.responseUtil(400, null, err.message));
-		}
+		console.log(err);
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
 });
 
 module.exports = router;
