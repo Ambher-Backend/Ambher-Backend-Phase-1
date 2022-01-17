@@ -25,7 +25,7 @@ router.post('/create-dummy-data', async (req, res) => {
     res.send(commonUtils.responseUtil(201, null, 'Data Created'));
   }catch(err){
     console.log(err);
-    commonUtils.errorLog(err.message);
+    commonUtils.ErrorLog(err.message);
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 });

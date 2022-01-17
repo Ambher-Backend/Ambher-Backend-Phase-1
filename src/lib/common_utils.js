@@ -8,7 +8,7 @@ const responseUtil = (status, data, message) => {
   };
 };
 
-const errorLog = (message) => {
+const ErrorLog = (message) => {
   console.log(chalk.red(message));
 };
 
@@ -18,4 +18,4 @@ const successLog = (message) => {
 
 
 
-module.exports = {responseUtil, errorLog, successLog}
+module.exports = {responseUtil, ErrorLog, successLog}

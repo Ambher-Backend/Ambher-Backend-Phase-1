@@ -8,11 +8,13 @@ const mongoose = require('mongoose');
 const router = new express.Router();
 dotenv.config();
 
+
 //internal imports
 const Admin = require('../models/admin');
 const helper = require('../controllers/admin');
 const commonUtils = require('../lib/common_utils');
 const AdminAuth = require('../middlewares/admin_auth');
+
 
 //signup route
 router.post('/signup', async (req, res)=>{
@@ -26,56 +28,71 @@ router.post('/signup', async (req, res)=>{
 		if(!validator.isEmail(req.body.email)) {
 			throw new Error('Invalid Mail');
 		}
+
 		const admin = new Admin(req.body);
 		await admin.save();
 		res.send(commonUtils.responseUtil(201, null, "Admin Created"));
 
 	} catch (err) {
-		commonUtils.errorLog(err.message);
+		commonUtils.ErrorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
+
+
+//get route for admin details
+router.get('/:adminId', AdminAuth, async (req, res) => {
+	try{
+		if (req.params.adminId === undefined){
+			throw new Error('Id not found');
+		}
+		const adminResponse = await helper.handleGetDetails(req.params.adminId);
+		res.send(commonUtils.responseUtil(200, adminResponse, "Success"));
+	}catch(err){
+		commonUtils.ErrorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+})
+
 
 //login route
 router.post('/login',async (req, res) => {
 	try {
-		let adminResponse = await Admin.findByCredentials(req.body.email, req.body.password);
-		const token = adminResponse.generateToken();
+		const adminResponse = await helper.handleLogin(req.body);
 		res.send(commonUtils.responseUtil(200, adminResponse, "Admin Login Successful"));
 	} catch (err) {
-		commonUtils.errorLog(err.message);
-		console.log(err);
+		commonUtils.ErrorLog(err.message);
 		res.send(commonUtils.responseUtil(400,  null, err.message));
 	}
 });
 
+
 //logout route
 router.post('/logout', AdminAuth, async (req, res) => {
 	try{
-		let adminResponse = await Admin.findOne({'_id': mongoose.Types.ObjectId(req.user._id)});
-		adminResponse.currentToken = '';
-		await adminResponse.save();
+		await helper.handleLogout(req.body, req.user);
 		res.send(commonUtils.responseUtil(200, null, "Admin Logged out"));
 	} catch(err) {
-		commonUtils.errorLog(err.message);
+		commonUtils.ErrorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	} 
 });
 
+
 //generate dummy data route
-router.post('/create-admin-dummy-data', async (req, res) => {
+router.post('/create-dummy-data', async (req, res) => {
 	try {
 		if (config.util.getEnv('NODE_ENV') == 'production'){
 			throw new Error('Dummy Data Creation Not Allowed on Production Server');
 		}
-		if (req.body.internalAuthKey != process.env.INTERNAL_AUTH_ID){
+		if (req.body.internalAuthKey === undefined || req.body.internalAuthKey !== process.env.INTERNAL_AUTH_ID){
 			throw new Error('Un-authorized access');
 		}
 		await helper.generateDummyAdmins(req.body);
 		res.send(commonUtils.responseUtil(201, null, 'Data Created'));
 	} catch(err) {
 		console.log(err);
-		commonUtils.errorLog(err.message);
+		commonUtils.ErrorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
