@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 
 //internal imports
-const commonUtils = require('../lib/common_uitls');
+const commonUtils = require('../lib/common_utils');
 const Admin = require('../models/admin');
 
 dotenv.config();

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const dotenv = require("dotenv");
-
+const bcrypt = require('bcryptjs');
 
 dotenv.config();
 
@@ -109,6 +109,6 @@ AdminSchema.pre('save', async function(next) {
 	next();
 });
 
-const admin = mongoose.model("Admin",AdminSchema);
+const Admin = mongoose.model("Admin",AdminSchema);
 
-module.exports = admin;
+module.exports = Admin;
