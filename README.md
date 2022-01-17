@@ -18,7 +18,7 @@
 1. Always get your code **reviewed** before merging it into the **master** branch.
 2. Always create a new branch for a task, **never** commit directly into **master** branch.
 > New branch can be created using: `git checkout -b <New Branch Name>`
-3. Always use **camel-casing** for variable naming and **upper camel-casing** for function, class naming.
+3. Always use **camel-casing** for variable naming and **upper camel-casing**(preferred) for function, class naming.
 ```
 const FooBar = () => {} // Upper Camel-casing for functions
 const fooBar = 5; // Lower camel-casing for variables.
