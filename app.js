@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const config = require('config');
 
 
 
@@ -12,11 +13,23 @@ const PORT = process.env.PORT || 5000;
 const responseUtil = require('./src/lib/common_utils');
 
 
+// Router Imports
+const documentRouter = require('./src/routers/document');
+
+
 // Server Configs
+require('./config/database/mongo');
 app.use(express.json({ limit: "10mb", extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(morgan("dev"));
+if (config.util.getEnv('NODE_ENV') !== 'test')
+{
+  app.use(morgan("dev"));  
+}
+// loading routers
+app.use('/documents', documentRouter);
+
+
 
 
 app.get('/', async (req, res) => {
