@@ -66,7 +66,7 @@ router.post('/create-dummy-data', async (req, res) => {
 		if (config.util.getEnv('NODE_ENV') == 'production'){
 			throw new Error('Dummy Data Creation Not Allowed on Production Server');
 		}
-		if (req.body.internalAuthKey != process.env.JWT_KEY){
+		if (req.body.internalAuthKey != process.env.INTERNAL_AUTH_ID){
 			throw new Error('Un-authorized access');
 		}
 		await helper.generateDummyAdmins(req.body);
