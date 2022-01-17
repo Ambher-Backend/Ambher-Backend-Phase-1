@@ -15,7 +15,6 @@ const commonUtils = require('../lib/common_utils');
 //signup route
 router.post('/signup', async (req, res)=>{
 	try {
-
 		if(req.body.password.length<8) {
 			throw new Error('Weak Password');
 		}

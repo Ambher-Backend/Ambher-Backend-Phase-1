@@ -60,7 +60,7 @@ const AdminSchema = new mongoose.Schema({
 	}
 	},
 	{
-	timestamps: true,
+		timestamps: true,
 	}
 );
 

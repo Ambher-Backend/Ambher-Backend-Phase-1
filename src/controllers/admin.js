@@ -13,13 +13,13 @@ const generateDummyAdmins = async (req, res) => {
 	let adminLength = ( (!req.total) ? 5 : req.total);
 	for(let i = 0; i < adminLength; i++) {
 		const adminObject = {
-			name: 'abcdef',
-			phoneNumber: '123457890',
-			email: 'test@gmail.com' ,
-			password: '12345678',
-			isVerified: true,
-			isBlocked: false,
-			blockedReason: ''
+		name: 'abcdef',
+		phoneNumber: '123457890',
+		email: 'test@gmail.com' ,
+		password: '12345678',
+		isVerified: true,
+		isBlocked: false,
+		blockedReason: ''
 		};
 		const admin = new Admin(adminObject);
 		await admin.save();
