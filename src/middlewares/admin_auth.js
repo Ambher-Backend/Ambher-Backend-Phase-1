@@ -32,7 +32,7 @@ const AdminAuth = async (req, res, next) => {
 		next();
 	} catch (err) {
 		commonUtils.errorLog(err.message);
-		res.send(commonUtils.responseUtil(401,err.message,null));
+		res.send(commonUtils.responseUtil(401,null,err.message));
 	}
 };
 
