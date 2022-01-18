@@ -15,7 +15,8 @@ const responseUtil = require('./src/lib/common_utils');
 
 // Router Imports
 const documentRouter = require('./src/routers/document');
-const adminRouter = require('./src/routers/admin')
+const adminRouter = require('./src/routers/admin');
+const customerRouter = require('./src/routers/customer');
 
 // Server Configs
 require('./config/database/mongo');
@@ -29,7 +30,7 @@ if (config.util.getEnv('NODE_ENV') !== 'test')
 // loading routers
 app.use('/documents', documentRouter);
 app.use('/admin',adminRouter);
-
+app.use('/customer',customerRouter);
 
 
 app.get('/', async (req, res) => {
