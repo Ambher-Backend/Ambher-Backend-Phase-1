@@ -25,7 +25,7 @@ const AdminSchema = new mongoose.Schema({
 		required: true,
 		validate(value) {
 			if(!validator.isEmail(value)) {
-				throw new Error("Invalid Error");
+				throw new Error("Invalid Email");
 			}
 		}
 	},
@@ -64,6 +64,7 @@ const AdminSchema = new mongoose.Schema({
 	}
 );
 
+
 //token generation using jwt
 AdminSchema.methods.generateToken = async function () {
 	const admin = this;
@@ -76,6 +77,7 @@ AdminSchema.methods.generateToken = async function () {
 	await admin.save();
 	return token;
 };
+
 
 //static function to find an admin using email and password
 AdminSchema.statics.findByCredentials = async(email, password) => {
@@ -94,6 +96,7 @@ AdminSchema.statics.findByCredentials = async(email, password) => {
 	return admin;
 };
 
+
 // This validator is trimming all the fields and is removing special characters from string entries.
 // Used function because pre method doesn't support arrow functions as call back.
 AdminSchema.pre('save', async function(next) {
@@ -109,6 +112,6 @@ AdminSchema.pre('save', async function(next) {
 	next();
 });
 
-const Admin = mongoose.model("Admin",AdminSchema);
+const Admin = mongoose.model("Admin", AdminSchema);
 
 module.exports = Admin;

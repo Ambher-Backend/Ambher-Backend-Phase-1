@@ -1,30 +1,29 @@
 const mongoose = require('mongoose');
 
-const DocumentSchema = mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required:true,
-    },
-    bucketPath: {
-      type: String,
-      required:true,
-      unique: true
-    },
-    privateLink: {
-      type: String,
-      required:true,
-      unique: true
-    },
-    publicLink: {
-      type: String,
-      required:true,
-      unique: true
-    },
-    ownerUserId: {
-      type: mongoose.Schema.Types.ObjectId,
-      unique: true
-    }
+const DocumentSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required:true,
+  },
+  bucketPath: {
+    type: String,
+    required:true,
+    unique: true
+  },
+  privateLink: {
+    type: String,
+    required:true,
+    unique: true
+  },
+  publicLink: {
+    type: String,
+    required:true,
+    unique: true
+  },
+  ownerUserId: {
+    type: mongoose.Schema.Types.ObjectId,
+    unique: true
+  }
   },
   {
     timestamps: true,
