@@ -12,9 +12,10 @@ dotenv.config();
 //internal imports
 const Customer = require('../models/customer');
 const commonUtils = require('../lib/common_utils');
-
+const helper = require('../controllers/customer');
+const CustomerAuth = require('../middlewares/customer_auth');
 //signup route
-router.post('/signup', (req, res) => {
+router.post('/signup',async (req, res) => {
 
     try {
         if (req.body.password.length < 8) {
@@ -26,14 +27,37 @@ router.post('/signup', (req, res) => {
         if (!validator.isEmail(req.body.email)) {
             throw new Error('Invalid Mail');
         }
+        const customer = new Customer(req.body);
+		await customer.save();
         res.send(commonUtils.responseUtil(201, null, "Customer Created"));
+        
 
     } catch (err) {
         commonUtils.errorLog(err.message);
         res.send(commonUtils.responseUtil(400, null, err.message));
     }
 });
-router.get('', (req, res) => {
-    res.send("Working");
-})
+
+//login route
+router.post('/login',async (req, res) => {
+	try {
+		const customerResponse = await helper.handleLogin(req.body);
+		res.send(commonUtils.responseUtil(200, customerResponse, "Customer Login Successful"));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400,  null, err.message));
+	}
+});
+
+//logout route
+router.post('/logout', CustomerAuth, async (req, res) => {
+	try{
+		await helper.handleLogout(req.body, req.user);
+		res.send(commonUtils.responseUtil(200, null, "Customer Logged out"));
+	} catch(err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	} 
+});
+
 module.exports = router;
