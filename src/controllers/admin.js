@@ -48,7 +48,7 @@ const handleLogin = async (reqBody) => {
 
 const handleLogout = async (reqBody, currentUser) => {
 	currentUser.tokens = currentUser.tokens.filter((token) => (token != reqBody.currentToken));
-	currentUser.token = '';
+	currentUser.currentToken = '';
 	await currentUser.save();
 	return;
 };
