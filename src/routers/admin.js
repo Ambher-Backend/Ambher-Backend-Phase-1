@@ -34,7 +34,7 @@ router.post('/signup', async (req, res)=>{
 		res.send(commonUtils.responseUtil(201, null, "Admin Created"));
 
 	} catch (err) {
-		commonUtils.ErrorLog(err.message);
+		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
@@ -49,7 +49,7 @@ router.get('/:adminId', AdminAuth, async (req, res) => {
 		const adminResponse = await helper.handleGetDetails(req.params.adminId);
 		res.send(commonUtils.responseUtil(200, adminResponse, "Success"));
 	}catch(err){
-		commonUtils.ErrorLog(err.message);
+		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 })
@@ -61,7 +61,7 @@ router.post('/login',async (req, res) => {
 		const adminResponse = await helper.handleLogin(req.body);
 		res.send(commonUtils.responseUtil(200, adminResponse, "Admin Login Successful"));
 	} catch (err) {
-		commonUtils.ErrorLog(err.message);
+		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400,  null, err.message));
 	}
 });
@@ -73,7 +73,7 @@ router.post('/logout', AdminAuth, async (req, res) => {
 		await helper.handleLogout(req.body, req.user);
 		res.send(commonUtils.responseUtil(200, null, "Admin Logged out"));
 	} catch(err) {
-		commonUtils.ErrorLog(err.message);
+		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	} 
 });
@@ -92,7 +92,7 @@ router.post('/create-dummy-data', async (req, res) => {
 		res.send(commonUtils.responseUtil(201, null, 'Data Created'));
 	} catch(err) {
 		console.log(err);
-		commonUtils.ErrorLog(err.message);
+		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });

@@ -15,5 +15,5 @@ const dbProperties = {
 mongoose.connect(DbUri, dbProperties).then(()=>{
   commonUtils.successLog(`Connection to Mongo successful`);
 }).catch((err) => {
-  commonUtils.ErrorLog(err.message)
+  commonUtils.errorLog(err.message)
 })

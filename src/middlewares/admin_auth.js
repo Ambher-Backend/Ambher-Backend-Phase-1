@@ -36,7 +36,7 @@ const AdminAuth = async (req, res, next) => {
 		req.currentToken = token;
 		next();
 	} catch (err) {
-		commonUtils.ErrorLog(err.message);
+		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(401, null, err.message));
 	}
 };

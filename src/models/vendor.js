@@ -25,7 +25,7 @@ const VendorSchema = new mongoose.Schema({
 		required: true,
 		validate(value) {
 			if(!validator.isEmail(value)) {
-				throw new Error("Invalid Error");
+				throw new Error("Invalid Email");
 			}
 		}
 	},
