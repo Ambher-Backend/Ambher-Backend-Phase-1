@@ -19,7 +19,6 @@ const CustomerAuth = require('../middlewares/customer_auth');
 
 //signup route
 router.post('/signup',async (req, res) => {
-
     try {
         if (req.body.password.length < 8) {
             throw new Error('Weak Password');
@@ -30,12 +29,12 @@ router.post('/signup',async (req, res) => {
         if (!validator.isEmail(req.body.email)) {
             throw new Error('Invalid Mail');
         }
+		
         const customer = new Customer(req.body);
 		await customer.save();
         res.send(commonUtils.responseUtil(201, null, "Customer Created"));
         
-
-    } catch (err) {
+	} catch (err) {
         commonUtils.errorLog(err.message);
         res.send(commonUtils.responseUtil(400, null, err.message));
     }
