@@ -55,7 +55,7 @@ const generateDummyCustomers = async (req) => {
 			phoneNumber: faker.phone.phoneNumber(),
 			email: faker.internet.email() ,
 			password: '12345678',
-			dob:"January",
+			dob:faker.date.recent(),
 			isVerified: true,
 			isBlocked: false,
 			blockedReason: ''
