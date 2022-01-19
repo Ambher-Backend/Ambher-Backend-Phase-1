@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-
+const faker = require("faker");
 //Internal Imports
 const Customer = require('../models/customer');
+const commonUtils = require('../lib/common_utils')
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
@@ -13,6 +14,7 @@ const handleLogin = async (reqBody) => {
 	const token = await customerResponse.generateToken();
 	const customerObjectToExpose = filterKeys(customerResponse, 'postLogin');
 	customerObjectToExpose['token'] = token;
+	console.log(customerObjectToExpose);
 	return customerObjectToExpose;
 };
 const handleLogout = async (reqBody, currentUser) => {
@@ -21,6 +23,13 @@ const handleLogout = async (reqBody, currentUser) => {
 	await currentUser.save();
 	return;
 };
+
+const handleGetDetails = async (customerId) => {
+	const customer = await Customer.findById(customerId);
+	const customerObjectToExpose = filterKeys(customer, 'get');
+	return customerObjectToExpose;
+}
+
 const filterKeys = (customerObject, event) => {
 	customerObject = customerObject.toObject();
 	for(const key in customerObject){
@@ -31,4 +40,29 @@ const filterKeys = (customerObject, event) => {
 	return customerObject;
 }
 
-module.exports={handleLogin,filterKeys,handleLogout};
+//function to generate 10 customer data or on the basis of request
+const generateDummyCustomers = async (req) => {
+	console.log(req.deleteExisting === true);
+	if (req.deleteExisting != true){
+		console.log(req.deleteExisting)
+		await Customer.deleteMany({});
+		commonUtils.successLog(`All Collection admin deleted on "${new Date().toString()}" by 'Admin'`);
+	}
+	let customerLength = ( (!req.total) ? 5 : req.total);
+	for(let i = 0; i < customerLength; i++) {
+		const customerObject = {
+			name: faker.name.firstName(),
+			phoneNumber: faker.phone.phoneNumber(),
+			email: faker.internet.email() ,
+			password: '12345678',
+			dob:"January",
+			isVerified: true,
+			isBlocked: false,
+			blockedReason: ''
+		};
+		const customer = new Customer(customerObject);
+		await customer.save();
+	}
+	return;
+};
+module.exports={handleLogin,filterKeys,handleLogout,generateDummyCustomers,handleGetDetails};

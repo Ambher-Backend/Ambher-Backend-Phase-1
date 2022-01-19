@@ -23,10 +23,10 @@ const CustomerAuth = async (req, res, next) => {
 		});
 
 		if(!customer) {
-			throw new Error ("Admin Auth Error");
+			throw new Error ("Customer Auth Error");
 		}
 		if(customer.isVerified === false) {
-			throw new Error ("Admin account not verified");
+			throw new Error ("Customer account not verified");
 		}
 		if(customer.isBlocked === true) {
 			throw new Error("Blocked for " + customer.blockedReason);

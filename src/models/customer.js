@@ -67,7 +67,7 @@ const CustomerSchema = new mongoose.Schema({
 	blockedReason: {
 		type: String
 	},
-  tokens: {
+  	tokens: {
 		type: [String]
 	},
 	currentToken: {
@@ -100,7 +100,7 @@ CustomerSchema.methods.generateToken = async function () {
 };
 
 
-//static function to find an admin using email and password
+//static function to find an customer using email and password
 CustomerSchema.statics.findByCredentials = async(email, password) => {
 	const customer = await Customer.findOne({
 		email: email,
