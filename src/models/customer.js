@@ -4,10 +4,11 @@ const validator = require("validator");
 const dotenv = require("dotenv");
 const bcrypt = require('bcryptjs');
 
+
 dotenv.config();
 
-//defining schema
 
+//defining schema
 const CustomerSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -33,14 +34,14 @@ const CustomerSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-  profilePictureUrl: {
+	profilePictureUrl: {
     type: String,
-  },
+  	},
 	dob: {
     type: String,
     required: true
-  },
-  address: [{
+  	},
+  	address: [{
     flatNo: {type: String},
     buildingNo: {type: String},
     streetName: {type: String},
@@ -50,10 +51,10 @@ const CustomerSchema = new mongoose.Schema({
     zipCode: {type: String},
     lat: {type: Number},
     lon: {type: Number},
-  }],
-  orderIds: [mongoose.Schema.Types.ObjectId],
-  cartItemIds: [mongoose.Schema.Types.ObjectId],
-  wishListItemIds: [mongoose.Schema.Types.ObjectId],
+  	}],
+  	orderIds: [mongoose.Schema.Types.ObjectId],
+  	cartItemIds: [mongoose.Schema.Types.ObjectId],
+  	wishListItemIds: [mongoose.Schema.Types.ObjectId],
 	isVerified: {
 		type: Boolean,
 		required: true,

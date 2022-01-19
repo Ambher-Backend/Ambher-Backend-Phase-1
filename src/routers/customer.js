@@ -9,11 +9,14 @@ const mongoose = require('mongoose');
 const router = new express.Router();
 dotenv.config();
 
+
 //internal imports
 const Customer = require('../models/customer');
 const commonUtils = require('../lib/common_utils');
 const helper = require('../controllers/customer');
 const CustomerAuth = require('../middlewares/customer_auth');
+
+
 //signup route
 router.post('/signup',async (req, res) => {
 
@@ -38,6 +41,7 @@ router.post('/signup',async (req, res) => {
     }
 });
 
+
 //login route
 router.post('/login',async (req, res) => {
 	try {
@@ -49,6 +53,7 @@ router.post('/login',async (req, res) => {
 	}
 });
 
+
 //logout route
 router.post('/logout', CustomerAuth, async (req, res) => {
 	try{
@@ -59,7 +64,6 @@ router.post('/logout', CustomerAuth, async (req, res) => {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	} 
 });
-
 
 
 //generate dummy data route
@@ -79,6 +83,7 @@ router.post('/create-dummy-data', async (req, res) => {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
+
 
 //get route for Customer details
 router.get('/:customerId',CustomerAuth, async (req, res) => {
