@@ -9,8 +9,8 @@ const commonUtils = require('../lib/common_utils');
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
-	'postLogin': ['_id', 'name', 'email'],
-	'get':['_id', 'name', 'email', 'phoneNumber']
+	'postLogin': ['_id', 'name', 'email','profilePictureUrl','dob'],
+	'get':['_id', 'name', 'email', 'phoneNumber','profilePictureUrl','dob']
 };
 
 
@@ -39,9 +39,7 @@ const handleGetDetails = async (vendorId) => {
 
 //function to generate 10 vendor data or on the basis of request
 const generateDummyVendors = async (req) => {
-	console.log(req.deleteExisting === true);
 	if (req.deleteExisting != true){
-		console.log(req.deleteExisting)
 		await Vendor.deleteMany({});
 		commonUtils.successLog(`All Collection vendor deleted on "${new Date().toString()}" by 'Admin'`);
 	}
