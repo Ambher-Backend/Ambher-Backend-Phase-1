@@ -9,8 +9,8 @@ const commonUtils = require('../lib/common_utils');
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
-	'postLogin': ['_id', 'name', 'email','profilePictureUrl','dob'],
-	'get':['_id', 'name', 'email', 'phoneNumber','profilePictureUrl','dob']
+	'postLogin': ['_id', 'name', 'email','profilePictureUrl','dob','address'],
+	'get':['_id', 'name', 'email', 'phoneNumber','profilePictureUrl','dob','address']
 };
 
 
