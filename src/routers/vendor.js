@@ -16,19 +16,15 @@ const helper = require('../controllers/vendor');
 
 //registration for vendor
 router.post('/signup',async function(req,res){
-    try
-    {
+    try{
         const phone = /^[1-9]{1}[0-9]{9}$/;
-        if(req.body.phone.length!=10||!phone.test(req.body.phone))
-        {
+        if(req.body.phone.length!=10 || !phone.test(req.body.phone)){
             throw new error("Invalid Phone number");
         }
-        if(req.body.password.length<8)
-        {
+        if(req.body.password.length<8){
             throw new error("Password length not sufficient");
         }
-        if(!validator.isEmail(req.body.email))
-        {
+        if(!validator.isEmail(req.body.email)){
             throw new error("Enter valid emailId");
         }
         const vendor = new Vendor(req.body);    
@@ -36,8 +32,7 @@ router.post('/signup',async function(req,res){
         res.send(commonUtils.responseUtil(201, null, "Vendor added"));
 
     }
-    catch (err)
-    {
+    catch (err){
         commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
     }
@@ -89,7 +84,6 @@ router.post('/create-dummy-data', async (req, res) => {
 		await helper.generateDummyVendors(req.body);
 		res.send(commonUtils.responseUtil(201, null, 'Data Created'));
 	} catch(err) {
-		console.log(err);
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
