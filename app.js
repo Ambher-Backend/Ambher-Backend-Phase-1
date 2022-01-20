@@ -32,6 +32,7 @@ if (config.util.getEnv('NODE_ENV') !== 'test')
 app.use('/documents', documentRouter);
 app.use('/admin',adminRouter);
 app.use('/customer',customerRouter);
+app.use('/vendor',vendorRouter);
 
 
 app.get('/', async (req, res) => {
