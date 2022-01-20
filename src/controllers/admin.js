@@ -44,16 +44,19 @@ const handleLogin = async (reqBody) => {
 	let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
 	if (adminResponse.isVerified === false) {
 		const adminObjectToExpose = filterKeys(adminResponse, 'toVerify');	
-		return adminObjectToExpose;
+		const message = "Admin Email needs to be verified";
+		return {adminObjectToExpose, message};
 	}
 	if (adminResponse.isBlocked === true) {
 		const adminObjectToExpose = filterKeys(adminResponse, 'blocked');	
-		return adminObjectToExpose;
+		const message = "Admin Blocked. Contact Support";
+		return {adminObjectToExpose, message};
 	}
 	const token = await adminResponse.generateToken();
 	const adminObjectToExpose = filterKeys(adminResponse, 'postLogin');
 	adminObjectToExpose['token'] = token;
-	return adminObjectToExpose;
+	const message = "Admin Login Successful";
+	return {adminObjectToExpose, message};
 };
 
 
@@ -95,10 +98,10 @@ const sendEmailOtp = async (adminEmail) => {
 
 const verifyEmailOtp = async (req) => {
 	let admin = await Admin.findOne({ 
-		email: req.params.adminEmail
+		email: req.body.adminEmail
 	});
 	const otpToVerify = admin.emailOtps[admin.emailOtps.length - 1];
-	if (otpToVerify === req.params.otp) {
+	if (otpToVerify === req.body.otp) {
 		admin.isVerified = true;
 		await admin.save();
 		return true;

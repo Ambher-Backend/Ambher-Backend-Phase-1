@@ -3,8 +3,8 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-// sync function in order to not stop the process
-const sendEmail = (ReceiverEmail, mailSubject, mailBody) => {
+// making it a non promising function to avoid blocking the main thread.
+const sendEmail = (receiverEmail, mailSubject, mailBody) => {
   const transporter = nodemailer.createTransport ({
     host: "smtp.gmail.com",
     port: 587,
@@ -15,9 +15,9 @@ const sendEmail = (ReceiverEmail, mailSubject, mailBody) => {
     }
   });
 
-  const response = transporter.sendMail({
+  transporter.sendMail({
     from: "Ambher Technologies",
-    to: ReceiverEmail,
+    to: receiverEmail,
     subject: mailSubject,
     text: mailBody
   });

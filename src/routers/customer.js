@@ -44,14 +44,8 @@ router.post('/signup',async (req, res) => {
 //login route
 router.post('/login', async (req, res) => {
 	try {
-		const customerResponse = await helper.handleLogin(req.body);
-		if(customerResponse._id === undefined ) {
-			if(customerResponse.blockedReason !== undefined){
-				res.send(commonUtils.responseUtil(200, customerResponse, "Customer Blocked"));
-			}
-			res.send(commonUtils.responseUtil(200, customerResponse, "Customer Email needs to be verified"));
-		}
-		res.send(commonUtils.responseUtil(200, customerResponse, "Customer Login Successful"));
+		const customerLoginResponse = await helper.handleLogin(req.body);
+		res.send(commonUtils.responseUtil(200, customerLoginResponse.customerObjectToExpose, customerLoginResponse.message));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400,  null, err.message));
@@ -106,12 +100,12 @@ router.get('/:customerId', CustomerAuth, async (req, res) => {
 
 
 //send a new otp to customer email
-router.post('/new-email-otp/:customerEmail', async(req, res) => {
+router.post('/new-email-otp', async(req, res) => {
 	try {
-		if (req.params.customerEmail === undefined) {
+		if (req.body.customerEmail === undefined) {
 			throw new Error('Customer Email not registered');
 		}
-		await helper.sendEmailOtp(req.params.customerEmail);
+		await helper.sendEmailOtp(req.body.customerEmail);
 		res.send(commonUtils.responseUtil(200, null, "Customer Email OTP sent successfully"));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
@@ -121,9 +115,9 @@ router.post('/new-email-otp/:customerEmail', async(req, res) => {
 
 
 //verify customer email otp
-router.post('/verify-email-otp/:customerEmail/:otp', async(req, res) => {
+router.post('/verify-email-otp', async(req, res) => {
 	try {
-		if(req.params.customerEmail === undefined) {
+		if(req.body.customerEmail === undefined) {
 			throw new Error("Customer not registered");
 		}
 		const verifiedEmailOtp = await helper.verifyEmailOtp(req);

@@ -20,16 +20,19 @@ const handleLogin = async (reqBody) => {
 	let customerResponse = await Customer.findByCredentials(reqBody.email, reqBody.password);
 	if (customerResponse.isVerified === false) {
 		const customerObjectToExpose = filterKeys(customerResponse, 'toVerify');	
-		return customerObjectToExpose;
+		const message = "Customer Email needs to be verified";
+		return {customerObjectToExpose, message};
 	}
 	if (customerResponse.isBlocked === true) {
 		const customerObjectToExpose = filterKeys(customerResponse, 'blocked');	
-		return customerObjectToExpose;
+		const message = "Customer Blocked. Contact Support";
+		return {customerObjectToExpose, message};
 	}
 	const token = await customerResponse.generateToken();
 	const customerObjectToExpose = filterKeys(customerResponse, 'postLogin');
 	customerObjectToExpose['token'] = token;
-	return customerObjectToExpose;
+	const message = "Customer Login Successful";
+	return {customerObjectToExpose, message};
 };
 
 
@@ -113,10 +116,10 @@ const sendEmailOtp = async (customerEmail) => {
 
 const verifyEmailOtp = async (req) => {
 	let customer = await Customer.findOne({ 
-		email: req.params.customerEmail
+		email: req.body.customerEmail
 	});
 	const otpToVerify = customer.emailOtps[customer.emailOtps.length - 1];
-	if (otpToVerify === req.params.otp) {
+	if (otpToVerify === req.body.otp) {
 		customer.isVerified = true;
 		await customer.save();
 		return true;
