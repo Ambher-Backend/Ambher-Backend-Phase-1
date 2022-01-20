@@ -17,6 +17,7 @@ const responseUtil = require('./src/lib/common_utils');
 const documentRouter = require('./src/routers/document');
 const adminRouter = require('./src/routers/admin');
 const customerRouter = require('./src/routers/customer');
+const vendorRouter = require('./src/routers/vendor');
 
 // Server Configs
 require('./config/database/mongo');
