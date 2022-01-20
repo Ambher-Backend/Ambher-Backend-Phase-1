@@ -7,18 +7,14 @@ const commonUtils = require('../lib/common_utils');
 dotenv.config();
 
 //Vendor Authorisation middleware function
-const VendorAuth = async (req, res, next) => 
-{
-	try 
-    {
-		if (!req.body.currentToken)
-        {
+const VendorAuth = async (req, res, next) => {
+	try {
+		if (!req.body.currentToken){
 			throw new Error("Token not present");
 		}  
 		const token = req.body.currentToken;
 		const decoded = jwt.verify(token,process.env.JWT_KEY);
-		const vendor = await Vendor.findOne(
-        {
+		const vendor = await Vendor.findOne({
 			_id: decoded._id,
 			currentToken: token
 		});
