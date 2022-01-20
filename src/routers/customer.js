@@ -31,7 +31,7 @@ router.post('/signup',async (req, res) => {
         }
 		
         const customer = new Customer(req.body);
-		await customer.save();
+				await customer.save();
         res.send(commonUtils.responseUtil(201, null, "Customer Created"));
         
 	} catch (err) {
@@ -42,9 +42,15 @@ router.post('/signup',async (req, res) => {
 
 
 //login route
-router.post('/login',async (req, res) => {
+router.post('/login', async (req, res) => {
 	try {
 		const customerResponse = await helper.handleLogin(req.body);
+		if(customerResponse._id === undefined ) {
+			if(customerResponse.blockedReason !== undefined){
+				res.send(commonUtils.responseUtil(200, customerResponse, "Customer Blocked"));
+			}
+			res.send(commonUtils.responseUtil(200, customerResponse, "Customer Email needs to be verified"));
+		}
 		res.send(commonUtils.responseUtil(200, customerResponse, "Customer Login Successful"));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
@@ -85,7 +91,7 @@ router.post('/create-dummy-data', async (req, res) => {
 
 
 //get route for Customer details
-router.get('/:customerId',CustomerAuth, async (req, res) => {
+router.get('/:customerId', CustomerAuth, async (req, res) => {
 	try{
 		if (req.params.customerId === undefined){
 			throw new Error('Id not found');
@@ -97,5 +103,38 @@ router.get('/:customerId',CustomerAuth, async (req, res) => {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 })
+
+
+//send a new otp to customer email
+router.post('/new-email-otp/:customerEmail', async(req, res) => {
+	try {
+		if (req.params.customerEmail === undefined) {
+			throw new Error('Customer Email not registered');
+		}
+		await helper.sendEmailOtp(req.params.customerEmail);
+		res.send(commonUtils.responseUtil(200, null, "Customer Email OTP sent successfully"));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
+//verify customer email otp
+router.post('/verify-email-otp/:customerEmail/:otp', async(req, res) => {
+	try {
+		if(req.params.customerEmail === undefined) {
+			throw new Error("Customer not registered");
+		}
+		const verifiedEmailOtp = await helper.verifyEmailOtp(req);
+		if(verifiedEmailOtp === true) {
+			res.send(commonUtils.responseUtil(400, null, "Customer Email Verified Successfully"));
+		}
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+})
+
 
 module.exports = router;

@@ -5,17 +5,27 @@ const faker = require("faker");
 //Internal Imports
 const Customer = require('../models/customer');
 const commonUtils = require('../lib/common_utils');
-
+const emailUtils = require('../lib/send_email');
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
 	'postLogin': ['_id', 'name', 'email'],
+	'toVerify': ['email'],
+	'blocked' : ['name','email','blockedReason'],
 	'get':['_id', 'name', 'email', 'phoneNumber']
 };
 
 
 const handleLogin = async (reqBody) => {
 	let customerResponse = await Customer.findByCredentials(reqBody.email, reqBody.password);
+	if (customerResponse.isVerified === false) {
+		const customerObjectToExpose = filterKeys(customerResponse, 'toVerify');	
+		return customerObjectToExpose;
+	}
+	if (customerResponse.isBlocked === true) {
+		const customerObjectToExpose = filterKeys(customerResponse, 'blocked');	
+		return customerObjectToExpose;
+	}
 	const token = await customerResponse.generateToken();
 	const customerObjectToExpose = filterKeys(customerResponse, 'postLogin');
 	customerObjectToExpose['token'] = token;
@@ -89,4 +99,32 @@ const generateDummyCustomers = async (req) => {
 };
 
 
-module.exports={handleLogin,handleLogout,generateDummyCustomers,handleGetDetails};
+const sendEmailOtp = async (customerEmail) => {
+	let customer = await Customer.findOne({
+		email: customerEmail
+	});
+	const otpToSend = commonUtils.getOtp();
+	customer.emailOtps.push(otpToSend);
+	await customer.save();
+	const mailBody = `Please enter the following OTP: ${otpToSend} to verify your email for your Ambher Customer Account`;
+	emailUtils.sendEmail(customerEmail, "Verify your email ID - Ambher", mailBody);
+}
+
+
+const verifyEmailOtp = async (req) => {
+	let customer = await Customer.findOne({ 
+		email: req.params.customerEmail
+	});
+	const otpToVerify = customer.emailOtps[customer.emailOtps.length - 1];
+	if (otpToVerify === req.params.otp) {
+		customer.isVerified = true;
+		await customer.save();
+		return true;
+	}
+	else {
+		throw new Error("Wrong Customer Email OTP");
+	}
+}
+
+
+module.exports={handleLogin, handleLogout, generateDummyCustomers, handleGetDetails, sendEmailOtp, verifyEmailOtp};

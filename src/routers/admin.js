@@ -59,6 +59,12 @@ router.get('/:adminId', AdminAuth, async (req, res) => {
 router.post('/login',async (req, res) => {
 	try {
 		const adminResponse = await helper.handleLogin(req.body);
+		if(adminResponse._id === undefined ) {
+			if(adminResponse.blockedReason !== undefined){
+				res.send(commonUtils.responseUtil(200, adminResponse, "Admin Blocked"));
+			}
+			res.send(commonUtils.responseUtil(200, adminResponse, "Admin Email needs to be verified"));
+		}
 		res.send(commonUtils.responseUtil(200, adminResponse, "Admin Login Successful"));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
@@ -96,5 +102,37 @@ router.post('/create-dummy-data', async (req, res) => {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
+
+
+//send a new otp to admin email
+router.post('/new-email-otp/:adminEmail', async(req, res) => {
+	try {
+		if (req.params.adminEmail === undefined) {
+			throw new Error('Admin Email not registered');
+		}
+		await helper.sendEmailOtp(req.params.adminEmail);
+		res.send(commonUtils.responseUtil(200, null, "Admin Email OTP sent successfully"));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+//verify the email otp of admin
+router.post('/verify-email-otp/:adminEmail/:otp', async(req, res) => {
+	try {
+		if(req.params.adminEmail === undefined) {
+			throw new Error("Admin not registered");
+		}
+		const verifiedEmailOtp = await helper.verifyEmailOtp(req);
+		if(verifiedEmailOtp === true) {
+			res.send(commonUtils.responseUtil(400, null, "Admin Email Verified Successfully"));
+		}
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+})
+
 
 module.exports = router;

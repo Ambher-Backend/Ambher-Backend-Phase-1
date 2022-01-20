@@ -16,6 +16,13 @@ const successLog = (message) => {
   console.log(chalk.bgGreen.black(message));
 }
 
+const getOtp = () => {
+  const val = Math.floor(Math.random() * 1000000);
+  if (val.toString().length === 5) {
+    val *= 10;
+  }
+  return val;
+}
 
 
-module.exports = {responseUtil, errorLog, successLog}
+module.exports = {responseUtil, errorLog, successLog, getOtp}
