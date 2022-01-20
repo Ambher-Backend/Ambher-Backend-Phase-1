@@ -16,7 +16,9 @@ const VendorAuth = async (req, res, next) => {
 		const decoded = jwt.verify(token,process.env.JWT_KEY);
 		const vendor = await Vendor.findOne({
 			_id: decoded._id,
-			currentToken: token
+			tokens: {
+				'$in': [token]
+			}
 		});
 		if(!vendor) {
 			throw new Error ("Vendor is not authorised");
