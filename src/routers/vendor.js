@@ -17,11 +17,10 @@ const helper = require('../controllers/vendor');
 //registration for vendor
 router.post('/signup',async function(req,res){
     try{
-        const phone = /^[1-9]{1}[0-9]{9}$/;
-        if(req.body.phone.length!=10 || !phone.test(req.body.phone)){
-            throw new error("Invalid Phone number");
+        if(req.body.phoneNumber.length != 10 || req.body.phoneNumber.match(/[0-9]{10}/)[0] != req.body.phoneNumber) {
+	throw new Error('Invalid Phone Number');
         }
-        if(req.body.password.length<8){
+        if(req.body.password.length < 8){
             throw new error("Password length not sufficient");
         }
         if(!validator.isEmail(req.body.email)){
