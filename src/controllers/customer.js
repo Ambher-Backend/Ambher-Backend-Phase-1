@@ -12,7 +12,7 @@ const eventKeyExposeObject = {
 	'postLogin': ['_id', 'name', 'email'],
 	'toVerify': ['email'],
 	'blocked' : ['name','email','blockedReason'],
-	'get':['_id', 'name', 'email', 'phoneNumber']
+	'get':['_id', 'name', 'email', 'phoneNumber','profilePictureUrl','dob','address']
 };
 
 
@@ -130,4 +130,4 @@ const verifyEmailOtp = async (req) => {
 }
 
 
-module.exports={handleLogin, handleLogout, generateDummyCustomers, handleGetDetails, sendEmailOtp, verifyEmailOtp};
+module.exports = {handleLogin, handleLogout, generateDummyCustomers, handleGetDetails, sendEmailOtp, verifyEmailOtp};

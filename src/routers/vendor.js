@@ -54,8 +54,8 @@ router.get('/:vendorId',VendorAuth, async (req, res) => {
 //Sign-in for vendor
 router.post('/login',async (req, res) => {
 	try {
-		const vendorResponse = await helper.handleLogin(req.body);
-		res.send(commonUtils.responseUtil(200, vendorResponse, "Vendor Successfully logged in"));
+		const vendorLoginResponse = await helper.handleLogin(req.body);
+		res.send(commonUtils.responseUtil(200, vendorLoginResponse.vendorObjectToExpose, vendorLoginResponse.message));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400,  null, err.message));
@@ -87,5 +87,38 @@ router.post('/create-dummy-data', async (req, res) => {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
+
+
+//send a new otp to vendor email
+router.post('/new-email-otp', async(req, res) => {
+	try {
+		if (req.body.vendorEmail === undefined) {
+			throw new Error('Vendor Email not registered');
+		}
+		await helper.sendEmailOtp(req.body.vendorEmail);
+		res.send(commonUtils.responseUtil(200, null, "Vendor Email OTP sent successfully"));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
+//verify the email otp of vendor
+router.post('/verify-email-otp', async(req, res) => {
+	try {
+		if(req.body.vendorEmail === undefined) {
+			throw new Error("V not registered");
+		}
+		const verifiedEmailOtp = await helper.verifyEmailOtp(req);
+		if(verifiedEmailOtp === true) {
+			res.send(commonUtils.responseUtil(400, null, "Vendor Email Verified Successfully"));
+		}
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+})
+
 
 module.exports = router;

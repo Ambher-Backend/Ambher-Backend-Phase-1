@@ -99,7 +99,7 @@ router.post('/create-dummy-data', async (req, res) => {
 
 
 //send a new otp to admin email
-router.post('/new-email-otp/', async(req, res) => {
+router.post('/new-email-otp', async(req, res) => {
 	try {
 		if (req.body.adminEmail === undefined) {
 			throw new Error('Admin Email not registered');
@@ -113,7 +113,7 @@ router.post('/new-email-otp/', async(req, res) => {
 });
 
 //verify the email otp of admin
-router.post('/verify-email-otp/', async(req, res) => {
+router.post('/verify-email-otp', async(req, res) => {
 	try {
 		if(req.body.adminEmail === undefined) {
 			throw new Error("Admin not registered");
