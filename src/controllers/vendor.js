@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const faker = require("faker");
-
+const validator = require("validator");
 
 //Internal Imports
 const Vendor = require('../models/vendor');
@@ -100,6 +100,9 @@ const filterKeys = (vendorObject, event) => {
 }
 
 const sendEmailOtp = async (vendorEmail) => {
+	if(!validator.isEmail(vendorEmail)) {
+		throw new Error("Invalid Vendor Email");
+	}
 	let vendor = await Vendor.findOne({
 		email: vendorEmail
 	});
@@ -112,6 +115,9 @@ const sendEmailOtp = async (vendorEmail) => {
 
 
 const verifyEmailOtp = async (req) => {
+	if(!validator.isEmail(req.body.vendorEmail)) {
+		throw new Error("Invalid Vendor Email");
+	}
 	let vendor = await Vendor.findOne({ 
 		email: req.body.vendorEmail
 	});
@@ -119,7 +125,7 @@ const verifyEmailOtp = async (req) => {
 	if (otpToVerify === req.body.otp) {
 		vendor.isVerified = true;
 		await vendor.save();
-		return true;
+		return "Vendor Email OTP verified successfully";
 	}
 	else {
 		throw new Error("Wrong Vendor Email OTP");

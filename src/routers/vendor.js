@@ -92,9 +92,6 @@ router.post('/create-dummy-data', async (req, res) => {
 //send a new otp to vendor email
 router.post('/new-email-otp', async(req, res) => {
 	try {
-		if (req.body.vendorEmail === undefined) {
-			throw new Error('Vendor Email not registered');
-		}
 		await helper.sendEmailOtp(req.body.vendorEmail);
 		res.send(commonUtils.responseUtil(200, null, "Vendor Email OTP sent successfully"));
 	} catch (err) {
@@ -107,13 +104,8 @@ router.post('/new-email-otp', async(req, res) => {
 //verify the email otp of vendor
 router.post('/verify-email-otp', async(req, res) => {
 	try {
-		if(req.body.vendorEmail === undefined) {
-			throw new Error("V not registered");
-		}
-		const verifiedEmailOtp = await helper.verifyEmailOtp(req);
-		if(verifiedEmailOtp === true) {
-			res.send(commonUtils.responseUtil(400, null, "Vendor Email Verified Successfully"));
-		}
+		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
+		res.send(commonUtils.responseUtil(400, null, verifiedEmailOtpMessage));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));

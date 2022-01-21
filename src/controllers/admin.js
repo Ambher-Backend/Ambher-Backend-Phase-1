@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const faker = require("faker");
+const validator = require("validator");
 
 
 // Internal Imports
@@ -85,6 +86,9 @@ const filterKeys = (adminObject, event) => {
 }
 
 const sendEmailOtp = async (adminEmail) => {
+	if(!validator.isEmail(adminEmail)) {
+		throw new Error("Invalid Admin Email");
+	}
 	let admin = await Admin.findOne({
 		email: adminEmail
 	});
@@ -97,6 +101,9 @@ const sendEmailOtp = async (adminEmail) => {
 
 
 const verifyEmailOtp = async (req) => {
+	if(!validator.isEmail(req.body.adminEmail)) {
+		throw new Error("Invalid Admin Email");
+	}
 	let admin = await Admin.findOne({ 
 		email: req.body.adminEmail
 	});
@@ -104,7 +111,7 @@ const verifyEmailOtp = async (req) => {
 	if (otpToVerify === req.body.otp) {
 		admin.isVerified = true;
 		await admin.save();
-		return true;
+		return "Admin Email OTP verified successfully";
 	}
 	else {
 		throw new Error("Wrong Admin Email OTP");

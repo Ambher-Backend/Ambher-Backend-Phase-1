@@ -102,9 +102,6 @@ router.get('/:customerId', CustomerAuth, async (req, res) => {
 //send a new otp to customer email
 router.post('/new-email-otp', async(req, res) => {
 	try {
-		if (req.body.customerEmail === undefined) {
-			throw new Error('Customer Email not registered');
-		}
 		await helper.sendEmailOtp(req.body.customerEmail);
 		res.send(commonUtils.responseUtil(200, null, "Customer Email OTP sent successfully"));
 	} catch (err) {
@@ -117,13 +114,8 @@ router.post('/new-email-otp', async(req, res) => {
 //verify customer email otp
 router.post('/verify-email-otp', async(req, res) => {
 	try {
-		if(req.body.customerEmail === undefined) {
-			throw new Error("Customer not registered");
-		}
-		const verifiedEmailOtp = await helper.verifyEmailOtp(req);
-		if(verifiedEmailOtp === true) {
-			res.send(commonUtils.responseUtil(400, null, "Customer Email Verified Successfully"));
-		}
+		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
+		res.send(commonUtils.responseUtil(400, null, verifiedEmailOtpMessage));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));

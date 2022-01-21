@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const faker = require("faker");
-
+const validator = require("validator");
 
 //Internal Imports
 const Customer = require('../models/customer');
@@ -103,6 +103,9 @@ const generateDummyCustomers = async (req) => {
 
 
 const sendEmailOtp = async (customerEmail) => {
+	if(!validator.isEmail(customerEmail)) {
+		throw new Error("Invalid Customer Email");
+	}
 	let customer = await Customer.findOne({
 		email: customerEmail
 	});
@@ -115,6 +118,9 @@ const sendEmailOtp = async (customerEmail) => {
 
 
 const verifyEmailOtp = async (req) => {
+	if(!validator.isEmail(req.body.customerEmail)) {
+		throw new Error("Invalid Customer Email");
+	}
 	let customer = await Customer.findOne({ 
 		email: req.body.customerEmail
 	});
@@ -122,7 +128,7 @@ const verifyEmailOtp = async (req) => {
 	if (otpToVerify === req.body.otp) {
 		customer.isVerified = true;
 		await customer.save();
-		return true;
+		return "Customer OTP verified successfully";
 	}
 	else {
 		throw new Error("Wrong Customer Email OTP");

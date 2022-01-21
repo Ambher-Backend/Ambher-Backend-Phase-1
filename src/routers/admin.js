@@ -101,9 +101,6 @@ router.post('/create-dummy-data', async (req, res) => {
 //send a new otp to admin email
 router.post('/new-email-otp', async(req, res) => {
 	try {
-		if (req.body.adminEmail === undefined) {
-			throw new Error('Admin Email not registered');
-		}
 		await helper.sendEmailOtp(req.body.adminEmail);
 		res.send(commonUtils.responseUtil(200, null, "Admin Email OTP sent successfully"));
 	} catch (err) {
@@ -115,13 +112,8 @@ router.post('/new-email-otp', async(req, res) => {
 //verify the email otp of admin
 router.post('/verify-email-otp', async(req, res) => {
 	try {
-		if(req.body.adminEmail === undefined) {
-			throw new Error("Admin not registered");
-		}
-		const verifiedEmailOtp = await helper.verifyEmailOtp(req);
-		if(verifiedEmailOtp === true) {
-			res.send(commonUtils.responseUtil(400, null, "Admin Email Verified Successfully"));
-		}
+		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
+		res.send(commonUtils.responseUtil(400, null, verifiedEmailOtpMessage));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
