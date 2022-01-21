@@ -14,7 +14,7 @@ dotenv.config();
 const Customer = require('../models/customer');
 const commonUtils = require('../lib/common_utils');
 const helper = require('../controllers/customer');
-const CustomerAuth = require('../middlewares/customer_auth');
+const CustomerAuth = require('../middlewares/auth/customer_auth');
 
 
 //signup route

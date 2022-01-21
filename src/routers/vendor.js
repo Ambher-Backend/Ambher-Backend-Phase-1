@@ -10,7 +10,7 @@ dotenv.config();
 //internal imports
 
 const commonUtils = require('../lib/common_utils');
-const VendorAuth = require('../middlewares/vendor_auth');
+const VendorAuth = require('../middlewares/auth/vendor_auth');
 const Vendor = require('../models/vendor');
 const helper = require('../controllers/vendor');
 

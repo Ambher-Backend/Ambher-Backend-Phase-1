@@ -24,5 +24,14 @@ const getOtp = () => {
   return val;
 }
 
+const genCode = (n = 10) => {
+  n = n || 16;
+  let result = '';
+  while (n--){
+    result += Math.floor(Math.random()*16).toString(16).toUpperCase();
+  }
+  return result;
+}
 
-module.exports = {responseUtil, errorLog, successLog, getOtp}
+
+module.exports = {responseUtil, errorLog, successLog, getOtp, genCode}

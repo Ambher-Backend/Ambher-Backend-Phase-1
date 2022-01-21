@@ -13,7 +13,7 @@ dotenv.config();
 const Admin = require('../models/admin');
 const helper = require('../controllers/admin');
 const commonUtils = require('../lib/common_utils');
-const AdminAuth = require('../middlewares/admin_auth');
+const AdminAuth = require('../middlewares/auth/admin_auth');
 
 
 //signup route

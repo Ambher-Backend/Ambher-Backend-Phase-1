@@ -2,11 +2,11 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 
 //internal imports
-const Vendor = require('../models/vendor');
-const commonUtils = require('../lib/common_utils');
+const Vendor = require('../../models/vendor');
+const commonUtils = require('../../lib/common_utils');
 dotenv.config();
 
-//Vendor Authorisation middleware function
+//Vendor Authorization middleware function
 const VendorAuth = async (req, res, next) => {
 	try {
 		if (!req.body.currentToken){
