@@ -102,16 +102,14 @@ VendorSchema.methods.generateToken = async function () {
 //static function to find an admin using email and password
 VendorSchema.statics.findByCredentials = async(email, password) => {
 	const vendor = await Vendor.findOne({
-		email: email,
-		isVerified: true,
-		isBlocked: false
+		email: email
 	});
 	if (!vendor) {
 		throw new Error ("Vendor not found");
 	}
 	const passwordMatched = await bcrypt.compare(password, vendor.password);
 	if(!passwordMatched) {
-		throw new Error ("Password Incorrect");
+		throw new Error ("Vendor Password Incorrect");
 	}
 	return vendor;
 };

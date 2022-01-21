@@ -83,8 +83,6 @@ AdminSchema.methods.generateToken = async function () {
 AdminSchema.statics.findByCredentials = async(email, password) => {
 	const admin = await Admin.findOne({
 		email: email,
-		isVerified: true,
-		isBlocked: false
 	});
 	if (!admin) {
 		throw new Error ("Admin not found");

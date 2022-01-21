@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
 const faker = require("faker");
+const validator = require("validator");
 
 
 // Internal Imports
 const Admin = require("../models/admin");
 const commonUtils = require('../lib/common_utils')
+const emailUtils = require('../lib/send_email')
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
 	'postLogin': ['_id', 'name', 'email'],
+	'toVerify': ['email'],
+	'blocked' : ['name','email','blockedReason'],
 	'get':['_id', 'name', 'email', 'phoneNumber']
 };
 
@@ -39,10 +43,21 @@ const generateDummyAdmins = async (req) => {
 
 const handleLogin = async (reqBody) => {
 	let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
+	if (adminResponse.isVerified === false) {
+		const adminObjectToExpose = filterKeys(adminResponse, 'toVerify');	
+		const message = "Admin Email needs to be verified";
+		return {adminObjectToExpose, message};
+	}
+	if (adminResponse.isBlocked === true) {
+		const adminObjectToExpose = filterKeys(adminResponse, 'blocked');	
+		const message = "Admin Blocked. Contact Support";
+		return {adminObjectToExpose, message};
+	}
 	const token = await adminResponse.generateToken();
 	const adminObjectToExpose = filterKeys(adminResponse, 'postLogin');
 	adminObjectToExpose['token'] = token;
-	return adminObjectToExpose;
+	const message = "Admin Login Successful";
+	return {adminObjectToExpose, message};
 };
 
 
@@ -70,6 +85,39 @@ const filterKeys = (adminObject, event) => {
 	return adminObject;
 }
 
+const sendEmailOtp = async (adminEmail) => {
+	if(!validator.isEmail(adminEmail)) {
+		throw new Error("Invalid Admin Email");
+	}
+	let admin = await Admin.findOne({
+		email: adminEmail
+	});
+	const otpToSend = commonUtils.getOtp();
+	admin.emailOtps.push(otpToSend);
+	await admin.save();
+	const mailBody = `Please enter the following OTP: ${otpToSend} to verify your email for your Ambher admin Account`;
+	emailUtils.sendEmail(adminEmail, "Verify your email ID - Ambher", mailBody);
+}
 
 
-module.exports = {generateDummyAdmins, handleLogin, handleLogout, handleGetDetails};
+const verifyEmailOtp = async (req) => {
+	if(!validator.isEmail(req.body.adminEmail)) {
+		throw new Error("Invalid Admin Email");
+	}
+	let admin = await Admin.findOne({ 
+		email: req.body.adminEmail
+	});
+	const otpToVerify = admin.emailOtps[admin.emailOtps.length - 1];
+	if (otpToVerify === req.body.otp) {
+		admin.isVerified = true;
+		await admin.save();
+		return "Admin Email OTP verified successfully";
+	}
+	else {
+		throw new Error("Wrong Admin Email OTP");
+	}
+}
+
+
+
+module.exports = {generateDummyAdmins, handleLogin, handleLogout, handleGetDetails, sendEmailOtp, verifyEmailOtp};

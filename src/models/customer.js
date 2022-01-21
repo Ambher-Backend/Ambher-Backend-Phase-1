@@ -105,8 +105,6 @@ CustomerSchema.methods.generateToken = async function () {
 CustomerSchema.statics.findByCredentials = async(email, password) => {
 	const customer = await Customer.findOne({
 		email: email,
-		isVerified: true,
-		isBlocked: false
 	});
 	if (!customer) {
 		throw new Error ("Customer not found");

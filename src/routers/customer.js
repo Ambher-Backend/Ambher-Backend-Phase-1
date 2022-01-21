@@ -31,7 +31,7 @@ router.post('/signup',async (req, res) => {
         }
 		
         const customer = new Customer(req.body);
-		await customer.save();
+				await customer.save();
         res.send(commonUtils.responseUtil(201, null, "Customer Created"));
         
 	} catch (err) {
@@ -42,10 +42,10 @@ router.post('/signup',async (req, res) => {
 
 
 //login route
-router.post('/login',async (req, res) => {
+router.post('/login', async (req, res) => {
 	try {
-		const customerResponse = await helper.handleLogin(req.body);
-		res.send(commonUtils.responseUtil(200, customerResponse, "Customer Login Successful"));
+		const customerLoginResponse = await helper.handleLogin(req.body);
+		res.send(commonUtils.responseUtil(200, customerLoginResponse.customerObjectToExpose, customerLoginResponse.message));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400,  null, err.message));
@@ -85,7 +85,7 @@ router.post('/create-dummy-data', async (req, res) => {
 
 
 //get route for Customer details
-router.get('/:customerId',CustomerAuth, async (req, res) => {
+router.get('/:customerId', CustomerAuth, async (req, res) => {
 	try{
 		if (req.params.customerId === undefined){
 			throw new Error('Id not found');
@@ -97,5 +97,30 @@ router.get('/:customerId',CustomerAuth, async (req, res) => {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 })
+
+
+//send a new otp to customer email
+router.post('/new-email-otp', async(req, res) => {
+	try {
+		await helper.sendEmailOtp(req.body.customerEmail);
+		res.send(commonUtils.responseUtil(200, null, "Customer Email OTP sent successfully"));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
+//verify customer email otp
+router.post('/verify-email-otp', async(req, res) => {
+	try {
+		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
+		res.send(commonUtils.responseUtil(400, null, verifiedEmailOtpMessage));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+})
+
 
 module.exports = router;
