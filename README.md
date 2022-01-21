@@ -40,6 +40,7 @@ router.post('/', middleware, async(req, res) => {
 ```
 10. Always break your code into smaller chunks to avoid complexity.
 11. Always comment your code wherever required(where you feel, it might be difficult for someone else to understand).
+12. Always write business logic on controller, no logic should come in router.
 
 
 *** Code will be deployed on a bi-weekly cycle on Fridays after the hosting configurations are all set***
