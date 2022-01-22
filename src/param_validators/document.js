@@ -22,7 +22,7 @@ const generateDocumentDummyDataValidation = (req, res, next) => {
 			throw new Error('Dummy Data Creation Not Allowed on Production Server');
 		}
 
-    req.body = commonUtils.filterObjectKeys(req.body, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))

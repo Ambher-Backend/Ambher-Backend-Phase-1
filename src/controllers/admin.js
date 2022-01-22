@@ -44,17 +44,17 @@ const generateDummyAdmins = async (req) => {
 const handleLogin = async (reqBody) => {
 	let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
 	if (adminResponse.isVerified === false) {
-		const adminObjectToExpose = filterKeys(adminResponse, 'toVerify');	
+		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['toVerify']);	
 		const message = "Admin Email needs to be verified";
 		return {adminObjectToExpose, message};
 	}
 	if (adminResponse.isBlocked === true) {
-		const adminObjectToExpose = filterKeys(adminResponse, 'blocked');	
+		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['blocked']);	
 		const message = `Admin Blocked. Contact Support`;
 		return {adminObjectToExpose, message};
 	}
 	const token = await adminResponse.generateToken();
-	const adminObjectToExpose = filterKeys(adminResponse, 'postLogin');
+	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['postLogin']);
 	adminObjectToExpose['token'] = token;
 	const message = "Admin Login Successful";
 	return {adminObjectToExpose, message};
@@ -71,7 +71,7 @@ const handleLogout = async (reqBody, currentUser) => {
 
 const handleGetDetails = async (adminId) => {
 	const admin = await Admin.findById(adminId);
-	const adminObjectToExpose = filterKeys(admin, 'get');
+	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(admin.toObject(), eventKeyExposeObject['get']);
 	return adminObjectToExpose;
 }
 
@@ -103,17 +103,6 @@ const verifyEmailOtp = async (reqBody) => {
 	else {
 		throw new Error("Wrong Admin Email OTP");
 	}
-}
-
-
-const filterKeys = (adminObject, event) => {
-	adminObject = adminObject.toObject();
-	for(const key in adminObject){
-		if (eventKeyExposeObject[event].find((keyToExpose) => (keyToExpose == key)) == undefined){
-			adminObject[key] = undefined;
-		}
-	}
-	return adminObject;
 }
 
 

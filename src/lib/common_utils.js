@@ -34,7 +34,8 @@ const genCode = (n = 10) => {
 }
 
 
-const filterObjectKeys = (current, allowedKeys) => {
+// This method returns the filtered object containing only the allowedKeys
+const filterObjectByAllowedKeys = (current, allowedKeys) => {
   filtered = {}
   for(const key in current){
     if (allowedKeys.find(allowedKey => (allowedKey == key)) != undefined){
@@ -45,4 +46,4 @@ const filterObjectKeys = (current, allowedKeys) => {
 }
 
 
-module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectKeys}
+module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys}

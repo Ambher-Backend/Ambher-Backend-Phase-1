@@ -21,8 +21,8 @@ const signUpParamValidation = (req, res, next) => {
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
     
-    req.body = commonUtils.filterObjectKeys(req.body, acceptedParams);
-    console.log(commonUtils.filterObjectKeys(req.body, acceptedParams));
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    console.log(commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams));
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -41,7 +41,7 @@ const loginAdminParamValidation = (req, res, next) => {
 
     commonValidators.checkEmailFormat(req.body.email);
 
-    req.body = commonUtils.filterObjectKeys(req.body, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -57,7 +57,7 @@ const logoutAdminParamValidation = (req, res, next) => {
 
     validator.validate('currentToken', String);
     
-    req.params = commonUtils.filterObjectKeys(req.params, acceptedParams);
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -75,7 +75,7 @@ const getAdminParamValidation = (req, res, next) => {
     validator.validate('adminId', String);
     validator1.validate('currentToken', String);
     
-    req.params = commonUtils.filterObjectKeys(req.params, acceptedParams);
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -99,7 +99,7 @@ const generateAdminDummyDataValidation = (req, res, next) => {
 			throw new Error('Dummy Data Creation Not Allowed on Production Server');
 		}
 
-    req.body = commonUtils.filterObjectKeys(req.body, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -117,7 +117,7 @@ const sendEmailOtpValidation = (req, res, next) => {
 
     commonValidators.checkEmailFormat(req.body.adminEmail);
 
-    req.body = commonUtils.filterObjectKeys(req.body, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -136,7 +136,7 @@ const VerifyEmailOtpValidation = (req, res, next) => {
 
     commonValidators.checkEmailFormat(req.body.adminEmail);
 
-    req.body = commonUtils.filterObjectKeys(req.body, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
