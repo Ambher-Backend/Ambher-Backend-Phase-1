@@ -44,17 +44,17 @@ const generateDummyAdmins = async (req) => {
 const handleLogin = async (reqBody) => {
 	let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
 	if (adminResponse.isVerified === false) {
-		const adminObjectToExpose = filterKeys(adminResponse, 'toVerify');	
+		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['toVerify']);	
 		const message = "Admin Email needs to be verified";
 		return {adminObjectToExpose, message};
 	}
 	if (adminResponse.isBlocked === true) {
-		const adminObjectToExpose = filterKeys(adminResponse, 'blocked');	
-		const message = "Admin Blocked. Contact Support";
+		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['blocked']);	
+		const message = `Admin Blocked. Contact Support`;
 		return {adminObjectToExpose, message};
 	}
 	const token = await adminResponse.generateToken();
-	const adminObjectToExpose = filterKeys(adminResponse, 'postLogin');
+	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['postLogin']);
 	adminObjectToExpose['token'] = token;
 	const message = "Admin Login Successful";
 	return {adminObjectToExpose, message};
@@ -68,30 +68,19 @@ const handleLogout = async (reqBody, currentUser) => {
 	return;
 };
 
+
 const handleGetDetails = async (adminId) => {
 	const admin = await Admin.findById(adminId);
-	const adminObjectToExpose = filterKeys(admin, 'get');
+	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(admin.toObject(), eventKeyExposeObject['get']);
 	return adminObjectToExpose;
 }
 
 
-const filterKeys = (adminObject, event) => {
-	adminObject = adminObject.toObject();
-	for(const key in adminObject){
-		if (eventKeyExposeObject[event].find((keyToExpose) => (keyToExpose == key)) == undefined){
-			adminObject[key] = undefined;
-		}
-	}
-	return adminObject;
-}
-
 const sendEmailOtp = async (adminEmail) => {
-	if(!validator.isEmail(adminEmail)) {
-		throw new Error("Invalid Admin Email");
-	}
 	let admin = await Admin.findOne({
 		email: adminEmail
 	});
+	if (admin == undefined){throw new Error('Invalid Email, Admin Not registered');}
 	const otpToSend = commonUtils.getOtp();
 	admin.emailOtps.push(otpToSend);
 	await admin.save();
@@ -100,15 +89,13 @@ const sendEmailOtp = async (adminEmail) => {
 }
 
 
-const verifyEmailOtp = async (req) => {
-	if(!validator.isEmail(req.body.adminEmail)) {
-		throw new Error("Invalid Admin Email");
-	}
+const verifyEmailOtp = async (reqBody) => {
 	let admin = await Admin.findOne({ 
-		email: req.body.adminEmail
+		email: reqBody.adminEmail
 	});
+	if (admin == undefined){throw new Error('Invalid Email, Admin Not registered');}
 	const otpToVerify = admin.emailOtps[admin.emailOtps.length - 1];
-	if (otpToVerify === req.body.otp) {
+	if (otpToVerify === reqBody.otp) {
 		admin.isVerified = true;
 		await admin.save();
 		return "Admin Email OTP verified successfully";
@@ -117,7 +104,6 @@ const verifyEmailOtp = async (req) => {
 		throw new Error("Wrong Admin Email OTP");
 	}
 }
-
 
 
 module.exports = {generateDummyAdmins, handleLogin, handleLogout, handleGetDetails, sendEmailOtp, verifyEmailOtp};

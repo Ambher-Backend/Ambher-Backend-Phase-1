@@ -10,9 +10,6 @@ const Admin = require('../../models/admin');
 
 const AdminAuth = async (req, res, next) => {
 	try {
-		if (!(req.body.currentToken)){
-			throw new Error("Token not present");
-		}  
 		const token = req.body.currentToken;
 		const decoded = jwt.verify(token, process.env.JWT_KEY);
 		const admin = await Admin.findOne({
