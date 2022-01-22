@@ -4,35 +4,35 @@ dotenv.config();
 
 
 //internal imports
-const commonUtils = require('../lib/common_utils');
-const Admin = require('../models/admin');
+const commonUtils = require('../../lib/common_utils');
+const Customer = require('../../models/customer');
 
 
-const AdminAuth = async (req, res, next) => {
+const CustomerAuth = async (req, res, next) => {
 	try {
 		if (!(req.body.currentToken)){
 			throw new Error("Token not present");
 		}  
 		const token = req.body.currentToken;
 		const decoded = jwt.verify(token, process.env.JWT_KEY);
-		const admin = await Admin.findOne({
+		const customer = await Customer.findOne({
 			_id: decoded._id,
 			tokens: {
 				'$in': [token]
 			}
 		});
 
-		if(!admin) {
-			throw new Error ("Admin Auth Error");
+		if(!customer) {
+			throw new Error ("Customer Auth Error");
 		}
-		if(admin.isVerified === false) {
-			throw new Error ("Admin account not verified");
+		if(customer.isVerified === false) {
+			throw new Error ("Customer account not verified");
 		}
-		if(admin.isBlocked === true) {
-			throw new Error("Blocked for " + admin.blockedReason);
+		if(customer.isBlocked === true) {
+			throw new Error("Blocked for " + customer.blockedReason);
 		}
 
-		req.user = admin;
+		req.user = customer;
 		req.currentToken = token;
 		next();
 	} catch (err) {
@@ -41,4 +41,5 @@ const AdminAuth = async (req, res, next) => {
 	}
 };
 
-module.exports = AdminAuth;
+
+module.exports = CustomerAuth;
