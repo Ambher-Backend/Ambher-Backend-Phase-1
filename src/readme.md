@@ -8,7 +8,10 @@
 >Contains different middlewares for authentication, verification checks etc.
 4. models
 >Contains declaration of different tables/collections to be used
-5. routers
+5. param_validators
+>This file will contain param validation files for every endpoint, there will be one file each for every router</br>
+and that file fill contain param validation for all routes.</br>
+6. routers
 >Contains declaration of all REST API endpoints.
-6. services
+7. services
 >Contains complex business logics, that cannot be put into controllers.

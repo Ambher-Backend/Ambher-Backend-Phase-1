@@ -15,6 +15,7 @@ const sendEmail = (receiverEmail, mailSubject, mailBody) => {
     }
   });
 
+  console.log(`Email initiated for ${receiverEmail}`);
   transporter.sendMail({
     from: "Ambher Technologies",
     to: receiverEmail,

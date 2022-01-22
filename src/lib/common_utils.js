@@ -34,4 +34,15 @@ const genCode = (n = 10) => {
 }
 
 
-module.exports = {responseUtil, errorLog, successLog, getOtp, genCode}
+const filterObjectKeys = (current, allowedKeys) => {
+  filtered = {}
+  for(const key in current){
+    if (allowedKeys.find(allowedKey => (allowedKey == key)) != undefined){
+      filtered[key] = current[key];
+    }
+  }
+  return filtered;
+}
+
+
+module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectKeys}

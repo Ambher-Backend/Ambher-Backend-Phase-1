@@ -44,7 +44,8 @@ const AdminSchema = new mongoose.Schema({
 		default: false
 	},
 	blockedReason: {
-		type: String
+		type: String,
+		default: ""
 	},
 	tokens: {
 		type: [String]
