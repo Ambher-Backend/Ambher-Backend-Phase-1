@@ -41,6 +41,12 @@ const generateDummyAdmins = async (req) => {
 };
 
 
+const handleSignup = async (reqBody) => {
+	const admin = new Admin(reqBody);
+	await admin.save();
+}
+
+
 const handleLogin = async (reqBody) => {
 	let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
 	if (adminResponse.isVerified === false) {
@@ -106,4 +112,4 @@ const verifyEmailOtp = async (reqBody) => {
 }
 
 
-module.exports = {generateDummyAdmins, handleLogin, handleLogout, handleGetDetails, sendEmailOtp, verifyEmailOtp};
+module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout, handleGetDetails, sendEmailOtp, verifyEmailOtp};

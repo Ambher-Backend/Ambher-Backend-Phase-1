@@ -1,5 +1,4 @@
 const express = require('express');
-const config = require('config');
 const dotenv = require('dotenv');
 
 // Router Config
@@ -8,7 +7,6 @@ dotenv.config();
 
 
 //internal imports
-const Admin = require('../models/admin');
 const helper = require('../controllers/admin');
 const commonUtils = require('../lib/common_utils');
 const adminParamValidator = require('../param_validators/admin');
@@ -18,10 +16,8 @@ const AdminAuth = require('../middlewares/auth/admin_auth');
 //signup route
 router.post('/signup', adminParamValidator.signUpParamValidation, async (req, res)=>{
 	try {
-		const admin = new Admin(req.body);
-		await admin.save();
+		await helper.handleSignup(req.body);
 		res.send(commonUtils.responseUtil(201, null, "Admin Created"));
-
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
