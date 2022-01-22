@@ -16,7 +16,6 @@ const generateDocumentDummyDataValidation = (req, res, next) => {
     validator.validate('internalAuthKey', String);
     validator.validate('deleteExisting', Boolean, allowBlank=false, acceptedValues=[true, false]);
     validator.validate('total', Number, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv('NODE_ENV') == 'production'){
