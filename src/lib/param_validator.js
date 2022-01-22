@@ -81,6 +81,7 @@ class ParamValidator{
     }
   }
 
+
   // check if the string parameter matches the regex
   checkByRegex(paramName, regex){
     if (regex != undefined && this.reqBody[paramName].constructor == String){
@@ -114,7 +115,6 @@ const checkInternalAuthKey = (key) => {
     throw new Error('Un-authorized action');
   }
 }
-
 
 
 module.exports = {ParamValidator, checkEmailFormat, checkPhoneNumber, checkInternalAuthKey};

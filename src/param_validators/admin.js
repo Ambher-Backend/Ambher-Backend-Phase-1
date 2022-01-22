@@ -1,7 +1,6 @@
 const config = require('config');
 
 
-
 // Internal Imports
 const paramValidator = require('../lib/param_validator').ParamValidator;
 const commonValidators = require('../lib/param_validator');
