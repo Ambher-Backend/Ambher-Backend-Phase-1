@@ -21,7 +21,6 @@ const signUpParamValidation = (req, res, next) => {
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
-    commonValidators.checkDate(req.body.dob);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     console.log(commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams));

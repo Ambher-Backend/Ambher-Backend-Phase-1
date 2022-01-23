@@ -115,12 +115,4 @@ const checkInternalAuthKey = (key) => {
   }
 }
 
-
-// check for DateOfBirth(yyyy-mm-dd)
-const checkDate = (dob) => {
-  if (!validator.isDate(dob)) {
-    throw new Error('dob is not valid');
-  }
-}
-
-module.exports = { ParamValidator, checkEmailFormat, checkPhoneNumber, checkInternalAuthKey, checkDate };
+module.exports = { ParamValidator, checkEmailFormat, checkPhoneNumber, checkInternalAuthKey };
