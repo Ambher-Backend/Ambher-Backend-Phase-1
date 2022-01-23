@@ -69,16 +69,16 @@ class ParamValidator {
 
 
   // check if the length of iterable is in range
-  checkLength(paramName, min, max) {
-    if (min != undefined || max != undefined) {
-      if (min != undefined && this.reqBody[paramName].length < min) {
+  checkLength(paramName, min, max){
+    if (min != undefined && max != undefined){
+      if (min != undefined && this.reqBody[paramName].length < min){
         throw new Error(`${paramName}'s size can't be less than ${min}`);
       }
-      if (max != undefined && this.reqBody[paramName].length > max) {
+      if (max != undefined && this.reqBody[paramName].length > max){
         throw new Error(`${paramName}'s size can't be more than ${max}`);
       }
     }
-  }
+  }}
 
 
   // check if the string parameter matches the regex
