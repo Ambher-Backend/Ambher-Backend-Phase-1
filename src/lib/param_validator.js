@@ -3,12 +3,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 
-class ParamValidator{
-  constructor(reqBody){
+class ParamValidator {
+  constructor(reqBody) {
     this.reqBody = reqBody;
   }
 
-  
+
   // paramName -> name of the parameter to be checked in request body
   // type -> expected type of the parameter
   // checkBlank -> works for string and array parameter and check if the value is not blank
@@ -16,11 +16,10 @@ class ParamValidator{
   // minLength and maxLength are for string and array, if any other data type is passed, then it may cause errors.
   // regex -> for String, validates by regex 
   // required ->  field indicates, if the current parameter is required.
-  validate(paramName, type, allowBlank=false, acceptedValues=undefined, minLength=undefined,
-    maxLength=undefined, regex=undefined, required=true)
-  {
-    this.checkPresence(paramName, required=required);
-    if (!required){return;}
+  validate(paramName, type, allowBlank = false, acceptedValues = undefined, minLength = undefined,
+    maxLength = undefined, regex = undefined, required = true) {
+    this.checkPresence(paramName, required = required);
+    if (!required) { return; }
     this.checkType(paramName, type);
     this.checkBlank(paramName, allowBlank);
     this.checkAcceptedValues(paramName, acceptedValues);
@@ -30,39 +29,39 @@ class ParamValidator{
 
 
   // validates the presence of a validator
-  checkPresence(paramName, required=true){
-    if (required && this.reqBody[paramName] == undefined){
+  checkPresence(paramName, required = true) {
+    if (required && this.reqBody[paramName] == undefined) {
       throw new Error(`Required Parameter: |${paramName}| is not present.`);
     }
   }
 
 
   // validates the type of parameter  
-  checkType(paramName, type){
-    if (this.reqBody[paramName].constructor != type){
+  checkType(paramName, type) {
+    if (this.reqBody[paramName].constructor != type) {
       throw new Error(`Parameter: |${paramName}| data type is invalid.`);
     }
   }
 
 
   // validates if the value of the param is in accepted values
-  checkAcceptedValues(paramName, acceptedValues){
-    if (!(this.reqBody[paramName].constructor == String || this.reqBody[paramName].constructor == Array)){
+  checkAcceptedValues(paramName, acceptedValues) {
+    if (!(this.reqBody[paramName].constructor == String || this.reqBody[paramName].constructor == Array)) {
       return;
     }
-    if (acceptedValues != undefined && acceptedValues.find( acceptedValue => (acceptedValue == this.reqBody[paramName])) == undefined){
+    if (acceptedValues != undefined && acceptedValues.find(acceptedValue => (acceptedValue == this.reqBody[paramName])) == undefined) {
       throw new Error(`${this.reqBody[paramName]} for parameter: ${paramName} is not accepted.`);
     }
   }
 
 
   // check if the value of the parameter is empty incase of String, or Array
-  checkBlank(paramName, allowBlank){
-    if (allowBlank){
+  checkBlank(paramName, allowBlank) {
+    if (allowBlank) {
       return;
     }
-    if (this.reqBody[paramName].constructor == String || this.reqBody[paramName].constructor == Array){
-      if (this.reqBody[paramName].length == 0){
+    if (this.reqBody[paramName].constructor == String || this.reqBody[paramName].constructor == Array) {
+      if (this.reqBody[paramName].length == 0) {
         throw new Error(`${[paramName]} can't be blank!`);
       }
     }
@@ -70,12 +69,12 @@ class ParamValidator{
 
 
   // check if the length of iterable is in range
-  checkLength(paramName, min, max){
-    if (min != undefined && max != undefined){
-      if (min != undefined && this.reqBody[paramName].length < min){
+  checkLength(paramName, min, max) {
+    if (min != undefined || max != undefined) {
+      if (min != undefined && this.reqBody[paramName].length < min) {
         throw new Error(`${paramName}'s size can't be less than ${min}`);
       }
-      if (max != undefined && this.reqBody[paramName].length > max){
+      if (max != undefined && this.reqBody[paramName].length > max) {
         throw new Error(`${paramName}'s size can't be more than ${max}`);
       }
     }
@@ -83,9 +82,9 @@ class ParamValidator{
 
 
   // check if the string parameter matches the regex
-  checkByRegex(paramName, regex){
-    if (regex != undefined && this.reqBody[paramName].constructor == String){
-      if (this.reqBody[paramName].match(regex) ==  undefined){
+  checkByRegex(paramName, regex) {
+    if (regex != undefined && this.reqBody[paramName].constructor == String) {
+      if (this.reqBody[paramName].match(regex) == undefined) {
         throw new Error(`Invalid format for parameter ${paramName}`);
       }
     }
@@ -95,7 +94,7 @@ class ParamValidator{
 
 // checks email format.
 const checkEmailFormat = (email) => {
-  if (!validator.isEmail(email)){
+  if (!validator.isEmail(email)) {
     throw new Error('email is not valid');
   }
 }
@@ -103,7 +102,7 @@ const checkEmailFormat = (email) => {
 
 // check indian phone number
 const checkPhoneNumber = (phoneNumber) => {
-  if (!validator.isMobilePhone(phoneNumber, ['en-IN'])){
+  if (!validator.isMobilePhone(phoneNumber, ['en-IN'])) {
     throw new Error('Phone Number is Invalid');
   }
 }
@@ -111,10 +110,17 @@ const checkPhoneNumber = (phoneNumber) => {
 
 // check internal authorization key
 const checkInternalAuthKey = (key) => {
-  if (key !== process.env.INTERNAL_AUTH_ID){
+  if (key !== process.env.INTERNAL_AUTH_ID) {
     throw new Error('Un-authorized action');
   }
 }
 
 
-module.exports = {ParamValidator, checkEmailFormat, checkPhoneNumber, checkInternalAuthKey};
+// check for DateOfBirth(yyyy-mm-dd)
+const checkDate = (dob) => {
+  if (!validator.isDate(dob)) {
+    throw new Error('dob is not valid');
+  }
+}
+
+module.exports = { ParamValidator, checkEmailFormat, checkPhoneNumber, checkInternalAuthKey, checkDate };

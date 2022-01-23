@@ -16,6 +16,12 @@ const eventKeyExposeObject = {
 };
 
 
+const handleSignup = async (reqBody) => {
+	const customer = new Customer(reqBody);
+	await customer.save();
+}
+
+
 const handleLogin = async (reqBody) => {
 	let customerResponse = await Customer.findByCredentials(reqBody.email, reqBody.password);
 	if (customerResponse.isVerified === false) {
@@ -136,4 +142,4 @@ const verifyEmailOtp = async (req) => {
 }
 
 
-module.exports = {handleLogin, handleLogout, generateDummyCustomers, handleGetDetails, sendEmailOtp, verifyEmailOtp};
+module.exports = {handleLogin,handleSignup, handleLogout, generateDummyCustomers, handleGetDetails, sendEmailOtp, verifyEmailOtp};
