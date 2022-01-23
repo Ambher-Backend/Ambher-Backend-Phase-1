@@ -19,25 +19,24 @@ const CustomerAuth = require('../middlewares/auth/customer_auth');
 
 //signup route
 router.post('/signup',async (req, res) => {
-    try {
-        if (req.body.password.length < 8) {
-            throw new Error('Weak Password');
-        }
-        if (req.body.phoneNumber.length != 10 || req.body.phoneNumber.match(/[0-9]{10}/)[0] != req.body.phoneNumber) {
-            throw new Error('Invalid Phone Number');
-        }
-        if (!validator.isEmail(req.body.email)) {
-            throw new Error('Invalid Mail');
-        }
-		
-        const customer = new Customer(req.body);
-				await customer.save();
-        res.send(commonUtils.responseUtil(201, null, "Customer Created"));
-        
+	try {
+		if (req.body.password.length < 8) {
+			throw new Error('Weak Password');
+		}
+		if (req.body.phoneNumber.length != 10 || req.body.phoneNumber.match(/[0-9]{10}/)[0] != req.body.phoneNumber) {
+			throw new Error('Invalid Phone Number');
+		}
+		if (!validator.isEmail(req.body.email)) {
+			throw new Error('Invalid Mail');
+		}
+
+		const customer = new Customer(req.body);
+		await customer.save();
+		res.send(commonUtils.responseUtil(201, null, "Customer Created"));		
 	} catch (err) {
-        commonUtils.errorLog(err.message);
-        res.send(commonUtils.responseUtil(400, null, err.message));
-    }
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
 });
 
 
@@ -74,8 +73,8 @@ router.post('/create-dummy-data', async (req, res) => {
 		if (req.body.internalAuthKey === undefined || req.body.internalAuthKey !== process.env.INTERNAL_AUTH_ID){
 			throw new Error(`Un-authorized access`);
 		}
-		await helper.generateDummyCustomers(req.body);
-		res.send(commonUtils.responseUtil(201, null, 'Data Created'));
+		const verdict = await helper.generateDummyCustomers(req.body);
+		res.send(commonUtils.responseUtil(201, null, verdict));
 	} catch(err) {
 		console.log(err);
 		commonUtils.errorLog(err.message);
