@@ -39,4 +39,4 @@ const generateDummyDocument = async () => {
 }
 
 
-module.exports = {generateDummyDocumentData};
+module.exports = {generateDummyDocumentData, generateDummyDocument};

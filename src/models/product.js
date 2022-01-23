@@ -48,7 +48,7 @@ const ProductSchema = new mongoose.Schema(
           colors: [
             {
               color: {type: String, required: true},
-              pricePerDay: {type: String, required: true},
+              pricePerDay: {type: Number, required: true},
               displayPictureUrls: {type: [String], required: true},
               quantity: {type: Number, required: true},
               availableAfter: {type: String, required: true}

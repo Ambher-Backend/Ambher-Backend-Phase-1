@@ -54,4 +54,4 @@ const generateDummyVendor = async () => {
 }
 
 
-module.exports = {generateDummyVendorData};
+module.exports = {generateDummyVendorData, generateDummyVendor};

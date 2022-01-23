@@ -53,4 +53,4 @@ const generateDummyCustomer = async () => {
 }
 
 
-module.exports = {generateDummyCustomerData};
+module.exports = {generateDummyCustomerData, generateDummyCustomer};

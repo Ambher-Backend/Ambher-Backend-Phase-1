@@ -17,7 +17,6 @@ router.post('/create-dummy-data', documentParamValidator.generateDocumentDummyDa
     const verdict = await helper.generateDummyDocuments(req.body);
     res.send(commonUtils.responseUtil(201, null, verdict));
   }catch(err){
-    console.log(err);
     commonUtils.errorLog(err.message);
     res.send(commonUtils.responseUtil(400, null, err.message));
   }

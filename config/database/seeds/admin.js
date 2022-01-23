@@ -39,4 +39,4 @@ const generateDummyAdmin = async () => {
 }
 
 
-module.exports = {generateDummyAdminData};
+module.exports = {generateDummyAdminData, generateDummyAdmin};
