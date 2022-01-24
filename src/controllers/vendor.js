@@ -14,7 +14,6 @@ const seeder = require('../../config/database/seeder');
 const eventKeyExposeObject = {
 	'postLogin': ['_id', 'name', 'email','profilePictureUrl','dob','address'],
 	'toVerify': ['email'],
-	'toVerifyAccount': ['_id', 'name', 'email','profilePictureUrl','dob','address', 'configuration'],
 	'blocked' : ['name','email','blockedReason'],
 	'get':['_id', 'name', 'email', 'phoneNumber','profilePictureUrl','dob','address']
 };
@@ -24,21 +23,25 @@ const handleLogin = async (reqBody) => {
 	let vendorResponse = await Vendor.findByCredentials(reqBody.email, reqBody.password);
 	if (vendorResponse.configuration.isVerified === false) {
 		const vendorObjectToExpose = filterKeys(vendorResponse, 'toVerify');	
+		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Email needs to be verified";
 		return {vendorObjectToExpose, message};
 	}
 	if (vendorResponse.configuration.isBlocked === true) {
 		const vendorObjectToExpose = filterKeys(vendorResponse, 'blocked');	
+		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Blocked. Contact Support";
 		return {vendorObjectToExpose, message};
 	}
 	if (vendorResponse.configuration.isVerifiedByAdmin === false) {
-		const vendorObjectToExpose = filterKeys(vendorResponse, 'toVerifyAccount');
+		const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
+		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Unverified by admin";
 		return {vendorObjectToExpose, message};
 	}
 	const token = await vendorResponse.generateToken();
 	const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
+	vendorObjectToExpose.productModify = true;
 	vendorObjectToExpose['token'] = token;
 	const message = "Vendor Login Successful";
 	return {vendorObjectToExpose, message};
