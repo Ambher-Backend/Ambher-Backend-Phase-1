@@ -5,6 +5,7 @@ const validator = require("validator");
 
 // Internal Imports
 const Admin = require("../models/admin");
+const Vendor = require("../models/vendor");
 const commonUtils = require('../lib/common_utils');
 const emailUtils = require('../lib/send_email');
 const seeder = require('../../config/database/seeder');
@@ -97,4 +98,17 @@ const verifyEmailOtp = async (reqBody) => {
 }
 
 
-module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout, handleGetDetails, sendEmailOtp, verifyEmailOtp};
+const verifyVendor = async (admin, reqBody) => {
+	let vendor = await Vendor.findById(reqBody.vendorId);
+	if (vendor == undefined){throw new Error('Invalid vendor ID');}
+	if (vendor.isVerified === false){throw new Error('Vendor needs to verify their email');}
+	vendor.isVerifiedByAdmin = true;
+	vendor.verifiedBy = admin._id;
+	await vendor.save();
+	const mailBody = `Congratulations, ${vendor.name}! Your Ambher Vendor Account has been verified.`;
+	emailUtils.sendEmail(vendor.email, "Ambher Vendor Account Verified", mailBody);
+	return "Vendor Account Verified By Admin Successfully";
+}
+
+
+module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout, handleGetDetails, sendEmailOtp, verifyEmailOtp, verifyVendor};

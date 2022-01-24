@@ -13,7 +13,8 @@ const seeder = require('../../config/database/seeder');
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
 	'postLogin': ['_id', 'name', 'email','profilePictureUrl','dob','address'],
-	'toVerify': ['email'],
+	'toVerifyEmail': ['email'],
+	'toVerifyAccount': ['_id', 'name', 'email','profilePictureUrl','dob','address', 'isVerifiedByAdmin'],
 	'blocked' : ['name','email','blockedReason'],
 	'get':['_id', 'name', 'email', 'phoneNumber','profilePictureUrl','dob','address']
 };
@@ -29,6 +30,11 @@ const handleLogin = async (reqBody) => {
 	if (vendorResponse.isBlocked === true) {
 		const vendorObjectToExpose = filterKeys(vendorResponse, 'blocked');	
 		const message = "Vendor Blocked. Contact Support";
+		return {vendorObjectToExpose, message};
+	}
+	if (vendorResponse.isVerifiedByAdmin === false) {
+		const vendorObjectToExpose = filterKeys(vendorResponse, 'toVerifyAccount');
+		const message = "Vendor Unverified by admin";
 		return {vendorObjectToExpose, message};
 	}
 	const token = await vendorResponse.generateToken();

@@ -58,6 +58,14 @@ const VendorSchema = new mongoose.Schema({
 		required: true,
 		default: false
 	},
+	isVerifiedByAdmin: {
+		type: Boolean,
+		required: true,
+		default: false
+	},
+	verifiedBy: {
+		type: mongoose.Schema.Types.ObjectId
+	},
 	isBlocked: {
 		type: Boolean,
 		required: true,
@@ -65,6 +73,9 @@ const VendorSchema = new mongoose.Schema({
 	},
 	blockedReason: {
 		type: String
+	},
+	blockedBy: {
+		type: mongoose.Schema.Types.ObjectId
 	},
   tokens: {
 		type: [String]
