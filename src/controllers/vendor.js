@@ -2,10 +2,12 @@ const mongoose = require("mongoose");
 const faker = require("faker");
 const validator = require("validator");
 
+
 //Internal Imports
 const Vendor = require('../models/vendor');
 const commonUtils = require('../lib/common_utils');
 const emailUtils = require('../lib/send_email');
+const seeder = require('../../config/database/seeder');
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
@@ -51,41 +53,11 @@ const handleGetDetails = async (vendorId) => {
 	return vendorObjectToExpose;
 };
 
+
 //function to generate 10 vendor data or on the basis of request
-const generateDummyVendors = async (req) => {
-	if (req.deleteExisting != true){
-		await Vendor.deleteMany({});
-		commonUtils.successLog(`All Collection vendor deleted on "${new Date().toString()}" by 'Admin'`);
-	}
-	let vendorLength = ( (!req.total) ? 10 : req.total);
-	for(let i = 0; i < vendorLength; i++) {
-		const vendorObject = {
-			name: faker.name.firstName(),
-			phoneNumber: faker.phone.phoneNumber(),
-			email: faker.internet.email() ,
-			password: '12345678',
-			dob:faker.date.recent(),
-			isVerified: true,
-			isBlocked: false,
-			blockedReason: '',
-			address:[
-				{
-					flatNo:faker.random.alphaNumeric(2),
-					buildingNo:faker.random.alphaNumeric(2),
-					streetName:faker.address.streetName(),
-					city:faker.address.city(),
-					state:faker.address.state(),
-					country:faker.address.country(),
-					zipCode:faker.address.zipCode(),
-					lat:faker.address.latitude(),
-					lon:faker.address.longitude()
-				}
-			]
-		};
-		const vendor = new Vendor(vendorObject);
-		await vendor.save();
-	}
-	return;
+const generateDummyVendors = async (reqBody) => {
+	const verdict = await seeder.vendorSeeder(reqBody.deleteExisting, reqBody.total);
+	return verdict;
 };
 
 
@@ -98,6 +70,7 @@ const filterKeys = (vendorObject, event) => {
 	}
 	return vendorObject;
 }
+
 
 const sendEmailOtp = async (vendorEmail) => {
 	if(!validator.isEmail(vendorEmail)) {

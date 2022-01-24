@@ -1,28 +1,11 @@
-const faker = require("faker");
-const mongoose = require("mongoose");
-
 // Internal Imports
 const Document = require("../models/document");
+const seeder = require('../../config/database/seeder');
+
 
 const generateDummyDocuments = async (reqBody) => {
-  if (reqBody.deleteExisting){
-    await Document.deleteMany({});
-    console.log(`All Collection documents deleted on "${new Date().toString()}" by 'Admin'`);
-  }
-  let totalDocuments = ((reqBody.total == undefined) ? 5 : reqBody.total);
-  for (let i = 0; i < totalDocuments; i++) {
-    const documentObject = {
-      name: faker.name.firstName() + ".pdf",
-      bucketPath: faker.internet.url(),
-      privateLink: faker.internet.url(),
-      publicLink: faker.internet.url(),
-      ownerUserId: mongoose.Types.ObjectId(),
-    };
-
-    const document = new Document(documentObject);
-    await document.save();
-  }
-  return;
+  const verdict = await seeder.documentSeeder(reqBody.deleteExisting, reqBody.total);
+	return verdict;
 };
 
 
