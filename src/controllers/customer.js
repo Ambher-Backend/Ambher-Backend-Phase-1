@@ -1,11 +1,12 @@
-const mongoose = require("mongoose");
-const faker = require("faker");
 const validator = require("validator");
+
 
 //Internal Imports
 const Customer = require('../models/customer');
 const commonUtils = require('../lib/common_utils');
 const emailUtils = require('../lib/send_email');
+const seeder = require('../../config/database/seeder');
+
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
@@ -58,42 +59,9 @@ const handleGetDetails = async (customerId) => {
 
 
 //function to generate 10 customer data or on the basis of request
-const generateDummyCustomers = async (req) => {
-	console.log(req.deleteExisting === true);
-	if (req.deleteExisting != true){
-		console.log(req.deleteExisting)
-		await Customer.deleteMany({});
-		commonUtils.successLog(`All Collection customer deleted on "${new Date().toString()}" by 'Admin'`);
-	}
-	let customerLength = ( (!req.total) ? 5 : req.total);
-	for(let i = 0; i < customerLength; i++) {
-		const customerObject = {
-			name: faker.name.firstName(),
-			phoneNumber: faker.phone.phoneNumber(),
-			email: faker.internet.email() ,
-			password: '12345678',
-			dob:faker.date.recent(),
-			isVerified: true,
-			isBlocked: false,
-			blockedReason: '',
-			address:[
-				{
-					flatNo:faker.random.alphaNumeric(2),
-					buildingNo:faker.random.alphaNumeric(2),
-					streetName:faker.address.streetName(),
-					city:faker.address.city(),
-					state:faker.address.state(),
-					country:faker.address.country(),
-					zipCode:faker.address.zipCode(),
-					lat:faker.address.latitude(),
-					lon:faker.address.longitude()
-				}
-			]
-		};
-		const customer = new Customer(customerObject);
-		await customer.save();
-	}
-	return;
+const generateDummyCustomers = async (reqBody) => {
+	const verdict = await seeder.customerSeeder(reqBody.deleteExisting, reqBody.total);
+	return verdict;
 };
 
 

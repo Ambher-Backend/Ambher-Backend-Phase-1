@@ -1,9 +1,7 @@
 const express = require('express');
-const dotenv = require('dotenv');
 
 // Router Config
 const router = new express.Router();
-dotenv.config();
 
 
 //internal imports
@@ -64,11 +62,11 @@ router.post('/logout', adminParamValidator.logoutAdminParamValidation, AdminAuth
 //generate dummy data route
 router.post('/create-dummy-data', adminParamValidator.generateAdminDummyDataValidation, async (req, res) => {
 	try {
-		await helper.generateDummyAdmins(req.body);
-		res.send(commonUtils.responseUtil(201, null, 'Data Created'));
+		const message = await helper.generateDummyAdmins(req.body);
+		res.send(commonUtils.responseUtil(201, null, message));
 	} catch(err) {
 		commonUtils.errorLog(err.message);
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil(500, null, err.message));
 	}
 });
 
@@ -83,6 +81,7 @@ router.post('/new-email-otp', adminParamValidator.sendEmailOtpValidation, async(
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
+
 
 //verify the email otp of admin
 router.post('/verify-email-otp', adminParamValidator.VerifyEmailOtpValidation, async(req, res) => {

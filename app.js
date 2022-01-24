@@ -18,6 +18,8 @@ const documentRouter = require('./src/routers/document');
 const adminRouter = require('./src/routers/admin');
 const customerRouter = require('./src/routers/customer');
 const vendorRouter = require('./src/routers/vendor');
+const productRouter = require('./src/routers/product');
+
 
 // Server Configs
 require('./config/database/mongo');
@@ -30,9 +32,10 @@ if (config.util.getEnv('NODE_ENV') !== 'test')
 }
 // loading routers
 app.use('/documents', documentRouter);
-app.use('/admin',adminRouter);
+app.use('/admin', adminRouter);
 app.use('/customer',customerRouter);
-app.use('/vendor',vendorRouter);
+app.use('/vendor', vendorRouter);
+app.use('/product', productRouter);
 
 
 app.get('/', async (req, res) => {

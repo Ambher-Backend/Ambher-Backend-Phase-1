@@ -25,9 +25,9 @@ router.post('/signup',customerParamValidator.signUpParamValidation,async (req, r
         res.send(commonUtils.responseUtil(201, null, "Customer Created"));
         
 	} catch (err) {
-        commonUtils.errorLog(err.message);
-        res.send(commonUtils.responseUtil(400, null, err.message));
-    }
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
 });
 
 
@@ -64,10 +64,9 @@ router.post('/create-dummy-data',customerParamValidator.generateCustomerDummyDat
 		if (req.body.internalAuthKey === undefined || req.body.internalAuthKey !== process.env.INTERNAL_AUTH_ID){
 			throw new Error(`Un-authorized access`);
 		}
-		await helper.generateDummyCustomers(req.body);
-		res.send(commonUtils.responseUtil(201, null, 'Data Created'));
+		const verdict = await helper.generateDummyCustomers(req.body);
+		res.send(commonUtils.responseUtil(201, null, verdict));
 	} catch(err) {
-		console.log(err);
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}

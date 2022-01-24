@@ -17,7 +17,7 @@ const successLog = (message) => {
 }
 
 const getOtp = () => {
-  const val = Math.floor(Math.random() * 1000000);
+  let val = Math.floor(Math.random() * 1000000);
   if (val.toString().length === 5) {
     val *= 10;
   }

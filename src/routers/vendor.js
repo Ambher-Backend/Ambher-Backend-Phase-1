@@ -14,28 +14,27 @@ const VendorAuth = require('../middlewares/auth/vendor_auth');
 const Vendor = require('../models/vendor');
 const helper = require('../controllers/vendor');
 
+
 //registration for vendor
 router.post('/signup',async function(req,res){
-    try{
-        if(req.body.phoneNumber.length != 10 || req.body.phoneNumber.match(/[0-9]{10}/)[0] != req.body.phoneNumber) {
-	throw new Error('Invalid Phone Number');
-        }
-        if(req.body.password.length < 8){
-            throw new error("Password length not sufficient");
-        }
-        if(!validator.isEmail(req.body.email)){
-            throw new error("Enter valid emailId");
-        }
-        const vendor = new Vendor(req.body);    
-        await vendor.save();
-        res.send(commonUtils.responseUtil(201, null, "Vendor added"));
-
-    }
-    catch (err){
-        commonUtils.errorLog(err.message);
+	try{
+		if(req.body.phoneNumber.length != 10 || req.body.phoneNumber.match(/[0-9]{10}/)[0] != req.body.phoneNumber) {
+			throw new Error('Invalid Phone Number');
+		}
+		if(req.body.password.length < 8){
+			throw new error("Password length not sufficient");
+		}
+		if(!validator.isEmail(req.body.email)){
+			throw new error("Enter valid emailId");
+		}
+		const vendor = new Vendor(req.body);    
+		await vendor.save();
+		res.send(commonUtils.responseUtil(201, null, "Vendor added"));
+	}
+	catch (err){
+		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
-    }
-
+	}
 });
 
 router.get('/:vendorId',VendorAuth, async (req, res) => {
@@ -80,14 +79,14 @@ router.post('/create-dummy-data', async (req, res) => {
 		if (req.body.internalAuthKey === undefined || req.body.internalAuthKey !== process.env.INTERNAL_AUTH_ID){
 			throw new Error(`Un-authorized access`);
 		}
-		await helper.generateDummyVendors(req.body);
-		res.send(commonUtils.responseUtil(201, null, 'Data Created'));
+		const verdictMessage = await helper.generateDummyVendors(req.body);
+		res.send(commonUtils.responseUtil(201, null, verdictMessage));
 	} catch(err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
-
+	
 
 //send a new otp to vendor email
 router.post('/new-email-otp', async(req, res) => {
