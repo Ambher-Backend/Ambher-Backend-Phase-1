@@ -53,23 +53,25 @@ const VendorSchema = new mongoose.Schema({
   }],
   customerOrderIds: [mongoose.Schema.Types.ObjectId],
   productIds: [mongoose.Schema.Types.ObjectId],
-	isVerified: {
-		type: Boolean,
-		required: true,
-		default: false
-	},
-	isVerifiedByAdmin: {
-		type: Boolean,
-		required: true,
-		default: false
-	},
+	configuration: {
+		isVerified: {
+			type: Boolean,
+			required: true,
+			default: false
+		},
+		isVerifiedByAdmin: {
+			type: Boolean,
+			required: true,
+			default: false
+		},
+		isBlocked: {
+			type: Boolean,
+			required: true,
+			default: false
+		}
+	},	
 	verifiedBy: {
 		type: mongoose.Schema.Types.ObjectId
-	},
-	isBlocked: {
-		type: Boolean,
-		required: true,
-		default: false
 	},
 	blockedReason: {
 		type: String

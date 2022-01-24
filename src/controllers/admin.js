@@ -35,12 +35,12 @@ const handleSignup = async (reqBody) => {
 
 const handleLogin = async (reqBody) => {
 	let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
-	if (adminResponse.isVerified === false) {
+	if (adminResponse.configuration.isVerified === false) {
 		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['toVerify']);	
 		const message = "Admin Email needs to be verified";
 		return {adminObjectToExpose, message};
 	}
-	if (adminResponse.isBlocked === true) {
+	if (adminResponse.configuration.isBlocked === true) {
 		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['blocked']);	
 		const message = `Admin Blocked. Contact Support`;
 		return {adminObjectToExpose, message};
@@ -88,7 +88,7 @@ const verifyEmailOtp = async (reqBody) => {
 	if (admin == undefined){throw new Error('Invalid Email, Admin Not registered');}
 	const otpToVerify = admin.emailOtps[admin.emailOtps.length - 1];
 	if (otpToVerify === reqBody.otp) {
-		admin.isVerified = true;
+		admin.configuration.isVerified = true;
 		await admin.save();
 		return "Admin Email OTP verified successfully";
 	}
@@ -101,8 +101,8 @@ const verifyEmailOtp = async (reqBody) => {
 const verifyVendor = async (admin, reqBody) => {
 	let vendor = await Vendor.findById(reqBody.vendorId);
 	if (vendor == undefined){throw new Error('Invalid vendor ID');}
-	if (vendor.isVerified === false){throw new Error('Vendor needs to verify their email');}
-	vendor.isVerifiedByAdmin = true;
+	if (vendor.configuration.isVerified === false){throw new Error('Vendor needs to verify their email');}
+	vendor.configuration.isVerifiedByAdmin = true;
 	vendor.verifiedBy = admin._id;
 	await vendor.save();
 	const mailBody = `Congratulations, ${vendor.name}! Your Ambher Vendor Account has been verified.`;

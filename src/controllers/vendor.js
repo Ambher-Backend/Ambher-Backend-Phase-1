@@ -13,8 +13,8 @@ const seeder = require('../../config/database/seeder');
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
 	'postLogin': ['_id', 'name', 'email','profilePictureUrl','dob','address'],
-	'toVerifyEmail': ['email'],
-	'toVerifyAccount': ['_id', 'name', 'email','profilePictureUrl','dob','address', 'isVerifiedByAdmin'],
+	'toVerify': ['email'],
+	'toVerifyAccount': ['_id', 'name', 'email','profilePictureUrl','dob','address', 'configuration'],
 	'blocked' : ['name','email','blockedReason'],
 	'get':['_id', 'name', 'email', 'phoneNumber','profilePictureUrl','dob','address']
 };
@@ -22,17 +22,17 @@ const eventKeyExposeObject = {
 
 const handleLogin = async (reqBody) => {
 	let vendorResponse = await Vendor.findByCredentials(reqBody.email, reqBody.password);
-	if (vendorResponse.isVerified === false) {
+	if (vendorResponse.configuration.isVerified === false) {
 		const vendorObjectToExpose = filterKeys(vendorResponse, 'toVerify');	
 		const message = "Vendor Email needs to be verified";
 		return {vendorObjectToExpose, message};
 	}
-	if (vendorResponse.isBlocked === true) {
+	if (vendorResponse.configuration.isBlocked === true) {
 		const vendorObjectToExpose = filterKeys(vendorResponse, 'blocked');	
 		const message = "Vendor Blocked. Contact Support";
 		return {vendorObjectToExpose, message};
 	}
-	if (vendorResponse.isVerifiedByAdmin === false) {
+	if (vendorResponse.configuration.isVerifiedByAdmin === false) {
 		const vendorObjectToExpose = filterKeys(vendorResponse, 'toVerifyAccount');
 		const message = "Vendor Unverified by admin";
 		return {vendorObjectToExpose, message};
@@ -102,7 +102,7 @@ const verifyEmailOtp = async (req) => {
 	});
 	const otpToVerify = vendor.emailOtps[vendor.emailOtps.length - 1];
 	if (otpToVerify === req.body.otp) {
-		vendor.isVerified = true;
+		vendor.configuration.isVerified = true;
 		await vendor.save();
 		return "Vendor Email OTP verified successfully";
 	}

@@ -29,8 +29,10 @@ const generateDummyAdmin = async () => {
     phoneNumber: faker.phone.phoneNumber(),
     email: faker.internet.email() ,
     password: '12345678',
-    isVerified: true,
-    isBlocked: false,
+    configuration: {
+      isVerified: true,
+      isBlocked: false,
+    },
     blockedReason: ''
   };
   const admin = new Admin(adminObject);
