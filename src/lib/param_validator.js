@@ -96,7 +96,7 @@ class ParamValidator{
 // checks email format.
 const checkEmailFormat = (email) => {
   if (!validator.isEmail(email)){
-    throw new Error('email is not valid');
+    throw new Error('Email is not valid');
   }
 }
 
