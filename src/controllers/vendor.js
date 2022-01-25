@@ -22,19 +22,19 @@ const eventKeyExposeObject = {
 const handleLogin = async (reqBody) => {
 	let vendorResponse = await Vendor.findByCredentials(reqBody.email, reqBody.password);
 	if (vendorResponse.configuration.isVerified === false) {
-		const vendorObjectToExpose = filterKeys(vendorResponse, 'toVerify');	
+		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject(), eventKeyExposeObject['toVerify']);	
 		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Email needs to be verified";
 		return {vendorObjectToExpose, message};
 	}
 	if (vendorResponse.configuration.isBlocked === true) {
-		const vendorObjectToExpose = filterKeys(vendorResponse, 'blocked');	
+		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject(), eventKeyExposeObject['blocked']);	
 		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Blocked. Contact Support";
 		return {vendorObjectToExpose, message};
 	}
 	if (vendorResponse.configuration.isVerifiedByAdmin === false) {
-		const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
+		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject(), eventKeyExposeObject['postLogin']);
 		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Unverified by admin";
 		return {vendorObjectToExpose, message};
@@ -69,16 +69,6 @@ const generateDummyVendors = async (reqBody) => {
 	return verdict;
 };
 
-
-const filterKeys = (vendorObject, event) => {
-	vendorObject = vendorObject.toObject();
-	for(const key in vendorObject){
-		if (eventKeyExposeObject[event].find((keyToExpose) => (keyToExpose == key)) == undefined){
-			vendorObject[key] = undefined;
-		}
-	}
-	return vendorObject;
-}
 
 
 const sendEmailOtp = async (vendorEmail) => {
