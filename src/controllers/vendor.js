@@ -78,9 +78,6 @@ const generateDummyVendors = async (reqBody) => {
 
 
 const sendEmailOtp = async (vendorEmail) => {
-	if(!validator.isEmail(vendorEmail)) {
-		throw new Error("Invalid Vendor Email");
-	}
 	let vendor = await Vendor.findOne({
 		email: vendorEmail
 	});
@@ -93,9 +90,6 @@ const sendEmailOtp = async (vendorEmail) => {
 
 
 const verifyEmailOtp = async (req) => {
-	if(!validator.isEmail(req.body.vendorEmail)) {
-		throw new Error("Invalid Vendor Email");
-	}
 	let vendor = await Vendor.findOne({ 
 		email: req.body.vendorEmail
 	});
