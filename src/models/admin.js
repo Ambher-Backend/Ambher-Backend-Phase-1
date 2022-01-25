@@ -33,15 +33,17 @@ const AdminSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	isVerified: {
-		type: Boolean,
-		required: true,
-		default: false
-	},
-	isBlocked: {
-		type: Boolean,
-		required: true,
-		default: false
+	configuration: {
+		isVerified: {
+			type: Boolean,
+			required: true,
+			default: false
+		},
+		isBlocked: {
+			type: Boolean,
+			required: true,
+			default: false
+		}
 	},
 	blockedReason: {
 		type: String,

@@ -84,10 +84,22 @@ router.post('/new-email-otp', adminParamValidator.sendEmailOtpValidation, async(
 
 
 //verify the email otp of admin
-router.post('/verify-email-otp', adminParamValidator.VerifyEmailOtpValidation, async(req, res) => {
+router.post('/verify-email-otp', adminParamValidator.verifyEmailOtpValidation, async (req, res) => {
 	try {
 		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req.body);
-		res.send(commonUtils.responseUtil(400, null, verifiedEmailOtpMessage));
+		res.send(commonUtils.responseUtil(200, null, verifiedEmailOtpMessage));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+})
+
+
+//verify vendor account
+router.post('/verify-vendor', adminParamValidator.verifyVendorAccountValidation, AdminAuth, async (req, res) => {
+	try {
+		const verifyVendorAccountMessage = await helper.verifyVendor(req.user, req.body);
+		res.send(commonUtils.responseUtil(200, null, verifyVendorAccountMessage));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));

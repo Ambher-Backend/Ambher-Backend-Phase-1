@@ -45,7 +45,9 @@ const generateDummyProduct = async () => {
     },
     details: generateDummyProductDetails(),
     productCode: commonUtils.genCode(),
-    isVerifiedByAdmin: true, 
+    configuration: {
+      isVerifiedByAdmin: true
+    }
   };
   const product = new Product(productObject);
   await product.save();

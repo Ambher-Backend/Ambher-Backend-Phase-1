@@ -31,8 +31,11 @@ const generateDummyVendor = async () => {
     email: faker.internet.email() ,
     password: '12345678',
     dob:faker.date.recent(),
-    isVerified: true,
-    isBlocked: false,
+    configuration: {
+      isVerified: true,
+      isBlocked: false,
+      isVerifiedByAdmin: true
+    },
     blockedReason: '',
     address:[
       {

@@ -23,10 +23,10 @@ const VendorAuth = async (req, res, next) => {
 		if(!vendor) {
 			throw new Error ("Vendor is not authorised");
 		}
-		if(vendor.isVerified === false) {
+		if(vendor.configuration.isVerified === false) {
 			throw new Error ("Vendor account not verified");
 		}
-		if(admin.isBlocked === true) {
+		if(vendor.configuration.isBlocked === true) {
 			throw new Error("Blocked for " + vendor.blockedReason);
 		}
 		req.user = vendor;

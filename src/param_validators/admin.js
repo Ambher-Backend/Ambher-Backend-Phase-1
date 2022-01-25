@@ -125,7 +125,7 @@ const sendEmailOtpValidation = (req, res, next) => {
 
 
 // POST
-const VerifyEmailOtpValidation = (req, res, next) => {
+const verifyEmailOtpValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
     const acceptedParams = ['adminEmail', 'otp'];
@@ -143,6 +143,23 @@ const VerifyEmailOtpValidation = (req, res, next) => {
 }
 
 
+//POST
+const verifyVendorAccountValidation = (req, res, next) => {
+  try{
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ['adminId', 'vendorId', 'currentToken'];
+
+    validator.validate('adminId', String);
+    validator.validate('vendorId', String);
+    validator.validate('currentToken', String);
+
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  }catch(err){
+    res.send(commonUtils.responseUtil(400, null, err.message));
+  }
+}
+
 module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
 logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
-VerifyEmailOtpValidation};
+verifyEmailOtpValidation, verifyVendorAccountValidation};

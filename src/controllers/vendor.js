@@ -21,18 +21,27 @@ const eventKeyExposeObject = {
 
 const handleLogin = async (reqBody) => {
 	let vendorResponse = await Vendor.findByCredentials(reqBody.email, reqBody.password);
-	if (vendorResponse.isVerified === false) {
+	if (vendorResponse.configuration.isVerified === false) {
 		const vendorObjectToExpose = filterKeys(vendorResponse, 'toVerify');	
+		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Email needs to be verified";
 		return {vendorObjectToExpose, message};
 	}
-	if (vendorResponse.isBlocked === true) {
+	if (vendorResponse.configuration.isBlocked === true) {
 		const vendorObjectToExpose = filterKeys(vendorResponse, 'blocked');	
+		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Blocked. Contact Support";
+		return {vendorObjectToExpose, message};
+	}
+	if (vendorResponse.configuration.isVerifiedByAdmin === false) {
+		const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
+		vendorObjectToExpose.productModify = false;
+		const message = "Vendor Unverified by admin";
 		return {vendorObjectToExpose, message};
 	}
 	const token = await vendorResponse.generateToken();
 	const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
+	vendorObjectToExpose.productModify = true;
 	vendorObjectToExpose['token'] = token;
 	const message = "Vendor Login Successful";
 	return {vendorObjectToExpose, message};
@@ -96,7 +105,7 @@ const verifyEmailOtp = async (req) => {
 	});
 	const otpToVerify = vendor.emailOtps[vendor.emailOtps.length - 1];
 	if (otpToVerify === req.body.otp) {
-		vendor.isVerified = true;
+		vendor.configuration.isVerified = true;
 		await vendor.save();
 		return "Vendor Email OTP verified successfully";
 	}
