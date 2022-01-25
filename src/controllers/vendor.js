@@ -46,7 +46,7 @@ const handleLogin = async (reqBody) => {
 		return {vendorObjectToExpose, message};
 	}
 	const token = await vendorResponse.generateToken();
-	const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
+	const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject(), eventKeyExposeObject['postLogin']);
 	vendorObjectToExpose.productModify = true;
 	vendorObjectToExpose['token'] = token;
 	const message = "Vendor Login Successful";
@@ -64,7 +64,7 @@ const handleLogout = async (reqBody, currentUser) => {
 
 const handleGetDetails = async (vendorId) => {
 	const vendor = await Vendor.findById(vendorId);
-	const vendorObjectToExpose = filterKeys(vendor, 'get');
+	const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendor.toObject(), eventKeyExposeObject['get']);
 	return vendorObjectToExpose;
 };
 
