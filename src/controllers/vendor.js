@@ -19,6 +19,12 @@ const eventKeyExposeObject = {
 };
 
 
+const handleSignup = async (reqBody) => {
+	const vendor = new Vendor(reqBody);
+	await vendor.save();
+}
+
+
 const handleLogin = async (reqBody) => {
 	let vendorResponse = await Vendor.findByCredentials(reqBody.email, reqBody.password);
 	if (vendorResponse.configuration.isVerified === false) {
