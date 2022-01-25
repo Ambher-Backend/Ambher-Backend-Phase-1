@@ -76,6 +76,7 @@ const getVendorParamValidation = (req, res, next) => {
     validator.validate('vendorId', String);
     validator1.validate('currentToken', String);
     
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
