@@ -58,7 +58,7 @@ const logoutVendorParamValidation = (req, res, next) => {
 
     validator.validate('currentToken', String);
     
-    req.body = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -76,7 +76,7 @@ const getVendorParamValidation = (req, res, next) => {
     validator.validate('vendorId', String);
     validator1.validate('currentToken', String);
     
-    req.params = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
