@@ -124,7 +124,7 @@ const listVendors = async (reqBody) => {
 		}
 		filteredVendorsResponse.push(vendorResponse)
 	}
-	return filteredVendorsResponse;
+	return commonUtils.paginate(filteredVendorsResponse);
 }
 
 
