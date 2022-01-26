@@ -22,12 +22,12 @@ const handleSignup = async (reqBody) => {
 
 const handleLogin = async (reqBody) => {
 	let customerResponse = await Customer.findByCredentials(reqBody.email, reqBody.password);
-	if (customerResponse.isVerified === false) {
+	if (customerResponse.configuration.isVerified === false) {
 		const customerObjectToExpose = commonUtils.filterObjectByAllowedKeys(customerResponse.toObject(), eventKeyExposeObject['toVerify']);	
 		const message = "Customer Email needs to be verified";
 		return {customerObjectToExpose, message};
 	}
-	if (customerResponse.isBlocked === true) {
+	if (customerResponse.configuration.isBlocked === true) {
 		const customerObjectToExpose = commonUtils.filterObjectByAllowedKeys(customerResponse.toObject(), eventKeyExposeObject['blocked']);	
 		const message = "Customer Blocked. Contact Support";
 		return {customerObjectToExpose, message};
@@ -82,7 +82,7 @@ const verifyEmailOtp = async (reqBody) => {
 	if (customer === undefined) {throw new Error('Invalid Customer Email, Customer not found');}
 	const otpToVerify = customer.emailOtps[customer.emailOtps.length - 1];
 	if (otpToVerify === reqBody.otp) {
-		customer.isVerified = true;
+		customer.configuration.isVerified = true;
 		await customer.save();
 		return "Customer OTP verified successfully";
 	}
