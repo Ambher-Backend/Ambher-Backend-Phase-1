@@ -23,7 +23,6 @@ const signUpParamValidation = (req, res, next) => {
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
-    console.log(commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams));
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -58,7 +57,7 @@ const logoutCustomerParamValidation = (req, res, next) => {
 
     validator.validate('currentToken', String);
     
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -71,12 +70,12 @@ const getCustomerParamValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
-    const acceptedParams = ['customerId', 'currentToken'];
+    const acceptedParams = ['currentToken'];
 
     validator.validate('customerId', String);
     validator1.validate('currentToken', String);
     
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
