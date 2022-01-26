@@ -51,7 +51,7 @@ const paginate = (objectArray) => {
   let paginatedObjectArray = [];
   pageSize = constants.ADMIN_VENDOR_VIEW_PAGE_SIZE;
   for (let index = 0, currPage = 1; index < objectArray.length; index += pageSize, currPage++) {
-    paginatedObjectArray.push( {page: currPage, object: objectArray.slice(index, index + 10) } );
+    paginatedObjectArray.push( {page: currPage, object: objectArray.slice(index, index + pageSize) } );
   }
   return paginatedObjectArray;
 }
