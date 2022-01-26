@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const constants = require('../lib/constants')
 
 const responseUtil = (status, data, message) => {
   return {
@@ -46,4 +47,13 @@ const filterObjectByAllowedKeys = (current, allowedKeys) => {
 }
 
 
-module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys}
+const paginate = (objectArray) => {
+  let paginatedObjectArray = [];
+  pageSize = constants.ADMIN_VENDOR_VIEW_PAGE_SIZE;
+  for (let index = 0, currPage = 1; index < objectArray.length; index += pageSize, currPage++) {
+    paginatedObjectArray.push( {page: currPage, object: objectArray.slice(index, index + pageSize) } );
+  }
+  return paginatedObjectArray;
+}
+
+module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys, paginate};
