@@ -85,7 +85,8 @@ const VendorSchema = new mongoose.Schema({
 		type: [
 			{
 				message: {type: String, default: ''},
-				rating: {type: Number, required: true, min: 1, max: 5},
+				reviewRating: {type: Number, required: true, min: 1, max: 5},
+				customerId: {type: mongoose.Schema.Types.ObjectId},
 				pictures: {type: [String], default: []}
 			}
 		]

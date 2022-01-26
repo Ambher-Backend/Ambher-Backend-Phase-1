@@ -74,7 +74,8 @@ const generateDummyReviews = () => {
     totalRatings += currRating;
     const review = {
       message: faker.lorem.sentence(),
-      rating: currRating,
+      reviewRating: currRating,
+      customerId: mongoose.Types.ObjectId()
     }
     reviews.push(review);
   }

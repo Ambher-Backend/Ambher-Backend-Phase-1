@@ -172,10 +172,10 @@ const listVendorsValidation = (req, res, next) => {
     // filter custom validation
     const filterValidator = new paramValidator(req.body.filter);
     filterValidator.validate('query', String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    filterValidator.validate('isVerified', Boolean, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    filterValidator.validate('isVerifiedByAdmin', Boolean, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    filterValidator.validate('isBlocked', Boolean, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    filterValidator.validate('address', Object, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    filterValidator.validate('isVerified', Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate('isVerifiedByAdmin', Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate('isBlocked', Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate('address', Object, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
