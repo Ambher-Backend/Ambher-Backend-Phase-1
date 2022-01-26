@@ -71,10 +71,12 @@ const getCustomerParamValidation = (req, res, next) => {
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
     const acceptedParams = ['currentToken'];
+    const acceptedParams1 = ['customerId'];
 
     validator.validate('customerId', String);
     validator1.validate('currentToken', String);
     
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params,acceptedParams1);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
