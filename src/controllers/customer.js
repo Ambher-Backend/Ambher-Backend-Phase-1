@@ -1,6 +1,3 @@
-const validator = require("validator");
-
-
 //Internal Imports
 const Customer = require('../models/customer');
 const commonUtils = require('../lib/common_utils');

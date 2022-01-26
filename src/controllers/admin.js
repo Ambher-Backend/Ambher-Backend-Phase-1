@@ -1,8 +1,3 @@
-const mongoose = require("mongoose");
-const faker = require("faker");
-const validator = require("validator");
-
-
 // Internal Imports
 const Admin = require("../models/admin");
 const Vendor = require("../models/vendor");

@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-const faker = require("faker");
 const validator = require("validator");
 
 

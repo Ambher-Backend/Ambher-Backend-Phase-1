@@ -1,13 +1,8 @@
 const express = require('express');
-const config = require('config');
-const dotenv = require('dotenv');
-const validator = require('validator');
-const mongoose = require('mongoose');
 
 
 // Router Config
 const router = new express.Router();
-dotenv.config();
 
 
 //internal imports
