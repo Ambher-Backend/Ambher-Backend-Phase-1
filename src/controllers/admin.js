@@ -47,7 +47,7 @@ const handleLogin = async (reqBody) => {
 	}
 	const token = await adminResponse.generateToken();
 	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['postLogin']);
-	adminObjectToExpose['token'] = token;
+	adminObjectToExpose['currentToken'] = token;
 	const message = "Admin Login Successful";
 	return {adminObjectToExpose, message};
 };

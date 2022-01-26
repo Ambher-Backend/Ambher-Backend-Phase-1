@@ -17,21 +17,27 @@ const eventKeyExposeObject = {
 };
 
 
+const handleSignup = async (reqBody) => {
+	const customer = new Customer(reqBody);
+	await customer.save();
+}
+
+
 const handleLogin = async (reqBody) => {
 	let customerResponse = await Customer.findByCredentials(reqBody.email, reqBody.password);
 	if (customerResponse.isVerified === false) {
-		const customerObjectToExpose = filterKeys(customerResponse, 'toVerify');	
+		const customerObjectToExpose = commonUtils.filterObjectByAllowedKeys(customerResponse.toObject(), eventKeyExposeObject['toVerify']);	
 		const message = "Customer Email needs to be verified";
 		return {customerObjectToExpose, message};
 	}
 	if (customerResponse.isBlocked === true) {
-		const customerObjectToExpose = filterKeys(customerResponse, 'blocked');	
+		const customerObjectToExpose = commonUtils.filterObjectByAllowedKeys(customerResponse.toObject(), eventKeyExposeObject['blocked']);	
 		const message = "Customer Blocked. Contact Support";
 		return {customerObjectToExpose, message};
 	}
 	const token = await customerResponse.generateToken();
-	const customerObjectToExpose = filterKeys(customerResponse, 'postLogin');
-	customerObjectToExpose['token'] = token;
+	const customerObjectToExpose = commonUtils.filterObjectByAllowedKeys(customerResponse.toObject(), eventKeyExposeObject['postLogin']);
+	customerObjectToExpose['currentToken'] = token;
 	const message = "Customer Login Successful";
 	return {customerObjectToExpose, message};
 };
@@ -47,20 +53,9 @@ const handleLogout = async (reqBody, currentUser) => {
 
 const handleGetDetails = async (customerId) => {
 	const customer = await Customer.findById(customerId);
-	const customerObjectToExpose = filterKeys(customer, 'get');
+	const customerObjectToExpose = commonUtils.filterObjectByAllowedKeys(customer.toObject(), eventKeyExposeObject['get']);
 	return customerObjectToExpose;
 };
-
-
-const filterKeys = (customerObject, event) => {
-	customerObject = customerObject.toObject();
-	for(const key in customerObject){
-		if (eventKeyExposeObject[event].find((keyToExpose) => (keyToExpose == key)) == undefined){
-			customerObject[key] = undefined;
-		}
-	}
-	return customerObject;
-}
 
 
 //function to generate 10 customer data or on the basis of request
@@ -71,12 +66,10 @@ const generateDummyCustomers = async (reqBody) => {
 
 
 const sendEmailOtp = async (customerEmail) => {
-	if(!validator.isEmail(customerEmail)) {
-		throw new Error("Invalid Customer Email");
-	}
 	let customer = await Customer.findOne({
 		email: customerEmail
 	});
+	if (customer === undefined) {throw new Error('Invalid Customer Email, Customer not found');}
 	const otpToSend = commonUtils.getOtp();
 	customer.emailOtps.push(otpToSend);
 	await customer.save();
@@ -85,15 +78,13 @@ const sendEmailOtp = async (customerEmail) => {
 }
 
 
-const verifyEmailOtp = async (req) => {
-	if(!validator.isEmail(req.body.customerEmail)) {
-		throw new Error("Invalid Customer Email");
-	}
+const verifyEmailOtp = async (reqBody) => {
 	let customer = await Customer.findOne({ 
-		email: req.body.customerEmail
+		email: reqBody.customerEmail
 	});
+	if (customer === undefined) {throw new Error('Invalid Customer Email, Customer not found');}
 	const otpToVerify = customer.emailOtps[customer.emailOtps.length - 1];
-	if (otpToVerify === req.body.otp) {
+	if (otpToVerify === reqBody.otp) {
 		customer.isVerified = true;
 		await customer.save();
 		return "Customer OTP verified successfully";
@@ -104,4 +95,5 @@ const verifyEmailOtp = async (req) => {
 }
 
 
-module.exports = {handleLogin, handleLogout, generateDummyCustomers, handleGetDetails, sendEmailOtp, verifyEmailOtp};
+module.exports = {handleLogin, handleLogout, generateDummyCustomers, handleGetDetails,
+sendEmailOtp, verifyEmailOtp, handleSignup};

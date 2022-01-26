@@ -11,28 +11,17 @@ dotenv.config();
 
 
 //internal imports
-const Customer = require('../models/customer');
 const commonUtils = require('../lib/common_utils');
 const helper = require('../controllers/customer');
 const CustomerAuth = require('../middlewares/auth/customer_auth');
+const customerParamValidator = require('../param_validators/customer');
 
 
 //signup route
-router.post('/signup',async (req, res) => {
+router.post('/signup',customerParamValidator.signUpParamValidation, async (req, res) => {
 	try {
-		if (req.body.password.length < 8) {
-			throw new Error('Weak Password');
-		}
-		if (req.body.phoneNumber.length != 10 || req.body.phoneNumber.match(/[0-9]{10}/)[0] != req.body.phoneNumber) {
-			throw new Error('Invalid Phone Number');
-		}
-		if (!validator.isEmail(req.body.email)) {
-			throw new Error('Invalid Mail');
-		}
-
-		const customer = new Customer(req.body);
-		await customer.save();
-		res.send(commonUtils.responseUtil(201, null, "Customer Created"));		
+		await helper.handleSignup(req.body);
+  	res.send(commonUtils.responseUtil(201, null, "Customer Created"));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
@@ -41,7 +30,7 @@ router.post('/signup',async (req, res) => {
 
 
 //login route
-router.post('/login', async (req, res) => {
+router.post('/login', customerParamValidator.loginCustomerParamValidation, async (req, res) => {
 	try {
 		const customerLoginResponse = await helper.handleLogin(req.body);
 		res.send(commonUtils.responseUtil(200, customerLoginResponse.customerObjectToExpose, customerLoginResponse.message));
@@ -53,7 +42,7 @@ router.post('/login', async (req, res) => {
 
 
 //logout route
-router.post('/logout', CustomerAuth, async (req, res) => {
+router.post('/logout', customerParamValidator.logoutCustomerParamValidation, CustomerAuth, async (req, res) => {
 	try{
 		await helper.handleLogout(req.body, req.user);
 		res.send(commonUtils.responseUtil(200, null, "Customer Logged out"));
@@ -65,14 +54,8 @@ router.post('/logout', CustomerAuth, async (req, res) => {
 
 
 //generate dummy data route
-router.post('/create-dummy-data', async (req, res) => {
+router.post('/create-dummy-data', customerParamValidator.generateCustomerDummyDataValidation, async (req, res) => {
 	try {
-		if (config.util.getEnv('NODE_ENV') == 'production'){
-			throw new Error('Dummy Data Creation Not Allowed on Production Server');
-		}
-		if (req.body.internalAuthKey === undefined || req.body.internalAuthKey !== process.env.INTERNAL_AUTH_ID){
-			throw new Error(`Un-authorized access`);
-		}
 		const verdict = await helper.generateDummyCustomers(req.body);
 		res.send(commonUtils.responseUtil(201, null, verdict));
 	} catch(err) {
@@ -83,11 +66,8 @@ router.post('/create-dummy-data', async (req, res) => {
 
 
 //get route for Customer details
-router.get('/:customerId', CustomerAuth, async (req, res) => {
+router.get('/:customerId', customerParamValidator.getCustomerParamValidation, CustomerAuth, async (req, res) => {
 	try{
-		if (req.params.customerId === undefined){
-			throw new Error('Id not found');
-		}
 		const customerResponse = await helper.handleGetDetails(req.params.customerId);
 		res.send(commonUtils.responseUtil(200, customerResponse, "Success"));
 	}catch(err){
@@ -98,7 +78,7 @@ router.get('/:customerId', CustomerAuth, async (req, res) => {
 
 
 //send a new otp to customer email
-router.post('/new-email-otp', async(req, res) => {
+router.post('/new-email-otp', customerParamValidator.sendEmailOtpValidation, async(req, res) => {
 	try {
 		await helper.sendEmailOtp(req.body.customerEmail);
 		res.send(commonUtils.responseUtil(200, null, "Customer Email OTP sent successfully"));
@@ -110,9 +90,9 @@ router.post('/new-email-otp', async(req, res) => {
 
 
 //verify customer email otp
-router.post('/verify-email-otp', async(req, res) => {
+router.post('/verify-email-otp', customerParamValidator.verifyEmailOtpValidation, async(req, res) => {
 	try {
-		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
+		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req.body);
 		res.send(commonUtils.responseUtil(400, null, verifiedEmailOtpMessage));
 	} catch (err) {
 		commonUtils.errorLog(err.message);

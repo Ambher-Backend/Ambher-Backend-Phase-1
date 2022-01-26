@@ -56,7 +56,7 @@ const logoutAdminParamValidation = (req, res, next) => {
 
     validator.validate('currentToken', String);
     
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -147,9 +147,8 @@ const verifyEmailOtpValidation = (req, res, next) => {
 const verifyVendorAccountValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
-    const acceptedParams = ['adminId', 'vendorId', 'currentToken'];
+    const acceptedParams = ['vendorId', 'currentToken'];
 
-    validator.validate('adminId', String);
     validator.validate('vendorId', String);
     validator.validate('currentToken', String);
 
