@@ -11,13 +11,14 @@ const commonUtils = require('../lib/common_utils');
 const signUpParamValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
-    const acceptedParams = ['name', 'phoneNumber', 'email', 'password','dob'];
+    const acceptedParams = ['name', 'phoneNumber', 'email', 'password','dob', 'profilePictureUrl'];
 
     validator.validate('name', String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50);
     validator.validate('phoneNumber', String, allowBlank=false, acceptedValues=undefined, minLength=10, maxLength=10);
     validator.validate('email', String);
     validator.validate('password', String, allowBlank=false, acceptedValues=undefined, minLength=8);
     validator.validate('dob',String);
+    validator.validate('profilePictureUrl', Number, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);

@@ -1,6 +1,3 @@
-const validator = require("validator");
-
-
 //Internal Imports
 const Vendor = require('../models/vendor');
 const commonUtils = require('../lib/common_utils');
@@ -17,28 +14,34 @@ const eventKeyExposeObject = {
 };
 
 
+const handleSignup = async (reqBody) => {
+	const vendor = new Vendor(reqBody);
+	await vendor.save();
+}
+
+
 const handleLogin = async (reqBody) => {
 	let vendorResponse = await Vendor.findByCredentials(reqBody.email, reqBody.password);
 	if (vendorResponse.configuration.isVerified === false) {
-		const vendorObjectToExpose = filterKeys(vendorResponse, 'toVerify');	
+		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject, eventKeyExposeObject['toVerify']);	
 		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Email needs to be verified";
 		return {vendorObjectToExpose, message};
 	}
 	if (vendorResponse.configuration.isBlocked === true) {
-		const vendorObjectToExpose = filterKeys(vendorResponse, 'blocked');	
+		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject, eventKeyExposeObject['blocked']);	
 		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Blocked. Contact Support";
 		return {vendorObjectToExpose, message};
 	}
 	if (vendorResponse.configuration.isVerifiedByAdmin === false) {
-		const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
+		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject, eventKeyExposeObject['postLogin']);
 		vendorObjectToExpose.productModify = false;
 		const message = "Vendor Unverified by admin";
 		return {vendorObjectToExpose, message};
 	}
 	const token = await vendorResponse.generateToken();
-	const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
+	const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject, eventKeyExposeObject['postLogin']);
 	vendorObjectToExpose.productModify = true;
 	vendorObjectToExpose['currentToken'] = token;
 	const message = "Vendor Login Successful";
@@ -56,7 +59,7 @@ const handleLogout = async (reqBody, currentUser) => {
 
 const handleGetDetails = async (vendorId) => {
 	const vendor = await Vendor.findById(vendorId);
-	const vendorObjectToExpose = filterKeys(vendor, 'get');
+	const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendor.toObject(), eventKeyExposeObject['get']);
 	return vendorObjectToExpose;
 };
 
@@ -68,24 +71,11 @@ const generateDummyVendors = async (reqBody) => {
 };
 
 
-const filterKeys = (vendorObject, event) => {
-	vendorObject = vendorObject.toObject();
-	for(const key in vendorObject){
-		if (eventKeyExposeObject[event].find((keyToExpose) => (keyToExpose == key)) == undefined){
-			vendorObject[key] = undefined;
-		}
-	}
-	return vendorObject;
-}
-
-
 const sendEmailOtp = async (vendorEmail) => {
-	if(!validator.isEmail(vendorEmail)) {
-		throw new Error("Invalid Vendor Email");
-	}
 	let vendor = await Vendor.findOne({
 		email: vendorEmail
 	});
+	if (vendor == undefined) {throw new Error('Invalid email, Vendor Not Found');}
 	const otpToSend = commonUtils.getOtp();
 	vendor.emailOtps.push(otpToSend);
 	await vendor.save();
@@ -95,12 +85,10 @@ const sendEmailOtp = async (vendorEmail) => {
 
 
 const verifyEmailOtp = async (req) => {
-	if(!validator.isEmail(req.body.vendorEmail)) {
-		throw new Error("Invalid Vendor Email");
-	}
 	let vendor = await Vendor.findOne({ 
 		email: req.body.vendorEmail
 	});
+	if (vendor == undefined) {throw new Error('Invalid email, Vendor Not Found');}
 	const otpToVerify = vendor.emailOtps[vendor.emailOtps.length - 1];
 	if (otpToVerify === req.body.otp) {
 		vendor.configuration.isVerified = true;
@@ -113,4 +101,4 @@ const verifyEmailOtp = async (req) => {
 }
 
 
-module.exports = {handleLogin, handleLogout, generateDummyVendors, handleGetDetails, sendEmailOtp, verifyEmailOtp};
+module.exports = {handleSignup, handleLogin, handleLogout, generateDummyVendors, handleGetDetails, sendEmailOtp, verifyEmailOtp};
