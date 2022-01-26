@@ -19,7 +19,7 @@ class ParamValidator{
   validate(paramName, type, allowBlank = false, acceptedValues = undefined, minLength = undefined,
     maxLength = undefined, regex = undefined, required = true) {
     this.checkPresence(paramName, required=required);
-    if (!required){return;}
+    if (!required && this.reqBody[paramName] == undefined){ return; }
     this.checkType(paramName, type);
     this.checkBlank(paramName, allowBlank);
     this.checkAcceptedValues(paramName, acceptedValues);

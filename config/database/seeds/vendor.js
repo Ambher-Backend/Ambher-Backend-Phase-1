@@ -25,6 +25,7 @@ const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
 
 
 const generateDummyVendor = async () => {
+  const reviews = generateDummyReviews();
   const vendorObject = {
     name: faker.name.firstName(),
     phoneNumber: faker.phone.phoneNumber(),
@@ -37,23 +38,52 @@ const generateDummyVendor = async () => {
       isVerifiedByAdmin: true
     },
     blockedReason: '',
-    address:[
-      {
-        flatNo:faker.random.alphaNumeric(2),
-        buildingNo:faker.random.alphaNumeric(2),
-        streetName:faker.address.streetName(),
-        city:faker.address.city(),
-        state:faker.address.state(),
-        country:faker.address.country(),
-        zipCode:faker.address.zipCode(),
-        lat:faker.address.latitude(),
-        lon:faker.address.longitude()
-      }
-    ]
+    address: {
+      flatNo:faker.random.alphaNumeric(2),
+      buildingNo:faker.random.alphaNumeric(2),
+      streetName:faker.address.streetName(),
+      city:faker.address.city(),
+      state:faker.address.state(),
+      country:faker.address.country(),
+      zipCode:faker.address.zipCode(),
+      lat:faker.address.latitude(),
+      lon:faker.address.longitude()
+    },
+    customerOrderIds: [mongoose.Types.ObjectId()],
+    productIds: [
+      mongoose.Types.ObjectId(),
+      mongoose.Types.ObjectId()
+    ],
+    supportPhones: [faker.phone.phoneNumber()],
+    rating: reviews.rating,
+    reviews: reviews.reviews
   };
   const vendor = new Vendor(vendorObject);
   await vendor.save();
   return vendor._id;
+}
+
+
+const generateDummyReviews = () => {
+  let numberOfReviews = 3 + commonUtils.getOtp() % 10;
+  let rating = 0
+  let reviews = []
+  let totalRatings = 0;
+  while (numberOfReviews--){
+    const currRating = 1 + commonUtils.getOtp() % 5;
+    totalRatings += currRating;
+    const review = {
+      message: faker.lorem.sentence(),
+      reviewRating: currRating,
+      customerId: mongoose.Types.ObjectId()
+    }
+    reviews.push(review);
+  }
+  rating = totalRatings / reviews.length
+  return {
+    rating: rating,
+    reviews: reviews
+  }; 
 }
 
 

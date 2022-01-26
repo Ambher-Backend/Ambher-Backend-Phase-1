@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const dotenv = require("dotenv");
 const bcrypt = require('bcryptjs');
+const mongooseFuzzySearching = require('mongoose-fuzzy-searching');
 
 dotenv.config();
 
@@ -11,7 +12,8 @@ dotenv.config();
 const VendorSchema = new mongoose.Schema({
 	name: {
 		type: String,
-		required: true
+		required: true,
+		index: true
 	},
 	phoneNumber: {
 		type: String,
@@ -40,17 +42,20 @@ const VendorSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  address: [{
-    flatNo: {type: String},
-    buildingNo: {type: String},
-    streetName: {type: String},
-    city: {type: String},
-    state: {type: String},
-    country: {type: String},
-    zipCode: {type: String},
-    lat: {type: Number},
-    lon: {type: Number},
-  }],
+  address: {
+		type: {
+			flatNo: {type: String},
+			buildingNo: {type: String},
+			streetName: {type: String},
+			city: {type: String, required: true},
+			state: {type: String, required: true},
+			country: {type: String, required: true},
+			zipCode: {type: String, required: true},
+			lat: {type: Number},
+			lon: {type: Number}
+		},
+		index: true,
+  },
   customerOrderIds: [mongoose.Schema.Types.ObjectId],
   productIds: [mongoose.Schema.Types.ObjectId],
 	configuration: {
@@ -70,6 +75,22 @@ const VendorSchema = new mongoose.Schema({
 			default: false
 		}
 	},	
+	rating: {
+		type: Number,
+		default: 0,
+		min: 1,
+		max: 5
+	},
+	reviews: {
+		type: [
+			{
+				message: {type: String, default: ''},
+				reviewRating: {type: Number, required: true, min: 1, max: 5},
+				customerId: {type: mongoose.Schema.Types.ObjectId},
+				pictures: {type: [String], default: []}
+			}
+		]
+	},
 	verifiedBy: {
 		type: mongoose.Schema.Types.ObjectId
 	},
@@ -90,6 +111,10 @@ const VendorSchema = new mongoose.Schema({
 	},
 	phoneOtps: {
 		type: [String]
+	},
+	supportPhones: {
+		type: [String],
+		required: true
 	}
 	},
 	{
@@ -143,6 +168,9 @@ VendorSchema.pre('save', async function(next) {
 	next();
 });
 
+
+VendorSchema.plugin(mongooseFuzzySearching, { fields: ['name'] });
 const Vendor = mongoose.model("Vendor", VendorSchema);
+
 
 module.exports = Vendor;

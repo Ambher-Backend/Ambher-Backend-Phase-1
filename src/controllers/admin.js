@@ -4,6 +4,7 @@ const Vendor = require("../models/vendor");
 const commonUtils = require('../lib/common_utils');
 const emailUtils = require('../lib/send_email');
 const seeder = require('../../config/database/seeder');
+const fetchFilteredVendors = require('../services/fetch_filtered_vendors');
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
@@ -11,7 +12,7 @@ const eventKeyExposeObject = {
 	'postLogin': ['_id', 'name', 'email'],
 	'toVerify': ['email'],
 	'blocked' : ['name','email','blockedReason'],
-	'get':['_id', 'name', 'email', 'phoneNumber']
+	'get':['_id', 'name', 'email', 'phoneNumber'],
 };
 
 
@@ -106,4 +107,26 @@ const verifyVendor = async (admin, reqBody) => {
 }
 
 
-module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout, handleGetDetails, sendEmailOtp, verifyEmailOtp, verifyVendor};
+const listVendors = async (reqBody) => {
+	const filteredVendors = await fetchFilteredVendors.filter(reqBody.filter);
+	let filteredVendorsResponse = [] 
+	for(let vendor of filteredVendors){
+		const vendorResponse = {
+			profilePictureUrl: vendor.profilePictureUrl,
+			name: vendor.name,
+			phoneNumber: vendor.phoneNumber,
+			email: vendor.email,
+			address: Object.values(vendor.address).join(', '),
+			reviews: vendor.reviews.length,
+			rating: vendor.rating,
+			totalOrders: vendor.customerOrderIds.length,
+			totalProducts: vendor.productIds.length
+		}
+		filteredVendorsResponse.push(vendorResponse)
+	}
+	return commonUtils.paginate(filteredVendorsResponse);
+}
+
+
+module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout, handleGetDetails,
+sendEmailOtp, verifyEmailOtp, verifyVendor, listVendors};
