@@ -30,8 +30,10 @@ const generateDummyCustomer = async () => {
     email: faker.internet.email() ,
     password: '12345678',
     dob:faker.date.recent(),
-    isVerified: true,
-    isBlocked: false,
+    configuration: {
+      isVerified: true,
+      isBlocked: false,
+    },
     blockedReason: '',
     address:[
       {

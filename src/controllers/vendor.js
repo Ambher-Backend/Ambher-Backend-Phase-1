@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-const faker = require("faker");
 const validator = require("validator");
 
 
@@ -42,7 +40,7 @@ const handleLogin = async (reqBody) => {
 	const token = await vendorResponse.generateToken();
 	const vendorObjectToExpose = filterKeys(vendorResponse, 'postLogin');
 	vendorObjectToExpose.productModify = true;
-	vendorObjectToExpose['token'] = token;
+	vendorObjectToExpose['currentToken'] = token;
 	const message = "Vendor Login Successful";
 	return {vendorObjectToExpose, message};
 };

@@ -1,8 +1,3 @@
-const mongoose = require("mongoose");
-const faker = require("faker");
-const validator = require("validator");
-
-
 // Internal Imports
 const Admin = require("../models/admin");
 const Vendor = require("../models/vendor");
@@ -47,7 +42,7 @@ const handleLogin = async (reqBody) => {
 	}
 	const token = await adminResponse.generateToken();
 	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['postLogin']);
-	adminObjectToExpose['token'] = token;
+	adminObjectToExpose['currentToken'] = token;
 	const message = "Admin Login Successful";
 	return {adminObjectToExpose, message};
 };

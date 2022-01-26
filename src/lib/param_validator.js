@@ -16,9 +16,8 @@ class ParamValidator{
   // minLength and maxLength are for string and array, if any other data type is passed, then it may cause errors.
   // regex -> for String, validates by regex 
   // required ->  field indicates, if the current parameter is required.
-  validate(paramName, type, allowBlank=false, acceptedValues=undefined, minLength=undefined,
-    maxLength=undefined, regex=undefined, required=true)
-  {
+  validate(paramName, type, allowBlank = false, acceptedValues = undefined, minLength = undefined,
+    maxLength = undefined, regex = undefined, required = true) {
     this.checkPresence(paramName, required=required);
     if (!required){return;}
     this.checkType(paramName, type);
@@ -85,7 +84,7 @@ class ParamValidator{
   // check if the string parameter matches the regex
   checkByRegex(paramName, regex){
     if (regex != undefined && this.reqBody[paramName].constructor == String){
-      if (this.reqBody[paramName].match(regex) ==  undefined){
+      if (this.reqBody[paramName].match(regex) == undefined){
         throw new Error(`Invalid format for parameter ${paramName}`);
       }
     }

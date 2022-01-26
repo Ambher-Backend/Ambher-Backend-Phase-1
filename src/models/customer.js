@@ -56,18 +56,23 @@ const CustomerSchema = new mongoose.Schema(
     orderIds: [mongoose.Schema.Types.ObjectId],
     cartItemIds: [mongoose.Schema.Types.ObjectId],
     wishListItemIds: [mongoose.Schema.Types.ObjectId],
-    isVerified: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    isBlocked: {
-      type: Boolean,
-      required: true,
-      default: false,
+    configuration: {
+      isVerified: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      isBlocked: {
+        type: Boolean,
+        required: true,
+        default: false,
+      }
     },
     blockedReason: {
       type: String,
+    },
+    blockedBy: {
+      type: mongoose.Schema.Types.ObjectId
     },
     tokens: {
       type: [String],

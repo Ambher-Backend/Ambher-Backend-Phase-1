@@ -1,5 +1,4 @@
 // Internal Imports
-const Document = require("../models/document");
 const seeder = require('../../config/database/seeder');
 
 
