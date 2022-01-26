@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
 const express = require("express");
 const config = require('config');
 const dotenv = require('dotenv');
-const validator = require('validator');
+
 
 const router = new express.Router();
 dotenv.config();
@@ -11,24 +10,14 @@ dotenv.config();
 
 const commonUtils = require('../lib/common_utils');
 const VendorAuth = require('../middlewares/auth/vendor_auth');
-const Vendor = require('../models/vendor');
 const helper = require('../controllers/vendor');
+const vendorParamValidator = require('../param_validators/vendor');
 
 
 //registration for vendor
-router.post('/signup',async function(req,res){
+router.post('/signup', vendorParamValidator.signUpParamValidation, async (req,res) => {
 	try{
-		if(req.body.phoneNumber.length != 10 || req.body.phoneNumber.match(/[0-9]{10}/)[0] != req.body.phoneNumber) {
-			throw new Error('Invalid Phone Number');
-		}
-		if(req.body.password.length < 8){
-			throw new error("Password length not sufficient");
-		}
-		if(!validator.isEmail(req.body.email)){
-			throw new error("Enter valid emailId");
-		}
-		const vendor = new Vendor(req.body);    
-		await vendor.save();
+		await helper.handleSignup(req.body);
 		res.send(commonUtils.responseUtil(201, null, "Vendor added"));
 	}
 	catch (err){
@@ -37,11 +26,9 @@ router.post('/signup',async function(req,res){
 	}
 });
 
-router.get('/:vendorId',VendorAuth, async (req, res) => {
+
+router.get('/:vendorId', vendorParamValidator.getVendorParamValidation, VendorAuth, async (req, res) => {
 	try{
-		if (req.params.vendorId === undefined){
-			throw new Error('Id not found');
-		}
 		const vendorResponse = await helper.handleGetDetails(req.params.vendorId);
 		res.send(commonUtils.responseUtil(200, vendorResponse, "Success"));
 	}catch(err){
@@ -50,8 +37,9 @@ router.get('/:vendorId',VendorAuth, async (req, res) => {
 	}
 })
 
+
 //Sign-in for vendor
-router.post('/login',async (req, res) => {
+router.post('/login', vendorParamValidator.loginVendorParamValidation, async (req, res) => {
 	try {
 		const vendorLoginResponse = await helper.handleLogin(req.body);
 		res.send(commonUtils.responseUtil(200, vendorLoginResponse.vendorObjectToExpose, vendorLoginResponse.message));
@@ -61,7 +49,8 @@ router.post('/login',async (req, res) => {
 	}
 });
 
-router.post('/logout', VendorAuth, async (req, res) => {
+
+router.post('/logout', vendorParamValidator.logoutVendorParamValidation, VendorAuth, async (req, res) => {
 	try{
 		await helper.handleLogout(req.body, req.user);
 		res.send(commonUtils.responseUtil(200, null, "Vendor Logged out"));
@@ -71,14 +60,9 @@ router.post('/logout', VendorAuth, async (req, res) => {
 	} 
 });
 
-router.post('/create-dummy-data', async (req, res) => {
+
+router.post('/create-dummy-data', vendorParamValidator.generateVendorDummyDataValidation, async (req, res) => {
 	try {
-		if (config.util.getEnv('NODE_ENV') == 'production'){
-			throw new Error('Dummy Data Creation Not Allowed on Production Server');
-		}
-		if (req.body.internalAuthKey === undefined || req.body.internalAuthKey !== process.env.INTERNAL_AUTH_ID){
-			throw new Error(`Un-authorized access`);
-		}
 		const verdictMessage = await helper.generateDummyVendors(req.body);
 		res.send(commonUtils.responseUtil(201, null, verdictMessage));
 	} catch(err) {
@@ -89,7 +73,7 @@ router.post('/create-dummy-data', async (req, res) => {
 	
 
 //send a new otp to vendor email
-router.post('/new-email-otp', async(req, res) => {
+router.post('/new-email-otp', vendorParamValidator.sendEmailOtpValidation, async(req, res) => {
 	try {
 		await helper.sendEmailOtp(req.body.vendorEmail);
 		res.send(commonUtils.responseUtil(200, null, "Vendor Email OTP sent successfully"));
@@ -101,7 +85,7 @@ router.post('/new-email-otp', async(req, res) => {
 
 
 //verify the email otp of vendor
-router.post('/verify-email-otp', async(req, res) => {
+router.post('/verify-email-otp',vendorParamValidator.verifyEmailOtpValidation, async(req, res) => {
 	try {
 		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
 		res.send(commonUtils.responseUtil(400, null, verifiedEmailOtpMessage));
