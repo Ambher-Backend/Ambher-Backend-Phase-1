@@ -107,4 +107,15 @@ router.post('/verify-vendor', adminParamValidator.verifyVendorAccountValidation,
 })
 
 
+router.post('/vendors', adminParamValidator.listVendorsValidation, AdminAuth, async (req, res) => {
+	try{
+		const filteredVendors = await helper.listVendors(req.body);
+		res.send(commonUtils.responseUtil(200, filteredVendors, 'filteredVendors'));
+	}catch(err){
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+})
+
+
 module.exports = router;

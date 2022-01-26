@@ -159,6 +159,32 @@ const verifyVendorAccountValidation = (req, res, next) => {
   }
 }
 
+
+//POST
+const listVendorsValidation = (req, res, next) => {
+  try{
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ['filter', 'currentToken'];
+
+    validator.validate('filter', Object);
+    validator.validate('currentToken', String);
+
+    // filter custom validation
+    const filterValidator = new paramValidator(req.body.filter);
+    filterValidator.validate('query', String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    filterValidator.validate('isVerified', Boolean, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    filterValidator.validate('isVerifiedByAdmin', Boolean, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    filterValidator.validate('isBlocked', Boolean, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    filterValidator.validate('address', Object, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  }catch(err){
+    res.send(commonUtils.responseUtil(400, null, err.message));
+  }
+}
+
+
 module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
 logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
-verifyEmailOtpValidation, verifyVendorAccountValidation};
+verifyEmailOtpValidation, verifyVendorAccountValidation, listVendorsValidation};
