@@ -1,0 +1,3 @@
+const ADMIN_VENDOR_VIEW_PAGE_SIZE = 10;
+
+module.exports = {ADMIN_VENDOR_VIEW_PAGE_SIZE}
