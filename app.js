@@ -50,3 +50,4 @@ app.get('/', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is up and running at PORT: ${PORT}`);
 })
+module.exports=app;
