@@ -16,7 +16,7 @@ const customerParamValidator = require('../param_validators/customer');
 router.post('/signup',customerParamValidator.signUpParamValidation, async (req, res) => {
 	try {
 		await helper.handleSignup(req.body);
-  	res.send(commonUtils.responseUtil(201, null, "Customer Created"));
+  		res.send(commonUtils.responseUtil(201, null, "Customer Created"));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
