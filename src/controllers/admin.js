@@ -5,6 +5,7 @@ const commonUtils = require('../lib/common_utils');
 const emailUtils = require('../lib/send_email');
 const seeder = require('../../config/database/seeder');
 const fetchFilteredVendors = require('../services/fetch_filtered_vendors');
+const fetchFilteredCustomers = require('../services/fetch_filtered_customers');
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
@@ -128,5 +129,22 @@ const listVendors = async (reqBody) => {
 }
 
 
+const listCustomers = async (reqBody) => {
+	const filteredCustomers = await fetchFilteredCustomers.filter(reqBody.filter);
+	let filteredCustomersResponse = [];
+	for (let customer of filteredCustomers) {
+		const customerResponse = {
+			profilePictureUrl: customer.profilePictureUrl,
+			name: customer.name,
+			phoneNumber: customer.phoneNumber,
+			email: customer.email,
+			reviews: customer.reviews.length,
+			totalOrders: customer.orderIds.length
+		}
+		filteredCustomersResponse.push(customerResponse);
+	}
+	return commonUtils.paginate(filteredCustomersResponse);
+}
+
 module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout, handleGetDetails,
-sendEmailOtp, verifyEmailOtp, verifyVendor, listVendors};
+sendEmailOtp, verifyEmailOtp, verifyVendor, listVendors, listCustomers};
