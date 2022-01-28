@@ -15,9 +15,7 @@ describe('Customer APIs', () => {
     let email = "demouser5@gmail.com";
     let password = '12345678';
 
-
     describe('Customer Authentiation', () => {
-
 
         it('Creating Customer', async () => {
             const reqBody = {
@@ -35,7 +33,6 @@ describe('Customer APIs', () => {
             expect(response.body.data).to.eql(null);
         });
 
-
         it("Login Customer", async () => {
             const reqBody = {
                 email: email,
@@ -52,7 +49,6 @@ describe('Customer APIs', () => {
             id = response.body.data._id;
         });
 
-
         it("Get Customer", async () => {
             const reqBody = {
                 currentToken: currentToken
@@ -63,17 +59,15 @@ describe('Customer APIs', () => {
             expect(response.body.message).to.eql("Success");
         });
 
-
         it("Customer Logout", async () => {
             const reqBody = {
                 currentToken: currentToken
             };
             const response = await request(app).post(`/customer/logout`).send(reqBody);
-            
+
             expect(response.body.status).to.eql(200);
             expect(response.body.message).to.eql("Customer Logged out");
         });
-
 
         it("Deleting All Test Customer", async () => {
              await Customer.deleteMany({});
