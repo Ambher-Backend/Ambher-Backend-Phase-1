@@ -30,7 +30,6 @@ describe('Customer APIs', () => {
 
             const response = await request(app).post('/customer/signup').send(reqBody);
 
-            console.error(response.body)
             expect(response.body.status).to.eql(201);
             expect(response.body.message).to.eql('Customer Created');
             expect(response.body.data).to.eql(null);
@@ -43,7 +42,6 @@ describe('Customer APIs', () => {
                 password: password
             };
             const response = await request(app).post('/customer/login').send(reqBody);
-            console.error(response.body)
 
             expect(response.body.status).to.eql(200);
             expect(response.body.message).to.eql("Customer Login Successful");
@@ -71,9 +69,12 @@ describe('Customer APIs', () => {
                 currentToken: currentToken
             };
             const response = await request(app).post(`/customer/logout`).send(reqBody);
+            
             expect(response.body.status).to.eql(200);
             expect(response.body.message).to.eql("Customer Logged out");
         });
+
+
         it("Deleting All Test Customer", async () => {
              await Customer.deleteMany({});
         })
