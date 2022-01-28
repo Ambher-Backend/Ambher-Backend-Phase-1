@@ -74,8 +74,8 @@ describe('Customer APIs', () => {
             expect(response.body.status).to.eql(200);
             expect(response.body.message).to.eql("Customer Logged out");
         });
-         it("Deleting All Test Customer", async () => {
+        it("Deleting All Test Customer", async () => {
              await Customer.deleteMany({});
-         })
+        })
     });
 });
