@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'test'
+
 
 const faker = require('faker');
 const request = require('supertest');
@@ -72,8 +74,8 @@ describe('Customer APIs', () => {
             expect(response.body.status).to.eql(200);
             expect(response.body.message).to.eql("Customer Logged out");
         });
-        it("Deleting All Test Customer", async () => {
-            await Customer.deleteMany({});
-        })
+         it("Deleting All Test Customer", async () => {
+             await Customer.deleteMany({});
+         })
     });
 });
