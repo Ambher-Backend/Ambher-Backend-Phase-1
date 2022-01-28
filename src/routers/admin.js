@@ -110,8 +110,19 @@ router.post('/verify-vendor', adminParamValidator.verifyVendorAccountValidation,
 router.post('/vendors', adminParamValidator.listVendorsValidation, AdminAuth, async (req, res) => {
 	try{
 		const filteredVendors = await helper.listVendors(req.body);
-		res.send(commonUtils.responseUtil(200, filteredVendors, 'filteredVendors'));
+		res.send(commonUtils.responseUtil(200, filteredVendors, 'Vendor List'));
 	}catch(err){
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+})
+
+
+router.post('/customers', adminParamValidator.listCustomersValidation, AdminAuth, async (req, res) => {
+	try {
+		const filteredCustomers = await helper.listCustomers(req.body);
+		res.send(commonUtils.responseUtil(200, filteredCustomers, 'Customer List'));
+	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
