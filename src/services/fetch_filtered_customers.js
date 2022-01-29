@@ -1,5 +1,11 @@
 const Customer = require('../models/customer');
 
+
+/* filter: {
+  query: '<>',
+  isVerified: 'true or false',
+  isBlocked: 'true or false',
+*/
 const filter = async (filter) => {
   const filteredCustomers = buildQueryAndExecute(filter);
   return filteredCustomers;

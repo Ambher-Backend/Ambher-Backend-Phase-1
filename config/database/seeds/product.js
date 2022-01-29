@@ -43,6 +43,7 @@ const generateDummyProduct = async () => {
       color: faker.commerce.color(),
       material: faker.commerce.productMaterial(),
     },
+    pricePerDay: (commonUtils.getOtp() % 1000) + 200,
     details: generateDummyProductDetails(),
     productCode: commonUtils.genCode(),
     configuration: {
@@ -66,7 +67,6 @@ const generateDummyProductDetails = () => {
     while (nColors--){
       let colorSpec = {
         color: faker.commerce.color(),
-        pricePerDay: (commonUtils.getOtp() % 1000) + 200,
         displayPictureUrls: [faker.internet.url()],
         quantity: (commonUtils.getOtp() % 100) + 5,
         availableAfter: new Date().toString()

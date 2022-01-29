@@ -11,6 +11,9 @@ const adminParamValidator = require('../param_validators/admin');
 const AdminAuth = require('../middlewares/auth/admin_auth');
 
 
+//
+//**************************General Endpoints*******************************
+//
 //signup route
 router.post('/signup', adminParamValidator.signUpParamValidation, async (req, res)=>{
 	try {
@@ -23,18 +26,6 @@ router.post('/signup', adminParamValidator.signUpParamValidation, async (req, re
 });
 
 
-//get route for admin details
-router.get('/:adminId', adminParamValidator.getAdminParamValidation, AdminAuth, async (req, res) => {
-	try{
-		const adminResponse = await helper.handleGetDetails(req.params.adminId);
-		res.send(commonUtils.responseUtil(200, adminResponse, "Success"));
-	}catch(err){
-		commonUtils.errorLog(err.message);
-		res.send(commonUtils.responseUtil(400, null, err.message));
-	}
-})
-
-
 //login route
 router.post('/login', adminParamValidator.loginAdminParamValidation, async (req, res) => {
 	try {
@@ -43,6 +34,18 @@ router.post('/login', adminParamValidator.loginAdminParamValidation, async (req,
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400,  null, err.message));
+	}
+});
+
+
+//get route for admin details
+router.get('/:adminId', adminParamValidator.getAdminParamValidation, AdminAuth, async (req, res) => {
+	try{
+		const adminResponse = await helper.handleGetDetails(req.params.adminId);
+		res.send(commonUtils.responseUtil(200, adminResponse, "Success"));
+	}catch(err){
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
 
@@ -92,39 +95,18 @@ router.post('/verify-email-otp', adminParamValidator.verifyEmailOtpValidation, a
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
-})
+});
 
 
-//verify vendor account
-router.post('/verify-vendor', adminParamValidator.verifyVendorAccountValidation, AdminAuth, async (req, res) => {
-	try {
-		const verifyVendorAccountMessage = await helper.verifyVendor(req.user, req.body);
-		res.send(commonUtils.responseUtil(200, null, verifyVendorAccountMessage));
-	} catch (err) {
-		commonUtils.errorLog(err.message);
-		res.send(commonUtils.responseUtil(400, null, err.message));
-	}
-})
-
-
+//
+//**************************Admin Vendor Routes*******************************
+//
 //view vendor list based on filters
 router.post('/vendors', adminParamValidator.listVendorsValidation, AdminAuth, async (req, res) => {
 	try{
 		const filteredVendors = await helper.listVendors(req.body);
 		res.send(commonUtils.responseUtil(200, filteredVendors, 'Vendor List'));
 	}catch(err){
-		commonUtils.errorLog(err.message);
-		res.send(commonUtils.responseUtil(400, null, err.message));
-	}
-})
-
-
-//view customer list based on filters
-router.post('/customers', adminParamValidator.listCustomersValidation, AdminAuth, async (req, res) => {
-	try {
-		const filteredCustomers = await helper.listCustomers(req.body);
-		res.send(commonUtils.responseUtil(200, filteredCustomers, 'Customer List'));
-	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
@@ -143,6 +125,33 @@ router.get('/vendor-details/:vendorId', adminParamValidator.viewVendorDetailsVal
 })
 
 
+//verify vendor account
+router.post('/verify-vendor', adminParamValidator.verifyVendorAccountValidation, AdminAuth, async (req, res) => {
+	try {
+		const verifyVendorAccountMessage = await helper.verifyVendor(req.user, req.body);
+		res.send(commonUtils.responseUtil(200, null, verifyVendorAccountMessage));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
+//
+//**************************Admin Customer Routes*******************************
+//
+//view customer list based on filters
+router.post('/customers', adminParamValidator.listCustomersValidation, AdminAuth, async (req, res) => {
+	try {
+		const filteredCustomers = await helper.listCustomers(req.body);
+		res.send(commonUtils.responseUtil(200, filteredCustomers, 'Customer List'));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
 //view individual customer details
 router.get('/customer-details/:customerId', adminParamValidator.viewCustomerDetailsValidation, AdminAuth, async (req, res) => {
 	try {
@@ -152,6 +161,59 @@ router.get('/customer-details/:customerId', adminParamValidator.viewCustomerDeta
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
-})
+});
+
+
+//
+//**************************Admin Products Routes*******************************
+//
+//view product list based on filters
+router.post('/products', adminParamValidator.viewProductsValidation, AdminAuth, async (req, res) => {
+	try {
+		const filteredProducts = await helper.listProducts(req.body);
+		res.send(commonUtils.responseUtil(200, filteredProducts, 'Product List'));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
+//view individual product details
+router.get('/product-details/:productId', adminParamValidator.viewProductDetailsValidation, AdminAuth, async (req, res) => {
+	try {
+		const productDetailsResponse = await helper.productDetails(req.params.productId);
+		res.send(commonUtils.responseUtil(200, productDetailsResponse, "Product Details"));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
+//verify product
+router.post('/verify-product', adminParamValidator.verifyProductValidation, AdminAuth, async (req, res) => {
+	try {
+		const verifyProductMessage = await helper.verifyProduct(req.user, req.body);
+		res.send(commonUtils.responseUtil(200, null, verifyProductMessage));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
+//block product
+router.post('/block-product', adminParamValidator.blockProductValidation, AdminAuth, async (req, res) => {
+	try {
+		const blockProductMessage = await helper.blockProduct(req.user, req.body);
+		res.send(commonUtils.responseUtil(200, null, blockProductMessage));
+	} catch (err) {
+		commonUtils.errorLog(err.message);
+		res.send(commonUtils.responseUtil(400, null, err.message));
+	}
+});
+
+
 
 module.exports = router;

@@ -43,6 +43,9 @@ const ProductSchema = new mongoose.Schema(
         }
       }
     },
+    pricePerDay: {
+      type: Number, required: true
+    },
     details: {
       type: [
         {
@@ -50,7 +53,6 @@ const ProductSchema = new mongoose.Schema(
           colors: [
             {
               color: {type: String, required: true},
-              pricePerDay: {type: Number, required: true},
               displayPictureUrls: {type: [String], required: true},
               quantity: {type: Number, required: true},
               availableAfter: {type: String, required: true}
@@ -106,6 +108,12 @@ const ProductSchema = new mongoose.Schema(
         required: true,
         default: false,
       },
+    },
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId
+    },
+    blockedBy: {
+      type: mongoose.Schema.Types.ObjectId
     },
     blockedReason: {
       type: String,

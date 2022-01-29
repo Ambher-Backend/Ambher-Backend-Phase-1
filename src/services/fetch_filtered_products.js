@@ -3,13 +3,12 @@ const Product = require('../models/product');
 
 /* filter: {
   query: '<>',
-  isVerified: 'true or false',
   isVerifiedByAdmin: 'true or false',
   isBlocked: 'true or false',
-  address: {
-    'city': 'delhi',
-    'state': 'delhi'
-  }
+  pincode: [
+    '1234',
+    '12342'
+  ]
 */
 const filter = async (filter) => {
   const filteredProducts = buildQueryAndExecute(filter);
@@ -23,7 +22,16 @@ const generateCompositeQuery = (filter) => {
     query['configuration.isVerifiedByAdmin'] = filter['isVerifiedByAdmin'];
   }
   if (filter['isBlocked'] !== undefined){
-    query['isBlocked'] = filter['isBlocked'];
+    query['configuration.isBlocked'] = filter['isBlocked'];
+  }
+  if (filter['pincode'] !== undefined){
+    query['deliverablePincode'] = {
+      "$in": filter['pincode']
+    };
+  }
+  if (filter['gender'] !== undefined){
+    query['gender'] = filter['gender'];
+
   }
   return query;
 }
