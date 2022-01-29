@@ -44,7 +44,8 @@ const ProductSchema = new mongoose.Schema(
       }
     },
     pricePerDay: {
-      type: Number, required: true
+      type: Number,
+      required: true
     },
     details: {
       type: [

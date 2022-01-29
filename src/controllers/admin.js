@@ -152,7 +152,12 @@ const vendorDetails = async (vendorId) => {
 		vendorResponse.blockedBy = blockedAdmin.name;
 		vendorResponse.blockedByEmail = blockedAdmin.email;
 	}
-	return vendorResponse
+	if (vendor.configuration.isVerifiedByAdmin === true) {
+		const verifiedByAdmin = await Admin.findById(vendor.verifiedBy);
+		vendorResponse.verifiedByEmail = verifiedByAdmin.email
+		vendorResponse.verifiedByName = verifiedByAdmin.name
+	}
+	return vendorResponse;
 }
 
 
@@ -274,6 +279,11 @@ const productDetails = async (productId) => {
 		productResponse.blockedReason = product.blockedReason;
 		productResponse.blockedBy = blockedAdmin.name;
 		productResponse.blockedByEmail = blockedAdmin.email;
+	}
+	if (product.configuration.isVerifiedByAdmin === true) {
+		const verifiedByAdmin = await Admin.findById(product.verifiedBy);
+		productResponse.verifiedByEmail = verifiedByAdmin.email
+		productResponse.verifiedByName = verifiedByAdmin.name
 	}
 	return productResponse;
 }
