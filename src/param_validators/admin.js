@@ -207,6 +207,45 @@ const listCustomersValidation = (req, res, next) => {
 }
 
 
+//GET
+const viewVendorDetailsValidation = (req, res, next) => {
+  try {
+    const validator = new paramValidator(req.params);
+    const validator1 = new paramValidator(req.body);
+    const acceptedParams = ['vendorId', 'currentToken'];
+
+    validator.validate('vendorId', String);
+    validator1.validate('currentToken', String);
+    
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  } catch (err) {
+    res.send(commonUtils.responseUtil(400, null, err.message))
+  }
+}
+
+
+//GET
+const viewCustomerDetailsValidation = (req, res, next) => {
+  try {
+    const validator = new paramValidator(req.params);
+    const validator1 = new paramValidator(req.body);
+    const acceptedParams = ['customerId', 'currentToken'];
+
+    validator.validate('customerId', String);
+    validator1.validate('currentToken', String);
+    
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  } catch (err) {
+    res.send(commonUtils.responseUtil(400, null, err.message))
+  }
+}
+
+
 module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
 logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
-verifyEmailOtpValidation, verifyVendorAccountValidation, listVendorsValidation, listCustomersValidation};
+verifyEmailOtpValidation, verifyVendorAccountValidation, listVendorsValidation, listCustomersValidation,
+viewVendorDetailsValidation, viewCustomerDetailsValidation};
