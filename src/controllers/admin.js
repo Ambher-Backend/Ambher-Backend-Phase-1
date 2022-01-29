@@ -154,8 +154,8 @@ const vendorDetails = async (vendorId) => {
 	}
 	if (vendor.configuration.isVerifiedByAdmin === true) {
 		const verifiedByAdmin = await Admin.findById(vendor.verifiedBy);
-		vendorResponse.verifiedByEmail = verifiedByAdmin.email
-		vendorResponse.verifiedByName = verifiedByAdmin.name
+		vendorResponse.verifiedByEmail = verifiedByAdmin.email;
+		vendorResponse.verifiedByName = verifiedByAdmin.name;
 	}
 	return vendorResponse;
 }
@@ -282,8 +282,8 @@ const productDetails = async (productId) => {
 	}
 	if (product.configuration.isVerifiedByAdmin === true) {
 		const verifiedByAdmin = await Admin.findById(product.verifiedBy);
-		productResponse.verifiedByEmail = verifiedByAdmin.email
-		productResponse.verifiedByName = verifiedByAdmin.name
+		productResponse.verifiedByEmail = verifiedByAdmin.email;
+		productResponse.verifiedByName = verifiedByAdmin.name;
 	}
 	return productResponse;
 }
