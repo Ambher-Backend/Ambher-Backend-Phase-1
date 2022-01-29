@@ -218,6 +218,7 @@ const viewVendorDetailsValidation = (req, res, next) => {
     validator1.validate('currentToken', String);
     
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
     res.send(commonUtils.responseUtil(400, null, err.message))
@@ -236,6 +237,7 @@ const viewCustomerDetailsValidation = (req, res, next) => {
     validator1.validate('currentToken', String);
     
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
     res.send(commonUtils.responseUtil(400, null, err.message))
