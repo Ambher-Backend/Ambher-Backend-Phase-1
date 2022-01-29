@@ -5,6 +5,7 @@ const filter = async (filter) => {
   return filteredCustomers;
 }
 
+
 const generateCompositeQuery = (filter) => {
   let query = {};
   if(filter['isVerified'] !== undefined) {
@@ -15,6 +16,7 @@ const generateCompositeQuery = (filter) => {
   }
   return query;
 }
+
 
 const buildQueryAndExecute = async (filter) => {
   const compositeQuery = generateCompositeQuery(filter);

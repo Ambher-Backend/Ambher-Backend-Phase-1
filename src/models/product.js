@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongooseFuzzySearching = require('mongoose-fuzzy-searching');
 
 
 // Internal Imports
@@ -11,6 +12,7 @@ const ProductSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      index: true,
     },
     vendorId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -129,6 +131,7 @@ ProductSchema.pre("save", async function (next) {
   next();
 });
 
+ProductSchema.plugin(mongooseFuzzySearching, { fields: ['name'] });
 const Product = mongoose.model("Product", ProductSchema);
 
 module.exports = Product;
