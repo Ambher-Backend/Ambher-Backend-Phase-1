@@ -275,23 +275,27 @@ const productDetails = async (productId) => {
 		productResponse.blockedBy = blockedAdmin.name;
 		productResponse.blockedByEmail = blockedAdmin.email;
 	}
-	return productResponse
+	return productResponse;
 }
 
 
 const verifyProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
-	if (product == undefined){throw new Error('Invalid product] ID');}
+	if (product == undefined){throw new Error('Invalid product ID');}
 	product.configuration.isVerifiedByAdmin = true;
 	product.verifiedBy = admin._id;
 	await product.save();
+	const associatedVendor = await Vendor.findById(product.vendorId);
+	const mailBody = `Dear ${associatedVendor.name}!,\n Your Product ${product.name} has been verified
+	by admin.`;
+	emailUtils.sendEmail(associatedVendor.email, `Product-${product.name} verified!`, mailBody);
 	return "Product Verified By Admin Successfully";
 }
 
 
 const blockProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
-	if (product == undefined){throw new Error('Invalid product] ID');}
+	if (product == undefined){throw new Error('Invalid product ID');}
 	product.configuration.isBlocked = true;
 	product.blockedBy = admin._id;
 	product.blockedReason = reqBody.blockedReason;
