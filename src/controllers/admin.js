@@ -1,6 +1,7 @@
 // Internal Imports
 const Admin = require("../models/admin");
 const Vendor = require("../models/vendor");
+const Customer = require("../models/customer");
 const commonUtils = require('../lib/common_utils');
 const emailUtils = require('../lib/send_email');
 const seeder = require('../../config/database/seeder');
@@ -113,6 +114,7 @@ const listVendors = async (reqBody) => {
 	let filteredVendorsResponse = [] 
 	for(let vendor of filteredVendors){
 		const vendorResponse = {
+			_id: vendor._id,
 			profilePictureUrl: vendor.profilePictureUrl,
 			name: vendor.name,
 			phoneNumber: vendor.phoneNumber,
@@ -134,6 +136,7 @@ const listCustomers = async (reqBody) => {
 	let filteredCustomersResponse = [];
 	for (let customer of filteredCustomers) {
 		const customerResponse = {
+			_id: customer._id,
 			profilePictureUrl: customer.profilePictureUrl,
 			name: customer.name,
 			phoneNumber: customer.phoneNumber,
@@ -146,5 +149,63 @@ const listCustomers = async (reqBody) => {
 	return commonUtils.paginate(filteredCustomersResponse);
 }
 
+
+const vendorDetails = async (vendorId) => {
+	const vendor = await Vendor.findById(vendorId);
+	if (!vendor) {throw new Error ("Vendor Not Found");}
+	const address = commonUtils.filterObjectByAllowedKeys(
+		vendor.address, ['flatNo','buildingNo','streetName','city','state','country','zipcode']
+	);
+	let vendorResponse = {
+		_id: vendor._id,
+		profilePictureUrl: vendor.profilePictureUrl,
+		name: vendor.name,
+		phoneNumber: vendor.phoneNumber,
+		email: vendor.email,
+		address: Object.values(address).join(', '),
+		totalOrders: vendor.customerOrderIds.length,
+		totalProducts: vendor.productIds.length,
+		rating: vendor.reviews.rating,
+		isVerifiedByAdmin: vendor.configuration.isVerifiedByAdmin,
+		isVerified: vendor.configuration.isVerified,
+		isBlocked: vendor.configuration.isBlocked,
+	}
+	if (vendor.configuration.isBlocked === true) {
+		const blockedAdmin = await Admin.findById (vendor.blockedBy);
+		vendorResponse.blockedReason = vendor.blockedReason;
+		vendorResponse.blockedBy = blockedAdmin.name;
+		vendorResponse.blockedByEmail = blockedAdmin.email;
+	}
+	return vendorResponse
+}
+
+
+const customerDetails = async (customerId) => {
+	const customer = await Customer.findById(customerId);
+	if (!customer) {throw new Error ("Customer Not Found");}
+	const address = commonUtils.filterObjectByAllowedKeys(
+		customer.address[0].toObject(), ['flatNo','buildingNo','streetName','city','state','country','zipcode']
+	);
+	let customerResponse = {
+		_id: customer._id,
+		profilePictureUrl: customer.profilePictureUrl,
+		name: customer.name,
+		phoneNumber: customer.phoneNumber,
+		email: customer.email,
+		address: Object.values(address).join(', '),
+		reviews: customer.reviews,
+		totalOrders: customer.orderIds.length,
+		isVerified: customer.configuration.isVerified,
+		isBlocked: customer.configuration.isBlocked,
+	}
+	if (customer.configuration.isBlocked === true) {
+		const blockedAdmin = await Admin.findById (customer.blockedBy);
+		customerResponse.blockedReason = customer.blockedReason;
+		customerResponse.blockedBy = blockedAdmin.name;
+		customerResponse.blockedByEmail = blockedAdmin.email;
+	}
+	return customerResponse
+}
+
 module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout, handleGetDetails,
-sendEmailOtp, verifyEmailOtp, verifyVendor, listVendors, listCustomers};
+sendEmailOtp, verifyEmailOtp, verifyVendor, listVendors, listCustomers, vendorDetails, customerDetails};
