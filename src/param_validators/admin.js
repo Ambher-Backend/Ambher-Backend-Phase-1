@@ -245,7 +245,107 @@ const viewCustomerDetailsValidation = (req, res, next) => {
 }
 
 
+//POST
+const viewProductsValidation = (req, res, next) => {
+  try{
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ['filter', 'currentToken'];
+
+    validator.validate('filter', Object);
+    validator.validate('currentToken', String);
+
+    const filterValidator = new paramValidator(req.body.filter);
+    const acceptedFilterKeys = ['query', 'isVerifiedByAdmin', 'isBlocked', 'pincode', 'gender'];
+    filterValidator.validate('query', String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    filterValidator.validate('isVerifiedByAdmin', Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate('isBlocked', Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate('pincode', Array, allowBlank=true, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate('gender', String, allowBlank=true, acceptedValues=['Male', 'Female', 'Unisex'], minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+
+    req.body.filter = commonUtils.filterObjectByAllowedKeys(req.body.filter, acceptedFilterKeys);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  }catch(err){
+    res.send(commonUtils.responseUtil(400, null, err.message))
+  }
+}
+
+
+//GET
+const viewProductDetailsValidation = (req, res, next) => {
+  try {
+    const validator = new paramValidator(req.params);
+    const validator1 = new paramValidator(req.body);
+    const acceptedParams = ['productId', 'currentToken'];
+
+    validator.validate('productId', String);
+    validator1.validate('currentToken', String);
+    
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  } catch (err) {
+    res.send(commonUtils.responseUtil(400, null, err.message))
+  }
+}
+
+
+//POST
+const verifyProductValidation = (req, res, next) => {
+  try{
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ['productId', 'currentToken'];
+
+    validator.validate('productId', String);
+    validator.validate('currentToken', String);
+
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  }catch(err){
+    res.send(commonUtils.responseUtil(400, null, err.message));
+  }
+}
+
+
+//POST
+const blockProductValidation = (req, res, next) => {
+  try{
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ['productId', 'currentToken', 'blockedReason'];
+
+    validator.validate('productId', String);
+    validator.validate('currentToken', String);
+    validator.validate('blockedReason', String);
+
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  }catch(err){
+    res.send(commonUtils.responseUtil(400, null, err.message));
+  }
+} 
+
+
+//POST
+const blockVendorValidation = (req, res, next) => {
+  try{
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ['vendorId', 'currentToken', 'blockedReason'];
+
+    validator.validate('vendorId', String);
+    validator.validate('currentToken', String);
+    validator.validate('blockedReason', String);
+
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  }catch(err){
+    res.send(commonUtils.responseUtil(400, null, err.message));
+  }
+}
+
+
 module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
 logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
 verifyEmailOtpValidation, verifyVendorAccountValidation, listVendorsValidation, listCustomersValidation,
-viewVendorDetailsValidation, viewCustomerDetailsValidation};
+viewVendorDetailsValidation, viewCustomerDetailsValidation, viewProductsValidation,
+viewProductDetailsValidation, verifyProductValidation, blockProductValidation,
+blockVendorValidation};
