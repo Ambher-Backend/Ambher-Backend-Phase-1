@@ -7,8 +7,6 @@ const Vendor = require('../src/models/vendor');
 const app = require('../app');
 
 
-
-
 describe('Testing vendor router', () => {
 
     let Token;
@@ -46,6 +44,7 @@ describe('Testing vendor router', () => {
                   };
                 commonBody = reqBody
                 const response = await request(app).post('/vendor/signup').send(reqBody);
+                
                 expect(response.body.status).to.eql(201);
                 expect(response.body.message).to.eql('Vendor Created');
                 expect(response.body.data).to.eql(null);
@@ -56,6 +55,7 @@ describe('Testing vendor router', () => {
                 const reqBodyVendor = commonBody;
                 reqBodyVendor.phoneNumber = "1234567890";
                 const response = await request(app).post('/vendor/signup').send(reqBodyVendor);
+                
                 expect(response.body.status).to.eq(400);
                 expect(response.body.data).to.eql(null);
             });
@@ -68,10 +68,12 @@ describe('Testing vendor router', () => {
             it('vendor should get logged in when credentials are good', async () => {
                 const reqBodyVendor = {email: email, password: password};
                 const response = await request(app).post('/vendor/login').send(reqBodyVendor);
+                
                 expect(response.body.status).to.eql(200);
                 expect(response.body.data).to.not.eql(null);
                 expect(response.body.message).to.eql("Vendor Login Successful");
                 expect(response.body.data.currentToken).to.not.equal(null);
+                
                 Token = response.body.data.currentToken;
                 vendorId = response.body.data._id;
 
@@ -80,6 +82,7 @@ describe('Testing vendor router', () => {
           it('Vendor does not get logged in when credentials are wrong', async () => {
               const reqBodyVendor = {email: faker.internet.email(), password: password};
               const response = await request(app).post('/vendor/login').send(reqBodyVendor);
+              
               expect(response.body.status).to.eql(400);
               expect(response.body.data).to.eql(null);
           });
@@ -88,9 +91,7 @@ describe('Testing vendor router', () => {
 
       });
 
-
     
-        
     describe('Vendor get by Id', () => {
 
             it("should get vendor with correct token and Id", async () => {
@@ -98,7 +99,7 @@ describe('Testing vendor router', () => {
                     currentToken: Token
                 };
                 const response = await request(app).get(`/vendor/${vendorId}`).send(reqBodyVendor);
-
+                
                 expect(response.body.status).to.eql(200);
                 expect(response.body.status).to.not.eql(null);
                 expect(response.body.message).to.eql("Success");
@@ -111,6 +112,7 @@ describe('Testing vendor router', () => {
             it('Vendor should get logged out with the token associated', async () => {
               const reqBodyVendor = {currentToken: Token};
               const response = await request(app).post('/vendor/logout').send(reqBodyVendor);
+                
               expect(response.body.status).to.eql(200);
               expect(response.body.data).to.eql(null);
               expect(response.body.message).to.eql("Vendor Logged out");
@@ -120,6 +122,7 @@ describe('Testing vendor router', () => {
             it("Logout request should not get carried out without token", async () => {
              const reqBodyVendor = {currentToken: Token};
              const response = await request(app).post('/vendor/logout').send(reqBodyVendor);
+       
              expect(response.body.status).to.eql(401);
              expect(response.body.data).to.eql(null);
 
