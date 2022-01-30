@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 const config = require('config');
 
-const DbUri = config.DBHost;
+let DbUri = '';
+
+if (process.env.NODE_ENV == 'production'){
+  DbUri = process.env.PROD_MONGO_URL;
+}else{
+  DbUri = config.DBHost;
+}
 
 const commonUtils = require('../../src/lib/common_utils')
 
