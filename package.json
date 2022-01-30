@@ -4,9 +4,9 @@
   "description": "Backend Repository of Ambher",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
+    "dev": "export NODE_ENV=development && nodemon app.js",
     "start": "node app.js",
-    "test": "npx mocha ./test/ --recursive"
+    "test": "export NODE_ENV=test && npx mocha ./test/ --recursive --timeout 10000 --exit"
   },
   "repository": {
     "type": "git",

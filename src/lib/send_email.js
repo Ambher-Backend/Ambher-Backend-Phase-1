@@ -5,6 +5,9 @@ dotenv.config();
 
 // making it a non promising function to avoid blocking the main thread.
 const sendEmail = (receiverEmail, mailSubject, mailBody) => {
+  if (process.env.NODE_ENV == 'production'){
+    return;
+  }
   const transporter = nodemailer.createTransport ({
     host: "smtp.gmail.com",
     port: 587,
