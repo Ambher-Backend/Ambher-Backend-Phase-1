@@ -40,7 +40,7 @@ app.use('/product', productRouter);
 
 app.get('/', async (req, res) => {
   try{
-    res.send(responseUtil.responseUtil(200, "Api is working fine", err.message));
+    res.send(responseUtil.responseUtil(200, null, "Api is working fine"));
   }catch(err){
     res.send(responseUtil.responseUtil(500, null, err.message));
   }
