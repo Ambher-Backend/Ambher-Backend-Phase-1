@@ -58,6 +58,7 @@ describe('Testing vendor router', () => {
                 
                 expect(response.body.status).to.eq(400);
                 expect(response.body.data).to.eql(null);
+                expect(response.body.message).to.not.eql(null);
             });
       });
 
@@ -85,6 +86,7 @@ describe('Testing vendor router', () => {
               
               expect(response.body.status).to.eql(400);
               expect(response.body.data).to.eql(null);
+              expect(response.body.message).to.eql("Vendor not found");
           });
 
             
@@ -125,6 +127,7 @@ describe('Testing vendor router', () => {
        
              expect(response.body.status).to.eql(401);
              expect(response.body.data).to.eql(null);
+             expect(response.body.message).to.eql("Vendor is not authorised");
 
             });
 
