@@ -88,7 +88,7 @@ router.post('/new-email-otp', vendorParamValidator.sendEmailOtpValidation, async
 router.post('/verify-email-otp',vendorParamValidator.verifyEmailOtpValidation, async(req, res) => {
 	try {
 		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
-		res.send(commonUtils.responseUtil(400, null, verifiedEmailOtpMessage));
+		res.send(commonUtils.responseUtil(200, null, verifiedEmailOtpMessage));
 	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
