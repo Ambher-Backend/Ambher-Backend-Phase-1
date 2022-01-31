@@ -60,7 +60,7 @@ describe('Testing vendor router', () => {
                 expect(response.body.data).to.eql(null);
                 expect(response.body.message).to.not.eql(null);
             });
-      });
+     });
 
 
     describe("Vendor login", () => {
@@ -91,10 +91,10 @@ describe('Testing vendor router', () => {
 
             
 
-      });
+   });
 
     
-    describe('Vendor get by Id', () => {
+   describe('Vendor get by Id', () => {
 
             it("should get vendor with correct token and Id", async () => {
                 const reqBodyVendor = {
@@ -109,7 +109,7 @@ describe('Testing vendor router', () => {
 
       });
 
-    describe("Vendor logout", () => {
+   describe("Vendor logout", () => {
 
             it('Vendor should get logged out with the token associated', async () => {
               const reqBodyVendor = {currentToken: Token};
