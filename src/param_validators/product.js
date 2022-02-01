@@ -26,7 +26,7 @@ const generateProductDummyDataValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 

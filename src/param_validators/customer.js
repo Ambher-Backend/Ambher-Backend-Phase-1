@@ -26,7 +26,7 @@ const signUpParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
 
@@ -45,7 +45,7 @@ const loginCustomerParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -61,7 +61,7 @@ const logoutCustomerParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -81,7 +81,7 @@ const getCustomerParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -105,7 +105,7 @@ const generateCustomerDummyDataValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -123,7 +123,7 @@ const sendEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -142,7 +142,7 @@ const verifyEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
