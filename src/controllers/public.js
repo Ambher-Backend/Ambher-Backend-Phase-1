@@ -12,7 +12,6 @@ const eventKeyExposeObject = {
 };
 
 
-
 const getCityAndState = (reqParams) => {
   const pincodes = JSON.parse(fs.readFileSync(constants.PINCODES_DATA_PATH));
   const responseData = pincodes[reqParams.pincode];
