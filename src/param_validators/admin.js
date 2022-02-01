@@ -24,7 +24,7 @@ const signUpParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
 
@@ -43,7 +43,7 @@ const loginAdminParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -59,7 +59,7 @@ const logoutAdminParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -77,7 +77,7 @@ const getAdminParamValidation = (req, res, next) => {
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -101,7 +101,7 @@ const generateAdminDummyDataValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -119,7 +119,7 @@ const sendEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -138,7 +138,7 @@ const verifyEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -221,7 +221,7 @@ const viewVendorDetailsValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -240,7 +240,7 @@ const viewCustomerDetailsValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -266,7 +266,7 @@ const viewProductsValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 
@@ -285,7 +285,7 @@ const viewProductDetailsValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message))
+    res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }
 

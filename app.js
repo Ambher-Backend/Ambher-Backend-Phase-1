@@ -19,6 +19,7 @@ const adminRouter = require('./src/routers/admin');
 const customerRouter = require('./src/routers/customer');
 const vendorRouter = require('./src/routers/vendor');
 const productRouter = require('./src/routers/product');
+const publicRouter = require('./src/routers/public');
 
 
 // Server Configs
@@ -36,6 +37,7 @@ app.use('/admin', adminRouter);
 app.use('/customer',customerRouter);
 app.use('/vendor', vendorRouter);
 app.use('/product', productRouter);
+app.use('/public', publicRouter);
 
 
 app.get('/', async (req, res) => {
