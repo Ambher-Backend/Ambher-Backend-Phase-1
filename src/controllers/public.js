@@ -13,17 +13,17 @@ const eventKeyExposeObject = {
 
 
 
-const getCityandState = (reqParams) => {
-  const pincodes = fs.readFileSync(constants.PINCODES_DATA_PATH);
-  let responseData = pincodes[reqParams.pincode];
+const getCityAndState = (reqParams) => {
+  const pincodes = JSON.parse(fs.readFileSync(constants.PINCODES_DATA_PATH));
+  const responseData = pincodes[reqParams.pincode];
   return commonUtils.filterObjectByAllowedKeys(responseData, eventKeyExposeObject['cityAndState']);
 }
 
 
 const getStates = () => {
   const states = fs.readFileSync(constants.STATES_DATA_PATH);
-  return states;
+  return JSON.parse(states);
 }
 
 
-module.exports = {getCityandState, getStates};
+module.exports = {getCityAndState, getStates};

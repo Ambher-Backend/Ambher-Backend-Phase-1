@@ -14,10 +14,10 @@ const publicValidator = require('../param_validators/public');
 router.get('/city-state/:pincode', publicValidator.getCityStateValidation, async (req, res) => {
   try { 
     const cityStateDetails = helper.getCityAndState(req.params);
-    res.send(commonUtils.sendResponseUtil(200, cityStateDetails, "City and State"));
+    res.send(commonUtils.responseUtil(200, cityStateDetails, "City and State"));
   } catch (err) {
     commonUtils.errorLog(err.message);
-    res.send(commonUtils.sendResponseUtil(400, null, "Error in finding city and state"));
+    res.send(commonUtils.responseUtil(400, null, "Error in finding city and state"));
   }
 })
 
@@ -26,10 +26,10 @@ router.get('/city-state/:pincode', publicValidator.getCityStateValidation, async
 router.get('/state-list', publicValidator.getStateListValidation, async (req, res) => {
   try { 
     const stateList = helper.getStates();
-    res.send(commonUtils.sendResponseUtil(200, stateList, "State List"));
+    res.send(commonUtils.responseUtil(200, stateList, "State List"));
   } catch (err) {
     commonUtils.errorLog(err.message);
-    res.send(commonUtils.sendResponseUtil(400, null, "Error in finding state lists"));
+    res.send(commonUtils.responseUtil(400, null, "Error in finding state lists"));
   }
 })
 
