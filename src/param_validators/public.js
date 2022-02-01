@@ -37,4 +37,5 @@ const getStateListValidation = (req, res, next) => {
   }
 }
 
+
 module.exports = {getCityStateValidation, getStateListValidation};
