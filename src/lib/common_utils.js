@@ -25,6 +25,11 @@ const getOtp = () => {
   return val;
 }
 
+const getRandomNumber = (min, max) => {
+  const number = Math.floor(Math.random()*(max-min+1))+min;
+  return number;
+}
+
 const genCode = (n = 10) => {
   n = n || 16;
   let result = '';
@@ -56,4 +61,4 @@ const paginate = (objectArray) => {
   return paginatedObjectArray;
 }
 
-module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys, paginate};
+module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys, paginate,getRandomNumber};
