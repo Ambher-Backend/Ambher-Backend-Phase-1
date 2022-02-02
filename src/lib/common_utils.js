@@ -61,4 +61,4 @@ const paginate = (objectArray) => {
   return paginatedObjectArray;
 }
 
-module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys, paginate,getRandomNumber};
+module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys, paginate, getRandomNumber};
