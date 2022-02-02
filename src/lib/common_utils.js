@@ -27,7 +27,6 @@ const getOtp = () => {
 
 const getRandomNumber = (min, max) => {
   const number = parseInt(Math.random()*(max-min+1))+min;
-  
   return number;
 }
 
