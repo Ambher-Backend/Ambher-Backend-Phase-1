@@ -28,7 +28,7 @@ const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
 const generateDummyProduct = async () => {
   const vendorId = await vendorSeeder();
   let zipCodes = []
-  let noOfZipCodes = (commonUtils.getOtp() % 10) + 1;
+  let noOfZipCodes = commonUtils.getRandomNumber(1, 10);
   for(let i = 0;i < noOfZipCodes;i++){
     zipCodes.push(faker.address.zipCode());
   }
@@ -36,14 +36,14 @@ const generateDummyProduct = async () => {
     name: faker.commerce.productName(),
     vendorId: vendorId,
     description: faker.commerce.productDescription(),
-    gender: ['Male', 'Female', 'Unisex'][commonUtils.getOtp() % 3],
+    gender: ['Male', 'Female', 'Unisex'][commonUtils.getRandomNumber(0, 2)],
     brandName: faker.commerce.productAdjective(),
     deliverablePincode: zipCodes,
     specifications: {
       color: faker.commerce.color(),
       material: faker.commerce.productMaterial(),
     },
-    pricePerDay: (commonUtils.getOtp() % 1000) + 200,
+    pricePerDay: commonUtils.getRandomNumber(200, 1199),
     details: generateDummyProductDetails(),
     productCode: commonUtils.genCode(),
     configuration: {
@@ -58,17 +58,17 @@ const generateDummyProduct = async () => {
 
 const generateDummyProductDetails = () => {
   let details = []
-  let nSizes = (commonUtils.getOtp() % 3) + 2;
+  let nSizes = commonUtils.getRandomNumber(2,4);
   for(let i = 0;i < nSizes;i++){
     let detail = {}
-    detail['size'] = 30 + (commonUtils.getOtp() % 20) + 2;
-    let nColors = (commonUtils.getOtp() % 3) + 2;
+    detail['size'] = commonUtils.getRandomNumber(32, 51);
+    let nColors = commonUtils.getRandomNumber(2, 4);
     let colorSpecs = []
     while (nColors--){
       let colorSpec = {
         color: faker.commerce.color(),
         displayPictureUrls: [faker.internet.url()],
-        quantity: (commonUtils.getOtp() % 100) + 5,
+        quantity: commonUtils.getRandomNumber(5, 104),
         availableAfter: new Date().toString()
       };
       colorSpecs.push(colorSpec);

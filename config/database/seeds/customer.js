@@ -58,10 +58,10 @@ const generateDummyCustomer = async () => {
 
 
 const generateDummyReviews = () => {
-  let numberOfReviews = 3 + commonUtils.getOtp() % 10;
+  let numberOfReviews = commonUtils.getRandomNumber(3, 12);
   let reviews = []
   while (numberOfReviews--){
-    const currRating = 1 + commonUtils.getOtp() % 5;
+    const currRating = commonUtils.getRandomNumber(1, 5);
     const review = {
       message: faker.lorem.sentence(),
       reviewRating: currRating,
