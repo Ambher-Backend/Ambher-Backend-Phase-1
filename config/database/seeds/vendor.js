@@ -65,12 +65,12 @@ const generateDummyVendor = async () => {
 
 
 const generateDummyReviews = () => {
-  let numberOfReviews = 3 + commonUtils.getOtp() % 10;
+  let numberOfReviews = 3 + commonUtils.getRandomNumber(0,9);
   let rating = 0
   let reviews = []
   let totalRatings = 0;
   while (numberOfReviews--){
-    const currRating = 1 + commonUtils.getOtp() % 5;
+    const currRating = 1 + commonUtils.getRandomNumber(0,4);
     totalRatings += currRating;
     const review = {
       message: faker.lorem.sentence(),
