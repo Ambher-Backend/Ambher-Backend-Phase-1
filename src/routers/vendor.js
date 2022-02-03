@@ -21,7 +21,6 @@ router.post('/signup', vendorParamValidator.signUpParamValidation, async (req,re
 		res.send(commonUtils.responseUtil(201, null, "Vendor added"));
 	}
 	catch (err){
-		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
@@ -32,7 +31,6 @@ router.get('/:vendorId', vendorParamValidator.getVendorParamValidation, VendorAu
 		const vendorResponse = await helper.handleGetDetails(req.params.vendorId);
 		res.send(commonUtils.responseUtil(200, vendorResponse, "Success"));
 	}catch(err){
-		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 })
@@ -44,7 +42,6 @@ router.post('/login', vendorParamValidator.loginVendorParamValidation, async (re
 		const vendorLoginResponse = await helper.handleLogin(req.body);
 		res.send(commonUtils.responseUtil(200, vendorLoginResponse.vendorObjectToExpose, vendorLoginResponse.message));
 	} catch (err) {
-		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400,  null, err.message));
 	}
 });
@@ -55,7 +52,6 @@ router.post('/logout', vendorParamValidator.logoutVendorParamValidation, VendorA
 		await helper.handleLogout(req.body, req.user);
 		res.send(commonUtils.responseUtil(200, null, "Vendor Logged out"));
 	} catch(err) {
-		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	} 
 });
@@ -66,7 +62,6 @@ router.post('/create-dummy-data', vendorParamValidator.generateVendorDummyDataVa
 		const verdictMessage = await helper.generateDummyVendors(req.body);
 		res.send(commonUtils.responseUtil(201, null, verdictMessage));
 	} catch(err) {
-		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
@@ -78,7 +73,6 @@ router.post('/new-email-otp', vendorParamValidator.sendEmailOtpValidation, async
 		await helper.sendEmailOtp(req.body.vendorEmail);
 		res.send(commonUtils.responseUtil(200, null, "Vendor Email OTP sent successfully"));
 	} catch (err) {
-		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
@@ -90,7 +84,6 @@ router.post('/verify-email-otp',vendorParamValidator.verifyEmailOtpValidation, a
 		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
 		res.send(commonUtils.responseUtil(200, null, verifiedEmailOtpMessage));
 	} catch (err) {
-		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 })
