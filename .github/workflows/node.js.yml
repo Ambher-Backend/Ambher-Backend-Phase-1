@@ -14,7 +14,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [14.x]
+        mongodb-version: ['4.4']
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -24,5 +25,17 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm i
-    - run: npm test
+        
+    - name: MongoDB in GitHub Actions
+      uses: supercharge/mongodb-github-action@1.7.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+        mongodb-username: ambher-admin
+        mongodb-password: c1695ba0d9b
+        mongodb-db: ambher_production_test
+        
+    - name: Installing Dependencies.
+      run: npm i
+      
+    - name: Starting Tests
+      run: npm test
