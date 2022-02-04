@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 
 //internal imports
-const Vendor = require('../../models/vendor');
-const commonUtils = require('../../lib/common_utils');
+const Vendor = require("../../models/vendor");
+const commonUtils = require("../../lib/common_utils");
 dotenv.config();
 
 //Vendor Authorization middleware function
@@ -17,7 +17,7 @@ const VendorAuth = async (req, res, next) => {
 		const vendor = await Vendor.findOne({
 			_id: decoded._id,
 			tokens: {
-				'$in': [token]
+				"$in": [token]
 			}
 		});
 		if(!vendor) {

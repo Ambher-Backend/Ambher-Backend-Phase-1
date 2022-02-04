@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const faker = require('faker');
+const mongoose = require("mongoose");
+const faker = require("faker");
 
 
 // Internal Imports
-const Vendor = require('../../../src/models/vendor');
-const commonUtils = require('../../../src/lib/common_utils');
+const Vendor = require("../../../src/models/vendor");
+const commonUtils = require("../../../src/lib/common_utils");
 
 
 const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
@@ -21,7 +21,7 @@ const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
   }catch(err){
     return `Error: ||${err.message}|| occured in generating vendors`;
   }
-}
+};
 
 
 const generateDummyVendor = async () => {
@@ -30,14 +30,14 @@ const generateDummyVendor = async () => {
     name: faker.name.firstName(),
     phoneNumber: faker.phone.phoneNumber(),
     email: faker.internet.email() ,
-    password: '12345678',
+    password: "12345678",
     dob:faker.date.recent(),
     configuration: {
       isVerified: true,
       isBlocked: false,
       isVerifiedByAdmin: true
     },
-    blockedReason: '',
+    blockedReason: "",
     address: {
       flatNo:faker.random.alphaNumeric(2),
       buildingNo:faker.random.alphaNumeric(2),
@@ -61,13 +61,13 @@ const generateDummyVendor = async () => {
   const vendor = new Vendor(vendorObject);
   await vendor.save();
   return vendor._id;
-}
+};
 
 
 const generateDummyReviews = () => {
   let numberOfReviews = commonUtils.getRandomNumber(3, 12);
-  let rating = 0
-  let reviews = []
+  let rating = 0;
+  let reviews = [];
   let totalRatings = 0;
   while (numberOfReviews--){
     const currRating = commonUtils.getRandomNumber(1, 5);
@@ -76,15 +76,15 @@ const generateDummyReviews = () => {
       message: faker.lorem.sentence(),
       reviewRating: currRating,
       customerId: mongoose.Types.ObjectId()
-    }
+    };
     reviews.push(review);
   }
-  rating = totalRatings / reviews.length
+  rating = totalRatings / reviews.length;
   return {
     rating: rating,
     reviews: reviews
   }; 
-}
+};
 
 
 module.exports = {generateDummyVendorData, generateDummyVendor};
