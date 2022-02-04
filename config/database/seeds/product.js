@@ -1,11 +1,10 @@
-const mongoose = require('mongoose');
-const faker = require('faker');
+const faker = require("faker");
 
 
 // Internal Imports
-const Product = require('../../../src/models/product');
-const commonUtils = require('../../../src/lib/common_utils');
-const vendorSeeder = require('./vendor').generateDummyVendor;
+const Product = require("../../../src/models/product");
+const commonUtils = require("../../../src/lib/common_utils");
+const vendorSeeder = require("./vendor").generateDummyVendor;
 
 
 const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
@@ -22,12 +21,12 @@ const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
   }catch(err){
     return `Error: ||${err.message}|| occured in generating products`;
   }
-}
+};
 
 
 const generateDummyProduct = async () => {
   const vendorId = await vendorSeeder();
-  let zipCodes = []
+  let zipCodes = [];
   let noOfZipCodes = commonUtils.getRandomNumber(1, 10);
   for(let i = 0;i < noOfZipCodes;i++){
     zipCodes.push(faker.address.zipCode());
@@ -36,7 +35,7 @@ const generateDummyProduct = async () => {
     name: faker.commerce.productName(),
     vendorId: vendorId,
     description: faker.commerce.productDescription(),
-    gender: ['Male', 'Female', 'Unisex'][commonUtils.getRandomNumber(0, 2)],
+    gender: ["Male", "Female", "Unisex"][commonUtils.getRandomNumber(0, 2)],
     brandName: faker.commerce.productAdjective(),
     deliverablePincode: zipCodes,
     specifications: {
@@ -53,17 +52,17 @@ const generateDummyProduct = async () => {
   const product = new Product(productObject);
   await product.save();
   return product._id;
-}
+};
 
 
 const generateDummyProductDetails = () => {
-  let details = []
+  let details = [];
   let nSizes = commonUtils.getRandomNumber(2,4);
   for(let i = 0;i < nSizes;i++){
-    let detail = {}
-    detail['size'] = commonUtils.getRandomNumber(32, 51);
+    let detail = {};
+    detail["size"] = commonUtils.getRandomNumber(32, 51);
     let nColors = commonUtils.getRandomNumber(2, 4);
-    let colorSpecs = []
+    let colorSpecs = [];
     while (nColors--){
       let colorSpec = {
         color: faker.commerce.color(),
@@ -73,11 +72,11 @@ const generateDummyProductDetails = () => {
       };
       colorSpecs.push(colorSpec);
     }
-    detail['colors'] = colorSpecs;
+    detail["colors"] = colorSpecs;
     details.push(detail);
   }
   return details;
-}
+};
 
 
 

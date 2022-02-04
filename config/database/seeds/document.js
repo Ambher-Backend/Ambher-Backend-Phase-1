@@ -1,10 +1,10 @@
-const faker = require('faker');
-const mongoose = require('mongoose');
+const faker = require("faker");
+const mongoose = require("mongoose");
 
 
 // Internal Imports
-const Document = require('../../../src/models/document');
-const commonUtils = require('../../../src/lib/common_utils');
+const Document = require("../../../src/models/document");
+const commonUtils = require("../../../src/lib/common_utils");
 
 
 const generateDummyDocumentData = async (deleteExisting, totalToGenerate) => {
@@ -21,7 +21,7 @@ const generateDummyDocumentData = async (deleteExisting, totalToGenerate) => {
   }catch(err){
     return `Error: ||${err.message}|| occured in generating documents`;
   }
-}
+};
 
 
 const generateDummyDocument = async () => {
@@ -36,7 +36,7 @@ const generateDummyDocument = async () => {
   const document = new Document(documentObject);
   await document.save();
   return document._id;
-}
+};
 
 
 module.exports = {generateDummyDocumentData, generateDummyDocument};
