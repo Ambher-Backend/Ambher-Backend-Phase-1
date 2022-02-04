@@ -27,4 +27,4 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run check-linting
-    - run: npm run check-format
+    # Add a prettier check in sometime.
