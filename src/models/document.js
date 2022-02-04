@@ -39,7 +39,7 @@ DocumentSchema.pre("save", function (next) {
       this[key] = this[key].trim();
     }
   }
-  this.name = this.name.replace(/^A-Za-z0-9_\-/, "_");
+  this.name = this.name.replace(/^A-Za-z0-9_-/, "_");
   next();
 });
 

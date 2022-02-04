@@ -1,5 +1,5 @@
-const chalk = require('chalk');
-const constants = require('../lib/constants')
+const chalk = require("chalk");
+const constants = require("../lib/constants");
 
 const responseUtil = (status, data, message) => {
   return {
@@ -15,7 +15,7 @@ const errorLog = (message) => {
 
 const successLog = (message) => {
   console.log(chalk.bgGreen.black(message));
-}
+};
 
 const getOtp = () => {
   let val = Math.floor(Math.random() * 1000000);
@@ -23,41 +23,41 @@ const getOtp = () => {
     val *= 10;
   }
   return val;
-}
+};
 
 const getRandomNumber = (min, max) => {
   return parseInt(Math.random()*(max-min+1))+min;
-}
+};
 
 const genCode = (n = 10) => {
   n = n || 16;
-  let result = '';
+  let result = "";
   while (n--){
     result += Math.floor(Math.random()*16).toString(16).toUpperCase();
   }
   return result;
-}
+};
 
 
 // This method returns the filtered object containing only the allowedKeys
 const filterObjectByAllowedKeys = (current, allowedKeys) => {
-  filtered = {}
+  let filtered = {};
   for(const key in current){
-    if (allowedKeys.find(allowedKey => (allowedKey == key)) != undefined){
+    if (allowedKeys.find(allowedKey => (allowedKey === key)) !== undefined){
       filtered[key] = current[key];
     }
   }
   return filtered;
-}
+};
 
 
 const paginate = (objectArray) => {
   let paginatedObjectArray = [];
-  pageSize = constants.ADMIN_VENDOR_VIEW_PAGE_SIZE;
+  const pageSize = constants.ADMIN_VENDOR_VIEW_PAGE_SIZE;
   for (let index = 0, currPage = 1; index < objectArray.length; index += pageSize, currPage++) {
     paginatedObjectArray.push( {page: currPage, objectArray: objectArray.slice(index, index + pageSize) } );
   }
   return paginatedObjectArray;
-}
+};
 
 module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys, paginate, getRandomNumber};

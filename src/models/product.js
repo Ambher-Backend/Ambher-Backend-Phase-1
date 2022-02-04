@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const mongooseFuzzySearching = require('mongoose-fuzzy-searching');
+const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
 
 // Internal Imports
-const commonUtils = require('../lib/common_utils');
+const commonUtils = require("../lib/common_utils");
 
 //defining schema
 
@@ -25,8 +25,8 @@ const ProductSchema = new mongoose.Schema(
     gender: {
       type:String,
       enum: {
-        values: ['Male', 'Female', 'Unisex'],
-        message: '{VALUE} gender is not supported'
+        values: ["Male", "Female", "Unisex"],
+        message: "{VALUE} gender is not supported"
       },
       required: true
     },
@@ -38,7 +38,7 @@ const ProductSchema = new mongoose.Schema(
       type: [String],
       required: true,
       validate(value) {
-        if(value.length == 0) {
+        if(value.length === 0) {
           throw new Error("One deliverable pincode required");
         }
       }
@@ -63,10 +63,10 @@ const ProductSchema = new mongoose.Schema(
       ],
       required: true,
       validate(value){
-        if (value.length == 0){
+        if (value.length === 0){
           throw new Error("One color and size specification is required!");
         }
-        if (value[0].colors.length == 0){
+        if (value[0].colors.length === 0){
           throw new Error("At-least one color specification is required!");
         }
       }
@@ -84,7 +84,7 @@ const ProductSchema = new mongoose.Schema(
     customerReviews: {
       type: [
         {
-          message: {type: String, default: ''},
+          message: {type: String, default: ""},
           rating: {type: Number, required: true, min: 1, max: 5},
           pictures: {type: [String], default: []}
         }
@@ -134,13 +134,13 @@ ProductSchema.pre("save", async function (next) {
       this[key] = this[key].trim();
     }
   }
-  if (this['productCode'] == undefined){
-    this['productCode'] = commonUtils.genCode(10);
+  if (this["productCode"] === undefined){
+    this["productCode"] = commonUtils.genCode(10);
   }
   next();
 });
 
-ProductSchema.plugin(mongooseFuzzySearching, { fields: ['name'] });
+ProductSchema.plugin(mongooseFuzzySearching, { fields: ["name"] });
 const Product = mongoose.model("Product", ProductSchema);
 
 module.exports = Product;

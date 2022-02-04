@@ -1,24 +1,26 @@
-const config = require('config');
+const config = require("config");
 
 
 // Internal Imports
-const paramValidator = require('../lib/param_validator').ParamValidator;
-const commonValidators = require('../lib/param_validator');
-const commonUtils = require('../lib/common_utils');
+const paramValidator = require("../lib/param_validator").ParamValidator;
+const commonValidators = require("../lib/param_validator");
+const commonUtils = require("../lib/common_utils");
 
 
 // POST
+// TODO: Remove this ignore and fix named variables issue
+/* eslint-disable no-undef */
 const signUpParamValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
-    const acceptedParams = ['name', 'phoneNumber', 'email', 'password','dob', 'profilePictureUrl'];
+    const acceptedParams = ["name", "phoneNumber", "email", "password","dob", "profilePictureUrl"];
 
-    validator.validate('name', String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50);
-    validator.validate('phoneNumber', String, allowBlank=false, acceptedValues=undefined, minLength=10, maxLength=10);
-    validator.validate('email', String);
-    validator.validate('password', String, allowBlank=false, acceptedValues=undefined, minLength=8);
-    validator.validate('dob',String);
-    validator.validate('profilePictureUrl', Number, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    validator.validate("name", String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50);
+    validator.validate("phoneNumber", String, allowBlank=false, acceptedValues=undefined, minLength=10, maxLength=10);
+    validator.validate("email", String);
+    validator.validate("password", String, allowBlank=false, acceptedValues=undefined, minLength=8);
+    validator.validate("dob",String);
+    validator.validate("profilePictureUrl", Number, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
@@ -35,10 +37,10 @@ const signUpParamValidation = (req, res, next) => {
 const loginCustomerParamValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
-    const acceptedParams = ['email', 'password'];
+    const acceptedParams = ["email", "password"];
 
-    validator.validate('email', String);
-    validator.validate('password', String);
+    validator.validate("email", String);
+    validator.validate("password", String);
 
     commonValidators.checkEmailFormat(req.body.email);
 
@@ -47,23 +49,23 @@ const loginCustomerParamValidation = (req, res, next) => {
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
-}
+};
 
 
 // POST
 const logoutCustomerParamValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
-    const acceptedParams = ['currentToken'];
+    const acceptedParams = ["currentToken"];
 
-    validator.validate('currentToken', String);
+    validator.validate("currentToken", String);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
-}
+};
 
 
 // GET
@@ -71,11 +73,11 @@ const getCustomerParamValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
-    const acceptedParams = ['currentToken'];
-    const acceptedParams1 = ['customerId'];
+    const acceptedParams = ["currentToken"];
+    const acceptedParams1 = ["customerId"];
 
-    validator.validate('customerId', String);
-    validator1.validate('currentToken', String);
+    validator.validate("customerId", String);
+    validator1.validate("currentToken", String);
 
     req.params = commonUtils.filterObjectByAllowedKeys(req.params,acceptedParams1);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
@@ -83,23 +85,23 @@ const getCustomerParamValidation = (req, res, next) => {
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
-}
+};
 
 
 // POST
 const generateCustomerDummyDataValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
-    const acceptedParams = ['internalAuthKey', 'deleteExisting', 'total'];
+    const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
 
-    validator.validate('internalAuthKey', String);
-    validator.validate('deleteExisting', Boolean, allowBlank=false, acceptedValues=[true, false]);
-    validator.validate('total', Number, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    validator.validate("internalAuthKey", String);
+    validator.validate("deleteExisting", Boolean, allowBlank=false, acceptedValues=[true, false]);
+    validator.validate("total", Number, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
 
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
-    if (config.util.getEnv('NODE_ENV') == 'production'){
-			throw new Error('Dummy Data Creation Not Allowed on Production Server');
+    if (config.util.getEnv("NODE_ENV") === "production"){
+			throw new Error("Dummy Data Creation Not Allowed on Production Server");
 		}
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
@@ -107,16 +109,16 @@ const generateCustomerDummyDataValidation = (req, res, next) => {
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
-}
+};
 
 
 // POST
 const sendEmailOtpValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
-    const acceptedParams = ['customerEmail'];
+    const acceptedParams = ["customerEmail"];
 
-    validator.validate('customerEmail', String);
+    validator.validate("customerEmail", String);
 
     commonValidators.checkEmailFormat(req.body.customerEmail);
 
@@ -125,17 +127,17 @@ const sendEmailOtpValidation = (req, res, next) => {
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
-}
+};
 
 
 // POST
 const verifyEmailOtpValidation = (req, res, next) => {
   try{
     const validator = new paramValidator(req.body);
-    const acceptedParams = ['customerEmail', 'otp'];
+    const acceptedParams = ["customerEmail", "otp"];
 
-    validator.validate('customerEmail', String);
-    validator.validate('otp', String);
+    validator.validate("customerEmail", String);
+    validator.validate("otp", String);
 
     commonValidators.checkEmailFormat(req.body.customerEmail);
 
@@ -144,7 +146,8 @@ const verifyEmailOtpValidation = (req, res, next) => {
   }catch(err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
-}
+};
+/* eslint-enable */
 
 
 module.exports = {signUpParamValidation, loginCustomerParamValidation, getCustomerParamValidation,

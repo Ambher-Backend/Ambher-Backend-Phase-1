@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const dotenv = require("dotenv");
-const bcrypt = require('bcryptjs');
-const mongooseFuzzySearching = require('mongoose-fuzzy-searching');
+const bcrypt = require("bcryptjs");
+const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
 dotenv.config();
 
@@ -84,7 +84,7 @@ const VendorSchema = new mongoose.Schema({
 	reviews: {
 		type: [
 			{
-				message: {type: String, default: ''},
+				message: {type: String, default: ""},
 				reviewRating: {type: Number, required: true, min: 1, max: 5},
 				customerId: {type: mongoose.Schema.Types.ObjectId},
 				pictures: {type: [String], default: []}
@@ -155,13 +155,13 @@ VendorSchema.statics.findByCredentials = async(email, password) => {
 
 // This validator is trimming all the fields and is removing special characters from string entries.
 // Used function because pre method doesn't support arrow functions as call back.
-VendorSchema.pre('save', async function(next) {
+VendorSchema.pre("save", async function(next) {
 	if(this.isModified("password")) {
 		const hash = await bcrypt.hash(this.password, 8);
 		this.password = hash;
 	}
 	for(const key in this){
-		if (typeof(this[key]) == 'string' && key !== 'password'){
+		if (typeof(this[key]) == "string" && key !== "password"){
 			this[key] = this[key].trim();
 		}
 	}
@@ -169,7 +169,7 @@ VendorSchema.pre('save', async function(next) {
 });
 
 
-VendorSchema.plugin(mongooseFuzzySearching, { fields: ['name'] });
+VendorSchema.plugin(mongooseFuzzySearching, { fields: ["name"] });
 const Vendor = mongoose.model("Vendor", VendorSchema);
 
 
