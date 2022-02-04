@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
-const config = require('config');
+const mongoose = require("mongoose");
+const config = require("config");
 
-let DbUri = '';
+let DbUri = "";
 
-if (process.env.NODE_ENV == 'production'){
+if (process.env.NODE_ENV === "production"){
   DbUri = process.env.PROD_MONGO_URL;
 }else{
   DbUri = config.DBHost;
 }
 
-const commonUtils = require('../../src/lib/common_utils')
+const commonUtils = require("../../src/lib/common_utils");
 
 const dbProperties = {
   useNewUrlParser:true,
@@ -19,7 +19,7 @@ const dbProperties = {
 };
 
 mongoose.connect(DbUri, dbProperties).then(()=>{
-  commonUtils.successLog(`Connection to Mongo successful`);
+  commonUtils.successLog("Connection to Mongo successful");
 }).catch((err) => {
-  commonUtils.errorLog(err.message)
-})
+  commonUtils.errorLog(err.message);
+});

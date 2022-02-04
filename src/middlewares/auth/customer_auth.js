@@ -1,11 +1,11 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 dotenv.config();
 
 
 //internal imports
-const commonUtils = require('../../lib/common_utils');
-const Customer = require('../../models/customer');
+const commonUtils = require("../../lib/common_utils");
+const Customer = require("../../models/customer");
 
 
 const CustomerAuth = async (req, res, next) => {
@@ -18,7 +18,7 @@ const CustomerAuth = async (req, res, next) => {
 		const customer = await Customer.findOne({
 			_id: decoded._id,
 			tokens: {
-				'$in': [token]
+				"$in": [token]
 			}
 		});
 

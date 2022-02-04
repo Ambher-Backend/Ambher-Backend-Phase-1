@@ -1,9 +1,9 @@
-const faker = require('faker');
+const faker = require("faker");
 
 
 // Internal Imports
-const Admin = require('../../../src/models/admin');
-const commonUtils = require('../../../src/lib/common_utils');
+const Admin = require("../../../src/models/admin");
+const commonUtils = require("../../../src/lib/common_utils");
 
 
 const generateDummyAdminData = async (deleteExisting, totalToGenerate) => {
@@ -20,7 +20,7 @@ const generateDummyAdminData = async (deleteExisting, totalToGenerate) => {
   }catch(err){
     return `Error: ||${err.message}|| occured in generating admins`;
   }
-}
+};
 
 
 const generateDummyAdmin = async () => {
@@ -28,17 +28,17 @@ const generateDummyAdmin = async () => {
     name: faker.name.firstName(),
     phoneNumber: faker.phone.phoneNumber(),
     email: faker.internet.email() ,
-    password: '12345678',
+    password: "12345678",
     configuration: {
       isVerified: true,
       isBlocked: false,
     },
-    blockedReason: ''
+    blockedReason: ""
   };
   const admin = new Admin(adminObject);
   await admin.save();
   return admin._id;
-}
+};
 
 
 module.exports = {generateDummyAdminData, generateDummyAdmin};

@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
-const mongooseFuzzySearching = require('mongoose-fuzzy-searching');
+const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
 dotenv.config();
 
@@ -60,7 +60,7 @@ const CustomerSchema = new mongoose.Schema(
     wishListItemIds: [mongoose.Schema.Types.ObjectId],
     reviews: [
       {
-        message: {type: String, default: ''},
+        message: {type: String, default: ""},
         reviewRating: {type: Number, required: true, min: 1, max: 5},
         productId: {type: mongoose.Schema.Types.ObjectId},
         pictures: {type: [String], default: []}
@@ -146,7 +146,7 @@ CustomerSchema.pre("save", async function (next) {
 });
 
 
-CustomerSchema.plugin(mongooseFuzzySearching, { fields: ['name'] });
+CustomerSchema.plugin(mongooseFuzzySearching, { fields: ["name"] });
 const Customer = mongoose.model("Customer", CustomerSchema);
 
 module.exports = Customer;

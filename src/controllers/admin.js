@@ -3,20 +3,20 @@ const Admin = require("../models/admin");
 const Vendor = require("../models/vendor");
 const Customer = require("../models/customer");
 const Product = require("../models/product");
-const commonUtils = require('../lib/common_utils');
-const emailUtils = require('../lib/send_email');
-const seeder = require('../../config/database/seeder');
-const fetchFilteredVendors = require('../services/fetch_filtered_vendors');
-const fetchFilteredCustomers = require('../services/fetch_filtered_customers');
-const fetchFilteredProducts = require('../services/fetch_filtered_products');
+const commonUtils = require("../lib/common_utils");
+const emailUtils = require("../lib/send_email");
+const seeder = require("../../config/database/seeder");
+const fetchFilteredVendors = require("../services/fetch_filtered_vendors");
+const fetchFilteredCustomers = require("../services/fetch_filtered_customers");
+const fetchFilteredProducts = require("../services/fetch_filtered_products");
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
-	'postLogin': ['_id', 'name', 'email'],
-	'toVerify': ['email'],
-	'blocked' : ['name','email','blockedReason'],
-	'get':['_id', 'name', 'email', 'phoneNumber'],
+	"postLogin": ["_id", "name", "email"],
+	"toVerify": ["email"],
+	"blocked" : ["name","email","blockedReason"],
+	"get":["_id", "name", "email", "phoneNumber"],
 };
 
 
@@ -26,24 +26,24 @@ const eventKeyExposeObject = {
 const handleSignup = async (reqBody) => {
 	const admin = new Admin(reqBody);
 	await admin.save();
-}
+};
 
 
 const handleLogin = async (reqBody) => {
 	let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
 	if (adminResponse.configuration.isVerified === false) {
-		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['toVerify']);	
+		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject["toVerify"]);	
 		const message = "Admin Email needs to be verified";
 		return {adminObjectToExpose, message};
 	}
 	if (adminResponse.configuration.isBlocked === true) {
-		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['blocked']);	
-		const message = `Admin Blocked. Contact Support`;
+		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject["blocked"]);	
+		const message = "Admin Blocked. Contact Support";
 		return {adminObjectToExpose, message};
 	}
 	const token = await adminResponse.generateToken();
-	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject['postLogin']);
-	adminObjectToExpose['currentToken'] = token;
+	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject["postLogin"]);
+	adminObjectToExpose["currentToken"] = token;
 	const message = "Admin Login Successful";
 	return {adminObjectToExpose, message};
 };
@@ -51,14 +51,14 @@ const handleLogin = async (reqBody) => {
 
 const handleGetDetails = async (adminId) => {
 	const admin = await Admin.findById(adminId);
-	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(admin.toObject(), eventKeyExposeObject['get']);
+	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(admin.toObject(), eventKeyExposeObject["get"]);
 	return adminObjectToExpose;
-}
+};
 
 
 const handleLogout = async (reqBody, currentUser) => {
-	currentUser.tokens = currentUser.tokens.filter((token) => (token != reqBody.currentToken));
-	currentUser.currentToken = '';
+	currentUser.tokens = currentUser.tokens.filter((token) => (token !== reqBody.currentToken));
+	currentUser.currentToken = "";
 	await currentUser.save();
 	return;
 };
@@ -75,20 +75,20 @@ const sendEmailOtp = async (adminEmail) => {
 	let admin = await Admin.findOne({
 		email: adminEmail
 	});
-	if (admin == undefined){throw new Error('Invalid Email, Admin Not registered');}
+	if (admin === undefined){throw new Error("Invalid Email, Admin Not registered");}
 	const otpToSend = commonUtils.getOtp();
 	admin.emailOtps.push(otpToSend);
 	await admin.save();
 	const mailBody = `Please enter the following OTP: ${otpToSend} to verify your email for your Ambher admin Account`;
 	emailUtils.sendEmail(adminEmail, "Verify your email ID - Ambher", mailBody);
-}
+};
 
 
 const verifyEmailOtp = async (reqBody) => {
 	let admin = await Admin.findOne({ 
 		email: reqBody.adminEmail
 	});
-	if (admin == undefined){throw new Error('Invalid Email, Admin Not registered');}
+	if (admin === undefined){throw new Error("Invalid Email, Admin Not registered");}
 	const otpToVerify = admin.emailOtps[admin.emailOtps.length - 1];
 	if (otpToVerify === reqBody.otp) {
 		admin.configuration.isVerified = true;
@@ -98,7 +98,7 @@ const verifyEmailOtp = async (reqBody) => {
 	else {
 		throw new Error("Wrong Admin Email OTP");
 	}
-}
+};
 
 
 //
@@ -106,7 +106,7 @@ const verifyEmailOtp = async (reqBody) => {
 //
 const listVendors = async (reqBody) => {
 	const filteredVendors = await fetchFilteredVendors.filter(reqBody.filter);
-	let filteredVendorsResponse = [] 
+	let filteredVendorsResponse = []; 
 	for(let vendor of filteredVendors){
 		const vendorResponse = {
 			_id: vendor._id,
@@ -114,23 +114,23 @@ const listVendors = async (reqBody) => {
 			name: vendor.name,
 			phoneNumber: vendor.phoneNumber,
 			email: vendor.email,
-			address: Object.values(vendor.address).join(', '),
+			address: Object.values(vendor.address).join(", "),
 			reviews: vendor.reviews.length,
 			rating: vendor.rating,
 			totalOrders: vendor.customerOrderIds.length,
 			totalProducts: vendor.productIds.length
-		}
-		filteredVendorsResponse.push(vendorResponse)
+		};
+		filteredVendorsResponse.push(vendorResponse);
 	}
 	return commonUtils.paginate(filteredVendorsResponse);
-}
+};
 
 
 const vendorDetails = async (vendorId) => {
 	const vendor = await Vendor.findById(vendorId);
 	if (!vendor) {throw new Error ("Vendor Not Found");}
 	const address = commonUtils.filterObjectByAllowedKeys(
-		vendor.address, ['flatNo','buildingNo','streetName','city','state','country','zipcode']
+		vendor.address, ["flatNo","buildingNo","streetName","city","state","country","zipcode"]
 	);
 	let vendorResponse = {
 		_id: vendor._id,
@@ -138,14 +138,14 @@ const vendorDetails = async (vendorId) => {
 		name: vendor.name,
 		phoneNumber: vendor.phoneNumber,
 		email: vendor.email,
-		address: Object.values(address).join(', '),
+		address: Object.values(address).join(", "),
 		totalOrders: vendor.customerOrderIds.length,
 		totalProducts: vendor.productIds.length,
 		rating: vendor.reviews.rating,
 		isVerifiedByAdmin: vendor.configuration.isVerifiedByAdmin,
 		isVerified: vendor.configuration.isVerified,
 		isBlocked: vendor.configuration.isBlocked,
-	}
+	};
 	if (vendor.configuration.isBlocked === true) {
 		const blockedAdmin = await Admin.findById (vendor.blockedBy);
 		vendorResponse.blockedReason = vendor.blockedReason;
@@ -158,20 +158,20 @@ const vendorDetails = async (vendorId) => {
 		vendorResponse.verifiedByName = verifiedByAdmin.name;
 	}
 	return vendorResponse;
-}
+};
 
 
 const verifyVendor = async (admin, reqBody) => {
 	let vendor = await Vendor.findById(reqBody.vendorId);
-	if (vendor == undefined){throw new Error('Invalid vendor ID');}
-	if (vendor.configuration.isVerified === false){throw new Error('Vendor needs to verify their email');}
+	if (vendor === undefined){throw new Error("Invalid vendor ID");}
+	if (vendor.configuration.isVerified === false){throw new Error("Vendor needs to verify their email");}
 	vendor.configuration.isVerifiedByAdmin = true;
 	vendor.verifiedBy = admin._id;
 	await vendor.save();
 	const mailBody = `Congratulations, ${vendor.name}! Your Ambher Vendor Account has been verified.`;
 	emailUtils.sendEmail(vendor.email, "Ambher Vendor Account Verified", mailBody);
 	return "Vendor Account Verified By Admin Successfully";
-}
+};
 
 
 //
@@ -189,18 +189,18 @@ const listCustomers = async (reqBody) => {
 			email: customer.email,
 			reviews: customer.reviews.length,
 			totalOrders: customer.orderIds.length
-		}
+		};
 		filteredCustomersResponse.push(customerResponse);
 	}
 	return commonUtils.paginate(filteredCustomersResponse);
-}
+};
 
 
 const customerDetails = async (customerId) => {
 	const customer = await Customer.findById(customerId);
 	if (!customer) {throw new Error ("Customer Not Found");}
 	const address = commonUtils.filterObjectByAllowedKeys(
-		customer.address[0].toObject(), ['flatNo','buildingNo','streetName','city','state','country','zipcode']
+		customer.address[0].toObject(), ["flatNo","buildingNo","streetName","city","state","country","zipcode"]
 	);
 	let customerResponse = {
 		_id: customer._id,
@@ -208,20 +208,20 @@ const customerDetails = async (customerId) => {
 		name: customer.name,
 		phoneNumber: customer.phoneNumber,
 		email: customer.email,
-		address: Object.values(address).join(', '),
+		address: Object.values(address).join(", "),
 		reviews: customer.reviews,
 		totalOrders: customer.orderIds.length,
 		isVerified: customer.configuration.isVerified,
 		isBlocked: customer.configuration.isBlocked,
-	}
+	};
 	if (customer.configuration.isBlocked === true) {
 		const blockedAdmin = await Admin.findById (customer.blockedBy);
 		customerResponse.blockedReason = customer.blockedReason;
 		customerResponse.blockedBy = blockedAdmin.name;
 		customerResponse.blockedByEmail = blockedAdmin.email;
 	}
-	return customerResponse
-}
+	return customerResponse;
+};
 
 
 //
@@ -241,16 +241,16 @@ const listProducts = async (reqBody) => {
 			orders: 10,
 			details: product.details.map(sizeColorDetail => {
 				const sizeColorsFiltered = {};
-				sizeColorsFiltered['size'] = sizeColorDetail["size"]
-				sizeColorsFiltered['colors'] = sizeColorDetail["colors"].map(colorDetails => colorDetails.color)
+				sizeColorsFiltered["size"] = sizeColorDetail["size"];
+				sizeColorsFiltered["colors"] = sizeColorDetail["colors"].map(colorDetails => colorDetails.color);
 				return sizeColorsFiltered;
 			}),
 			rating: product.rating
-		}
+		};
 		filteredProductsResponse.push(productResponse);
 	}
 	return commonUtils.paginate(filteredProductsResponse);
-}
+};
 
 
 //TODO: Add support for orders once schema is ready.
@@ -266,14 +266,14 @@ const productDetails = async (productId) => {
 		reviews: product.customerReviews,
 		details: product.details.map(sizeColorDetail => {
 			const sizeColorsFiltered = {};
-			sizeColorsFiltered['size'] = sizeColorDetail["size"]
-			sizeColorsFiltered['colors'] = sizeColorDetail["colors"].map(colorDetails => colorDetails.color)
+			sizeColorsFiltered["size"] = sizeColorDetail["size"];
+			sizeColorsFiltered["colors"] = sizeColorDetail["colors"].map(colorDetails => colorDetails.color);
 			return sizeColorsFiltered;
 		}),
 		rating: product.rating,
 		isVerifiedByAdmin: product.configuration.isVerifiedByAdmin,
 		isBlocked: product.configuration.isBlocked,
-	}
+	};
 	if (product.configuration.isBlocked === true) {
 		const blockedAdmin = await Admin.findById(product.blockedBy);
 		productResponse.blockedReason = product.blockedReason;
@@ -286,12 +286,12 @@ const productDetails = async (productId) => {
 		productResponse.verifiedByName = verifiedByAdmin.name;
 	}
 	return productResponse;
-}
+};
 
 
 const verifyProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
-	if (product == undefined){throw new Error('Invalid product ID');}
+	if (product === undefined){throw new Error("Invalid product ID");}
 	product.configuration.isVerifiedByAdmin = true;
 	product.verifiedBy = admin._id;
 	await product.save();
@@ -300,12 +300,12 @@ const verifyProduct = async (admin, reqBody) => {
 	by admin.`;
 	emailUtils.sendEmail(associatedVendor.email, `Product-${product.name} verified!`, mailBody);
 	return "Product Verified By Admin Successfully";
-}
+};
 
 
 const blockProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
-	if (product == undefined){throw new Error('Invalid product ID');}
+	if (product === undefined){throw new Error("Invalid product ID");}
 	product.configuration.isBlocked = true;
 	product.blockedBy = admin._id;
 	product.blockedReason = reqBody.blockedReason;
@@ -315,7 +315,7 @@ const blockProduct = async (admin, reqBody) => {
 	by admin due to <b>${reqBody.blockedReason}</b>.\nPlease contact support in case of issues.`;
 	emailUtils.sendEmail(associatedVendor.email, `Product-${product.name} blocked`, mailBody);
 	return "Product Blocked By Admin Successfully";
-}
+};
 
 
 module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout,

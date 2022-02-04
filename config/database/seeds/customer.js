@@ -1,9 +1,9 @@
-const faker = require('faker');
-const mongoose = require('mongoose');
+const faker = require("faker");
+const mongoose = require("mongoose");
 
 // Internal Imports
-const Customer = require('../../../src/models/customer');
-const commonUtils = require('../../../src/lib/common_utils');
+const Customer = require("../../../src/models/customer");
+const commonUtils = require("../../../src/lib/common_utils");
 
 
 const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
@@ -20,7 +20,7 @@ const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
   }catch(err){
     return `Error: ||${err.message}|| occured in generating customers`;
   }
-}
+};
 
 
 const generateDummyCustomer = async () => {
@@ -29,13 +29,13 @@ const generateDummyCustomer = async () => {
     name: faker.name.firstName(),
     phoneNumber: faker.phone.phoneNumber(),
     email: faker.internet.email() ,
-    password: '12345678',
+    password: "12345678",
     dob:faker.date.recent(),
     configuration: {
       isVerified: true,
       isBlocked: false,
     },
-    blockedReason: '',
+    blockedReason: "",
     address:[
       {
         flatNo:faker.random.alphaNumeric(2),
@@ -54,23 +54,23 @@ const generateDummyCustomer = async () => {
   const customer = new Customer(customerObject);
   await customer.save();
   return customer._id;
-}
+};
 
 
 const generateDummyReviews = () => {
   let numberOfReviews = commonUtils.getRandomNumber(3, 12);
-  let reviews = []
+  let reviews = [];
   while (numberOfReviews--){
     const currRating = commonUtils.getRandomNumber(1, 5);
     const review = {
       message: faker.lorem.sentence(),
       reviewRating: currRating,
       productId: mongoose.Types.ObjectId()
-    }
+    };
     reviews.push(review);
   }
   return reviews;
-}
+};
 
 
 

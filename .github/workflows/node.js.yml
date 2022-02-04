@@ -19,23 +19,15 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        
-    - name: Connecting to Mongo
-      uses: supercharge/mongodb-github-action@1.7.0
-      with:
-        mongodb-version: ${{ matrix.mongodb-version }}
-        mongodb-username: ambher-admin
-        mongodb-password: c1695ba0d9b
-        mongodb-db: ambher_production_test
-        
-    - name: Installing Dependencies.
-      run: npm i
+    # - uses: actions/checkout@v2
+    # - name: Use Node.js ${{ matrix.node-version }}
+    #   uses: actions/setup-node@v2
+    #   with:
+    #     node-version: ${{ matrix.node-version }}
+    #     cache: 'npm'
+            
+    # - name: Installing Dependencies.
+    #   run: npm i
       
-    - name: Starting Tests
-      run: npm test
+    # - name: Starting Tests
+    #   run: npm test

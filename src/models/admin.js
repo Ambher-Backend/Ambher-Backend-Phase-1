@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const dotenv = require("dotenv");
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 
 dotenv.config();
 
@@ -100,13 +100,13 @@ AdminSchema.statics.findByCredentials = async(email, password) => {
 
 // This validator is trimming all the fields and is removing special characters from string entries.
 // Used function because pre method doesn't support arrow functions as call back.
-AdminSchema.pre('save', async function(next) {
+AdminSchema.pre("save", async function(next) {
 	if(this.isModified("password")) {
 		const hash = await bcrypt.hash(this.password, 8);
 		this.password = hash;
 	}
 	for(const key in this){
-		if (typeof(this[key]) == 'string' && key !== 'password'){
+		if (typeof(this[key]) == "string" && key !== "password"){
 			this[key] = this[key].trim();
 		}
 	}

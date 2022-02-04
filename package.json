@@ -5,8 +5,17 @@
   "main": "app.js",
   "scripts": {
     "dev": "export NODE_ENV=development && nodemon app.js",
+    "win-dev": "set NODE_ENV=development && nodemon app.js",
     "start": "node app.js",
-    "test": "export NODE_ENV=test && npx mocha ./test/ --recursive --timeout 10000 --exit"
+    "test": "export NODE_ENV=test && npx mocha ./test/ --recursive --timeout 10000 --exit",
+    "win-test": "set NODE_ENV=test && npx mocha ./test/ --recursive --timeout 10000 --exit",
+    "check-linting": "npx eslint config src test",
+    "fix-linting": "npx eslint config src test --fix",
+    "check-format": "npx prettier src test config --check",
+    "fix-formatting": "npx prettier src test config --write"
+  },
+  "engines": {
+    "node": ">=12"
   },
   "repository": {
     "type": "git",
@@ -40,8 +49,10 @@
   },
   "devDependencies": {
     "chai": "^4.3.6",
+    "eslint": "^8.8.0",
     "mocha": "^9.2.0",
     "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
     "supertest": "^6.2.2"
   }
 }

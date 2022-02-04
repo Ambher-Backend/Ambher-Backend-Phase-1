@@ -1,17 +1,17 @@
-const express = require('express');
+const express = require("express");
 
 // Router Config
 const router = new express.Router();
 
 
 //internal imports
-const helper = require('../controllers/product');
-const commonUtils = require('../lib/common_utils');
-const productParamValidator = require('../param_validators/product');
+const helper = require("../controllers/product");
+const commonUtils = require("../lib/common_utils");
+const productParamValidator = require("../param_validators/product");
 
 
 //generate dummy data route
-router.post('/create-dummy-data', productParamValidator.generateProductDummyDataValidation, async (req, res) => {
+router.post("/create-dummy-data", productParamValidator.generateProductDummyDataValidation, async (req, res) => {
 	try {
 		const message = await helper.generateDummyProducts(req.body);
 		res.send(commonUtils.responseUtil(201, null, message));
