@@ -11,7 +11,10 @@
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["warn", "double"],
-    "no-self-assign": "off",
-    "eqeqeq": ["error", "smart"]
+    "eqeqeq": ["error", "smart"],
+    "eol-last": "error",
+    "camelcase": "error",
+    "prefer-arrow-callback": "warn",
+    "no-self-assign": "off"
   }
 }
