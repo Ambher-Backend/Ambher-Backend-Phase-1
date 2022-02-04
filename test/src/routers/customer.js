@@ -1,9 +1,13 @@
 const faker = require("faker");
 const request = require("supertest");
-const { expect, it } = require("chai");
-const { describe, before, beforeEach, after, afterEach } = require("mocha");
+const expect = require("chai").expect;
+const describe = require("mocha").describe;
+const it = require("mocha").it;
+const { before, beforeEach, after, afterEach } = require("mocha");
+
 
 const relativePath = "../../..";
+
 
 // Internal Imports
 const Customer = require(`${relativePath}/src/models/customer`);
@@ -12,7 +16,7 @@ const app = require(`${relativePath}/app`);
 let testEmail = "";
 let testPassword = "";
 
-/* eslint-disable max-lines-per-function*/
+
 describe("Customer APIs", async () => {
   // This hook will run only once before the test-suite starts
   before(async () => {
@@ -110,10 +114,9 @@ describe("Customer APIs", async () => {
       });
     });
   });
-  
+
   // This hook will run only once after the test-suite ends for clean-up and other purposes.
   after(async () => {
     await Customer.deleteMany({});
   });
 });
-/* eslint-enable */
