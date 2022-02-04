@@ -25,20 +25,17 @@ const handleLogin = async (reqBody) => {
 	if (vendorResponse.configuration.isVerified === false) {
 		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject, eventKeyExposeObject['toVerify']);	
 		vendorObjectToExpose.productModify = false;
-		const message = "Vendor Email needs to be verified";
-		return {vendorObjectToExpose, message};
+		throw new Error("Vendor Email needs to be verified");
 	}
 	if (vendorResponse.configuration.isBlocked === true) {
 		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject, eventKeyExposeObject['blocked']);	
 		vendorObjectToExpose.productModify = false;
-		const message = "Vendor Blocked. Contact Support";
-		return {vendorObjectToExpose, message};
+		throw new Error("Vendor Blocked. Contact Support");
 	}
 	if (vendorResponse.configuration.isVerifiedByAdmin === false) {
 		const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject, eventKeyExposeObject['postLogin']);
 		vendorObjectToExpose.productModify = false;
-		const message = "Vendor Unverified by admin";
-		return {vendorObjectToExpose, message};
+		throw new Error("Vendor Unverified by admin");
 	}
 	const token = await vendorResponse.generateToken();
 	const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendorResponse.toObject, eventKeyExposeObject['postLogin']);
