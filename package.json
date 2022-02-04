@@ -9,10 +9,10 @@
     "start": "node app.js",
     "test": "export NODE_ENV=test && npx mocha --recursive ./test --timeout 10000 --exit",
     "win-test": "set NODE_ENV=test && npx mocha --recursive ./test --timeout 10000 --exit",
-    "check-linting": "npx eslint config src test",
-    "fix-linting": "npx eslint config src test --fix",
-    "check-format": "npx prettier src test config --check",
-    "fix-formatting": "npx prettier src test config --write"
+    "check-linting": "npx eslint config src test app.js",
+    "fix-linting": "npx eslint config src test app.js --fix",
+    "check-format": "npx prettier config src test app.js --check",
+    "fix-formatting": "npx prettier config src test app.js --write"
   },
   "engines": {
     "node": ">=12"
