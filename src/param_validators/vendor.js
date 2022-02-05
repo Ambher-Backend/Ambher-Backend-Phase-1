@@ -11,7 +11,7 @@ const commonUtils = require("../lib/common_utils");
 // TODO: Remove this ignore and fix named variables issue
 /* eslint-disable no-undef */
 const signUpParamValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["name", "phoneNumber", "email", "password", "dob", "address"];
 
@@ -27,7 +27,7 @@ const signUpParamValidation = (req, res, next) => {
     
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -35,7 +35,7 @@ const signUpParamValidation = (req, res, next) => {
 
 // POST
 const loginVendorParamValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["email", "password"];
 
@@ -46,7 +46,7 @@ const loginVendorParamValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -54,7 +54,7 @@ const loginVendorParamValidation = (req, res, next) => {
 
 // POST
 const logoutVendorParamValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["currentToken"];
 
@@ -62,7 +62,7 @@ const logoutVendorParamValidation = (req, res, next) => {
     
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -70,7 +70,7 @@ const logoutVendorParamValidation = (req, res, next) => {
 
 // GET
 const getVendorParamValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
     const acceptedParams = ["vendorId", "currentToken"];
@@ -81,7 +81,7 @@ const getVendorParamValidation = (req, res, next) => {
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -89,7 +89,7 @@ const getVendorParamValidation = (req, res, next) => {
 
 // POST
 const generateVendorDummyDataValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
 
@@ -105,7 +105,7 @@ const generateVendorDummyDataValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -113,7 +113,7 @@ const generateVendorDummyDataValidation = (req, res, next) => {
 
 // POST
 const sendEmailOtpValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["vendorEmail"];
 
@@ -123,7 +123,7 @@ const sendEmailOtpValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -131,7 +131,7 @@ const sendEmailOtpValidation = (req, res, next) => {
 
 // POST
 const verifyEmailOtpValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["vendorEmail", "otp"];
 
@@ -142,7 +142,7 @@ const verifyEmailOtpValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };

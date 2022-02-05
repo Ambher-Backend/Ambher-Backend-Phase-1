@@ -8,17 +8,17 @@ const commonUtils = require("../../../src/lib/common_utils");
 
 
 const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
-  try{
+  try {
     if (deleteExisting === true){
       await Vendor.deleteMany({});
       commonUtils.successLog(`All documents from collection || Vendor || deleted on "${new Date().toString()}" by 'Admin'`);
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
-    for(let i = 0; i < documentsToGenerate; i++) {
+    for (let i = 0; i < documentsToGenerate; i++) {
       await generateDummyVendor();
     }
     return `${totalToGenerate} vendors generated successfully!`;
-  }catch(err){
+  } catch (err){
     return `Error: ||${err.message}|| occured in generating vendors`;
   }
 };
@@ -29,7 +29,7 @@ const generateDummyVendor = async () => {
   const vendorObject = {
     name: faker.name.firstName(),
     phoneNumber: faker.phone.phoneNumber(),
-    email: faker.internet.email() ,
+    email: faker.internet.email(),
     password: "12345678",
     dob:faker.date.recent(),
     configuration: {

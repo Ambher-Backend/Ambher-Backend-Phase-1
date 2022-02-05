@@ -13,10 +13,10 @@ const documentParamValidator = require("../param_validators/document");
 
 // Creates 5 dummy documents in the database.
 router.post("/create-dummy-data", documentParamValidator.generateDocumentDummyDataValidation, async (req, res) => {
-  try{
+  try {
     const verdict = await helper.generateDummyDocuments(req.body);
     res.send(commonUtils.responseUtil(201, null, verdict));
-  }catch(err){
+  } catch (err){
     commonUtils.errorLog(err.message);
     res.send(commonUtils.responseUtil(400, null, err.message));
   }

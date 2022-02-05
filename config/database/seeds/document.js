@@ -8,17 +8,17 @@ const commonUtils = require("../../../src/lib/common_utils");
 
 
 const generateDummyDocumentData = async (deleteExisting, totalToGenerate) => {
-  try{
+  try {
     if (deleteExisting === true){
       await Document.deleteMany({});
       commonUtils.successLog(`All documents from collection || Document || deleted on "${new Date().toString()}" by 'Admin'`);
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
-    for(let i = 0; i < documentsToGenerate; i++) {
+    for (let i = 0; i < documentsToGenerate; i++) {
       await generateDummyDocument();
     }
     return `${totalToGenerate} documents generated successfully!`;
-  }catch(err){
+  } catch (err){
     return `Error: ||${err.message}|| occured in generating documents`;
   }
 };

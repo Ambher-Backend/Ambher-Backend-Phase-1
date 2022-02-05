@@ -11,7 +11,7 @@ const commonUtils = require("../lib/common_utils");
 // TODO: Remove this ignore and fix named variables issue
 /* eslint-disable no-undef */
 const signUpParamValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["name", "phoneNumber", "email", "password"];
 
@@ -25,7 +25,7 @@ const signUpParamValidation = (req, res, next) => {
     
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -33,7 +33,7 @@ const signUpParamValidation = (req, res, next) => {
 
 // LOGIN
 const loginAdminParamValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["email", "password"];
 
@@ -44,7 +44,7 @@ const loginAdminParamValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -52,7 +52,7 @@ const loginAdminParamValidation = (req, res, next) => {
 
 // POST
 const logoutAdminParamValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["currentToken"];
 
@@ -60,7 +60,7 @@ const logoutAdminParamValidation = (req, res, next) => {
     
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -68,7 +68,7 @@ const logoutAdminParamValidation = (req, res, next) => {
 
 // GET
 const getAdminParamValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
     const acceptedParams = ["adminId", "currentToken"];
@@ -78,7 +78,7 @@ const getAdminParamValidation = (req, res, next) => {
     
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -86,7 +86,7 @@ const getAdminParamValidation = (req, res, next) => {
 
 // POST
 const generateAdminDummyDataValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
 
@@ -102,7 +102,7 @@ const generateAdminDummyDataValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -110,7 +110,7 @@ const generateAdminDummyDataValidation = (req, res, next) => {
 
 // POST
 const sendEmailOtpValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["adminEmail"];
 
@@ -120,7 +120,7 @@ const sendEmailOtpValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -128,7 +128,7 @@ const sendEmailOtpValidation = (req, res, next) => {
 
 // POST
 const verifyEmailOtpValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["adminEmail", "otp"];
 
@@ -139,7 +139,7 @@ const verifyEmailOtpValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -147,7 +147,7 @@ const verifyEmailOtpValidation = (req, res, next) => {
 
 //POST
 const verifyVendorAccountValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["vendorId", "currentToken"];
 
@@ -156,7 +156,7 @@ const verifyVendorAccountValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -164,7 +164,7 @@ const verifyVendorAccountValidation = (req, res, next) => {
 
 //POST
 const listVendorsValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["filter", "currentToken"];
 
@@ -181,7 +181,7 @@ const listVendorsValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -249,7 +249,7 @@ const viewCustomerDetailsValidation = (req, res, next) => {
 
 //POST
 const viewProductsValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["filter", "currentToken"];
 
@@ -267,7 +267,7 @@ const viewProductsValidation = (req, res, next) => {
     req.body.filter = commonUtils.filterObjectByAllowedKeys(req.body.filter, acceptedFilterKeys);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -294,7 +294,7 @@ const viewProductDetailsValidation = (req, res, next) => {
 
 //POST
 const verifyProductValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["productId", "currentToken"];
 
@@ -303,7 +303,7 @@ const verifyProductValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };
@@ -311,7 +311,7 @@ const verifyProductValidation = (req, res, next) => {
 
 //POST
 const blockProductValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["productId", "currentToken", "blockedReason"];
 
@@ -321,7 +321,7 @@ const blockProductValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 }; 
@@ -329,7 +329,7 @@ const blockProductValidation = (req, res, next) => {
 
 //POST
 const blockVendorValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["vendorId", "currentToken", "blockedReason"];
 
@@ -339,7 +339,7 @@ const blockVendorValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };

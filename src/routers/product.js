@@ -15,7 +15,7 @@ router.post("/create-dummy-data", productParamValidator.generateProductDummyData
 	try {
 		const message = await helper.generateDummyProducts(req.body);
 		res.send(commonUtils.responseUtil(201, null, message));
-	} catch(err) {
+	} catch (err) {
 		commonUtils.errorLog(err.message);
 		res.send(commonUtils.responseUtil(500, null, err.message));
 	}

@@ -42,7 +42,7 @@ const genCode = (n = 10) => {
 // This method returns the filtered object containing only the allowedKeys
 const filterObjectByAllowedKeys = (current, allowedKeys) => {
   let filtered = {};
-  for(const key in current){
+  for (const key in current){
     if (allowedKeys.find(allowedKey => (allowedKey === key)) !== undefined){
       filtered[key] = current[key];
     }

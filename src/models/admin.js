@@ -24,7 +24,7 @@ const AdminSchema = new mongoose.Schema({
 		lowercase: true,
 		required: true,
 		validate(value) {
-			if(!validator.isEmail(value)) {
+			if (!validator.isEmail(value)) {
 				throw new Error("Invalid Email");
 			}
 		}
@@ -69,7 +69,7 @@ const AdminSchema = new mongoose.Schema({
 
 
 //token generation using jwt
-AdminSchema.methods.generateToken = async function () {
+AdminSchema.methods.generateToken = async function() {
 	const admin = this;
 	const payload = {
 		_id: admin._id
@@ -83,7 +83,7 @@ AdminSchema.methods.generateToken = async function () {
 
 
 //static function to find an admin using email and password
-AdminSchema.statics.findByCredentials = async(email, password) => {
+AdminSchema.statics.findByCredentials = async (email, password) => {
 	const admin = await Admin.findOne({
 		email: email,
 	});
@@ -91,7 +91,7 @@ AdminSchema.statics.findByCredentials = async(email, password) => {
 		throw new Error ("Admin not found");
 	}
 	const passwordMatched = await bcrypt.compare(password, admin.password);
-	if(!passwordMatched) {
+	if (!passwordMatched) {
 		throw new Error ("Password Incorrect");
 	}
 	return admin;
@@ -101,11 +101,11 @@ AdminSchema.statics.findByCredentials = async(email, password) => {
 // This validator is trimming all the fields and is removing special characters from string entries.
 // Used function because pre method doesn't support arrow functions as call back.
 AdminSchema.pre("save", async function(next) {
-	if(this.isModified("password")) {
+	if (this.isModified("password")) {
 		const hash = await bcrypt.hash(this.password, 8);
 		this.password = hash;
 	}
-	for(const key in this){
+	for (const key in this){
 		if (typeof(this[key]) == "string" && key !== "password"){
 			this[key] = this[key].trim();
 		}

@@ -103,7 +103,7 @@ const CustomerSchema = new mongoose.Schema(
 );
 
 //token generation using jwt
-CustomerSchema.methods.generateToken = async function () {
+CustomerSchema.methods.generateToken = async function() {
   const customer = this;
   const payload = {
     _id: customer._id,
@@ -132,7 +132,7 @@ CustomerSchema.statics.findByCredentials = async (email, password) => {
 
 // This validator is trimming all the fields and is removing special characters from string entries.
 // Used function because pre method doesn't support arrow functions as call back.
-CustomerSchema.pre("save", async function (next) {
+CustomerSchema.pre("save", async function(next) {
   if (this.isModified("password")) {
     const hash = await bcrypt.hash(this.password, 8);
     this.password = hash;

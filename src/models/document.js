@@ -33,7 +33,7 @@ const DocumentSchema = mongoose.Schema(
 
 // This validator is trimming all the fields and is removing special characters from file names.
 // Used function because pre method doesn't support arrow functions as call back.
-DocumentSchema.pre("save", function (next) {
+DocumentSchema.pre("save", function(next) {
   for (const key in this) {
     if (typeof this[key] == "string") {
       this[key] = this[key].trim();

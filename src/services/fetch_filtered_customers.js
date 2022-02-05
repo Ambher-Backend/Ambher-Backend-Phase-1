@@ -14,10 +14,10 @@ const filter = async (filter) => {
 
 const generateCompositeQuery = (filter) => {
   let query = {};
-  if(filter["isVerified"] !== undefined) {
+  if (filter["isVerified"] !== undefined) {
     query["configuration.isVerified"] = filter["isVerified"];
   }
-  if(filter["isBlocked"] !== undefined) {
+  if (filter["isBlocked"] !== undefined) {
     query["configuration.isBlocked"] = filter["isBlocked"];
   }
   return query;
@@ -27,7 +27,7 @@ const generateCompositeQuery = (filter) => {
 const buildQueryAndExecute = async (filter) => {
   const compositeQuery = generateCompositeQuery(filter);
   let filteredCustomers = [];
-  if(filter["query"] !== undefined) {
+  if (filter["query"] !== undefined) {
     filteredCustomers = await Customer.fuzzySearch(filter["query"], compositeQuery);
   }
   else {
