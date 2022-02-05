@@ -12,8 +12,8 @@ const getCityStateValidation = (req, res, next) => {
     const validator = new paramValidator(req.params);
     const acceptedParams = ["pincode"];
 
-    validator.validate("pincode", String, allowBlank=false, acceptedValues=undefined, minLength=6, maxLength=6, regex=constants.PINCODE_REGEX, required=true);
-    
+    validator.validate("pincode", String, allowBlank = false, acceptedValues = undefined, minLength = 6, maxLength = 6, regex = constants.PINCODE_REGEX, required = true);
+
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     next();
   } catch (err) {

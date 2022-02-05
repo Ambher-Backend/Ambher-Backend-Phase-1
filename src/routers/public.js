@@ -12,7 +12,7 @@ const publicValidator = require("../param_validators/public");
 
 //route to get city and state details
 router.get("/city-state/:pincode", publicValidator.getCityStateValidation, async (req, res) => {
-  try { 
+  try {
     const cityStateDetails = helper.getCityAndState(req.params);
     res.send(commonUtils.responseUtil(200, cityStateDetails, "City and State"));
   } catch (err) {
@@ -24,7 +24,7 @@ router.get("/city-state/:pincode", publicValidator.getCityStateValidation, async
 
 //route to get all states
 router.get("/state-list", publicValidator.getStateListValidation, async (req, res) => {
-  try { 
+  try {
     const stateList = helper.getStates();
     res.send(commonUtils.responseUtil(200, stateList, "State List"));
   } catch (err) {

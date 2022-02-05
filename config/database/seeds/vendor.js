@@ -31,7 +31,7 @@ const generateDummyVendor = async () => {
     phoneNumber: faker.phone.phoneNumber(),
     email: faker.internet.email(),
     password: "12345678",
-    dob:faker.date.recent(),
+    dob: faker.date.recent(),
     configuration: {
       isVerified: true,
       isBlocked: false,
@@ -39,15 +39,15 @@ const generateDummyVendor = async () => {
     },
     blockedReason: "",
     address: {
-      flatNo:faker.random.alphaNumeric(2),
-      buildingNo:faker.random.alphaNumeric(2),
-      streetName:faker.address.streetName(),
-      city:faker.address.city(),
-      state:faker.address.state(),
-      country:faker.address.country(),
-      zipCode:faker.address.zipCode(),
-      lat:faker.address.latitude(),
-      lon:faker.address.longitude()
+      flatNo: faker.random.alphaNumeric(2),
+      buildingNo: faker.random.alphaNumeric(2),
+      streetName: faker.address.streetName(),
+      city: faker.address.city(),
+      state: faker.address.state(),
+      country: faker.address.country(),
+      zipCode: faker.address.zipCode(),
+      lat: faker.address.latitude(),
+      lon: faker.address.longitude()
     },
     customerOrderIds: [mongoose.Types.ObjectId()],
     productIds: [
@@ -83,7 +83,7 @@ const generateDummyReviews = () => {
   return {
     rating: rating,
     reviews: reviews
-  }; 
+  };
 };
 
 

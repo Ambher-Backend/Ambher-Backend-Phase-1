@@ -8,7 +8,7 @@ const commonUtils = require("../lib/common_utils");
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
-	"cityAndState": ["districtName", "stateName"]
+  "cityAndState": ["districtName", "stateName"]
 };
 
 

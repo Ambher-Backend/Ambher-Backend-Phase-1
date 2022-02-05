@@ -15,16 +15,16 @@ const signUpParamValidation = (req, res, next) => {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["name", "phoneNumber", "email", "password", "dob", "address"];
 
-    validator.validate("name", String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50);
-    validator.validate("phoneNumber", String, allowBlank=false, acceptedValues=undefined, minLength=10, maxLength=10);
+    validator.validate("name", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50);
+    validator.validate("phoneNumber", String, allowBlank = false, acceptedValues = undefined, minLength = 10, maxLength = 10);
     validator.validate("email", String);
-    validator.validate("password", String, allowBlank=false, acceptedValues=undefined, minLength=8);
+    validator.validate("password", String, allowBlank = false, acceptedValues = undefined, minLength = 8);
     validator.validate("dob", String);
     validator.validate("address", Array);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
-    
+
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
@@ -59,7 +59,7 @@ const logoutVendorParamValidation = (req, res, next) => {
     const acceptedParams = ["currentToken"];
 
     validator.validate("currentToken", String);
-    
+
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
@@ -77,7 +77,7 @@ const getVendorParamValidation = (req, res, next) => {
 
     validator.validate("vendorId", String);
     validator1.validate("currentToken", String);
-    
+
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
@@ -94,14 +94,14 @@ const generateVendorDummyDataValidation = (req, res, next) => {
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
 
     validator.validate("internalAuthKey", String);
-    validator.validate("deleteExisting", Boolean, allowBlank=false, acceptedValues=[true, false]);
-    validator.validate("total", Number, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    
+    validator.validate("deleteExisting", Boolean, allowBlank = false, acceptedValues = [true, false]);
+    validator.validate("total", Number, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50, regex = undefined, required = false);
+
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-			throw new Error("Dummy Data Creation Not Allowed on Production Server");
-		}
+      throw new Error("Dummy Data Creation Not Allowed on Production Server");
+    }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
@@ -150,5 +150,5 @@ const verifyEmailOtpValidation = (req, res, next) => {
 
 
 module.exports = {signUpParamValidation, loginVendorParamValidation, getVendorParamValidation,
-logoutVendorParamValidation, generateVendorDummyDataValidation, sendEmailOtpValidation,
-verifyEmailOtpValidation};
+  logoutVendorParamValidation, generateVendorDummyDataValidation, sendEmailOtpValidation,
+  verifyEmailOtpValidation};
