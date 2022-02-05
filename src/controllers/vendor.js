@@ -7,10 +7,10 @@ const seeder = require("../../config/database/seeder");
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
-	"postLogin": ["_id", "name", "email","profilePictureUrl","dob","address"],
+	"postLogin": ["_id", "name", "email", "profilePictureUrl", "dob", "address"],
 	"toVerify": ["email"],
-	"blocked" : ["name","email","blockedReason"],
-	"get":["_id", "name", "email", "phoneNumber","profilePictureUrl","dob","address"]
+	"blocked" : ["name", "email", "blockedReason"],
+	"get":["_id", "name", "email", "phoneNumber", "profilePictureUrl", "dob", "address"]
 };
 
 

@@ -19,13 +19,13 @@ const AdminAuth = async (req, res, next) => {
 			}
 		});
 
-		if(!admin) {
+		if (!admin) {
 			throw new Error ("Admin Auth Error");
 		}
-		if(admin.configuration.isVerified === false) {
+		if (admin.configuration.isVerified === false) {
 			throw new Error ("Admin account not verified");
 		}
-		if(admin.configuration.isBlocked === true) {
+		if (admin.configuration.isBlocked === true) {
 			throw new Error("Blocked for " + admin.blockedReason);
 		}
 
