@@ -13,7 +13,7 @@ const customerParamValidator = require("../param_validators/customer");
 
 
 //signup route
-router.post("/signup",customerParamValidator.signUpParamValidation, async (req, res) => {
+router.post("/signup", customerParamValidator.signUpParamValidation, async (req, res) => {
 	try {
 		await helper.handleSignup(req.body);
 		res.send(commonUtils.responseUtil(201, null, "Customer Created"));
@@ -36,10 +36,10 @@ router.post("/login", customerParamValidator.loginCustomerParamValidation, async
 
 //logout route
 router.post("/logout", customerParamValidator.logoutCustomerParamValidation, CustomerAuth, async (req, res) => {
-	try{
+	try {
 		await helper.handleLogout(req.body, req.user);
 		res.send(commonUtils.responseUtil(200, null, "Customer Logged out"));
-	} catch(err) {
+	} catch (err) {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	} 
 });
@@ -50,7 +50,7 @@ router.post("/create-dummy-data", customerParamValidator.generateCustomerDummyDa
 	try {
 		const verdict = await helper.generateDummyCustomers(req.body);
 		res.send(commonUtils.responseUtil(201, null, verdict));
-	} catch(err) {
+	} catch (err) {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
@@ -58,17 +58,17 @@ router.post("/create-dummy-data", customerParamValidator.generateCustomerDummyDa
 
 //get route for Customer details
 router.get("/:customerId", customerParamValidator.getCustomerParamValidation, CustomerAuth, async (req, res) => {
-	try{
+	try {
 		const customerResponse = await helper.handleGetDetails(req.params.customerId);
 		res.send(commonUtils.responseUtil(200, customerResponse, "Success"));
-	}catch(err){
+	} catch (err){
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
 
 
 //send a new otp to customer email
-router.post("/new-email-otp", customerParamValidator.sendEmailOtpValidation, async(req, res) => {
+router.post("/new-email-otp", customerParamValidator.sendEmailOtpValidation, async (req, res) => {
 	try {
 		await helper.sendEmailOtp(req.body.customerEmail);
 		res.send(commonUtils.responseUtil(200, null, "Customer Email OTP sent successfully"));
@@ -79,7 +79,7 @@ router.post("/new-email-otp", customerParamValidator.sendEmailOtpValidation, asy
 
 
 //verify customer email otp
-router.post("/verify-email-otp", customerParamValidator.verifyEmailOtpValidation, async(req, res) => {
+router.post("/verify-email-otp", customerParamValidator.verifyEmailOtpValidation, async (req, res) => {
 	try {
 		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req.body);
 		res.send(commonUtils.responseUtil(200, null, verifiedEmailOtpMessage));

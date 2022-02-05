@@ -34,16 +34,16 @@ if (config.util.getEnv("NODE_ENV") !== "test")
 // loading routers
 app.use("/documents", documentRouter);
 app.use("/admin", adminRouter);
-app.use("/customer",customerRouter);
+app.use("/customer", customerRouter);
 app.use("/vendor", vendorRouter);
 app.use("/product", productRouter);
 app.use("/public", publicRouter);
 
 
 app.get("/", async (req, res) => {
-  try{
+  try {
     res.send(responseUtil.responseUtil(200, null, "Api is working fine"));
-  }catch(err){
+  } catch (err){
     res.send(responseUtil.responseUtil(500, null, err.message));
   }
 });

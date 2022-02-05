@@ -15,7 +15,7 @@ const fetchFilteredProducts = require("../services/fetch_filtered_products");
 const eventKeyExposeObject = {
 	"postLogin": ["_id", "name", "email"],
 	"toVerify": ["email"],
-	"blocked" : ["name","email","blockedReason"],
+	"blocked" : ["name", "email", "blockedReason"],
 	"get":["_id", "name", "email", "phoneNumber"],
 };
 
@@ -107,7 +107,7 @@ const verifyEmailOtp = async (reqBody) => {
 const listVendors = async (reqBody) => {
 	const filteredVendors = await fetchFilteredVendors.filter(reqBody.filter);
 	let filteredVendorsResponse = []; 
-	for(let vendor of filteredVendors){
+	for (let vendor of filteredVendors){
 		const vendorResponse = {
 			_id: vendor._id,
 			profilePictureUrl: vendor.profilePictureUrl,
@@ -130,7 +130,7 @@ const vendorDetails = async (vendorId) => {
 	const vendor = await Vendor.findById(vendorId);
 	if (!vendor) {throw new Error ("Vendor Not Found");}
 	const address = commonUtils.filterObjectByAllowedKeys(
-		vendor.address, ["flatNo","buildingNo","streetName","city","state","country","zipcode"]
+		vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
 	);
 	let vendorResponse = {
 		_id: vendor._id,
@@ -200,7 +200,7 @@ const customerDetails = async (customerId) => {
 	const customer = await Customer.findById(customerId);
 	if (!customer) {throw new Error ("Customer Not Found");}
 	const address = commonUtils.filterObjectByAllowedKeys(
-		customer.address[0].toObject(), ["flatNo","buildingNo","streetName","city","state","country","zipcode"]
+		customer.address[0].toObject(), ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
 	);
 	let customerResponse = {
 		_id: customer._id,
@@ -320,5 +320,5 @@ const blockProduct = async (admin, reqBody) => {
 
 module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout,
 handleGetDetails, sendEmailOtp, verifyEmailOtp, listVendors, vendorDetails,
-verifyVendor, listCustomers , customerDetails, listProducts, productDetails,
+verifyVendor, listCustomers, customerDetails, listProducts, productDetails,
 verifyProduct, blockProduct};

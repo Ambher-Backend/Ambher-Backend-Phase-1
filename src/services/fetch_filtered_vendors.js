@@ -44,7 +44,7 @@ const buildQueryAndExecute = async (filter) => {
   if (filter["query"] !== undefined){
     filteredVendors = await Vendor.fuzzySearch(filter["query"], compositeQuery);
   }
-  else{
+  else {
     filteredVendors = await Vendor.find(compositeQuery);
   }
   return filteredVendors;

@@ -11,7 +11,7 @@ const commonUtils = require("../lib/common_utils");
 // TODO: Remove this ignore and fix named variables issue
 /* eslint-disable no-undef */
 const generateDocumentDummyDataValidation = (req, res, next) => {
-  try{
+  try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
 
@@ -26,7 +26,7 @@ const generateDocumentDummyDataValidation = (req, res, next) => {
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
-  }catch(err){
+  } catch (err){
     res.send(commonUtils.responseUtil(400, null, err.message));
   }
 };

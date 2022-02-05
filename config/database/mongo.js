@@ -5,7 +5,7 @@ let DbUri = "";
 
 if (process.env.NODE_ENV === "production"){
   DbUri = process.env.PROD_MONGO_URL;
-}else{
+} else {
   DbUri = config.DBHost;
 }
 

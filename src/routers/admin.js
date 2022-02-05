@@ -38,10 +38,10 @@ router.post("/login", adminParamValidator.loginAdminParamValidation, async (req,
 
 //get route for admin details
 router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, async (req, res) => {
-	try{
+	try {
 		const adminResponse = await helper.handleGetDetails(req.params.adminId);
 		res.send(commonUtils.responseUtil(200, adminResponse, "Success"));
-	}catch(err) {
+	} catch (err) {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });
@@ -49,10 +49,10 @@ router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, 
 
 //logout route
 router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth, async (req, res) => {
-	try{
+	try {
 		await helper.handleLogout(req.body, req.user);
 		res.send(commonUtils.responseUtil(200, null, "Admin Logged out"));
-	} catch(err) {
+	} catch (err) {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	} 
 });
@@ -63,14 +63,14 @@ router.post("/create-dummy-data", adminParamValidator.generateAdminDummyDataVali
 	try {
 		const message = await helper.generateDummyAdmins(req.body);
 		res.send(commonUtils.responseUtil(201, null, message));
-	} catch(err) {
+	} catch (err) {
 		res.send(commonUtils.responseUtil(500, null, err.message));
 	}
 });
 
 
 //send a new otp to admin email
-router.post("/new-email-otp", adminParamValidator.sendEmailOtpValidation, async(req, res) => {
+router.post("/new-email-otp", adminParamValidator.sendEmailOtpValidation, async (req, res) => {
 	try {
 		await helper.sendEmailOtp(req.body.adminEmail);
 		res.send(commonUtils.responseUtil(200, null, "Admin Email OTP sent successfully"));
@@ -96,10 +96,10 @@ router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, a
 //
 //view vendor list based on filters
 router.post("/vendors", adminParamValidator.listVendorsValidation, AdminAuth, async (req, res) => {
-	try{
+	try {
 		const filteredVendors = await helper.listVendors(req.body);
 		res.send(commonUtils.responseUtil(200, filteredVendors, "Vendor List"));
-	}catch(err) {
+	} catch (err) {
 		res.send(commonUtils.responseUtil(400, null, err.message));
 	}
 });

@@ -8,17 +8,17 @@ const vendorSeeder = require("./vendor").generateDummyVendor;
 
 
 const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
-  try{
+  try {
     if (deleteExisting === true){
       await Product.deleteMany({});
       commonUtils.successLog(`All documents from collection || Product || deleted on "${new Date().toString()}" by 'Admin'`);
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
-    for(let i = 0; i < documentsToGenerate; i++) {
+    for (let i = 0; i < documentsToGenerate; i++) {
       await generateDummyProduct();
     }
     return `${totalToGenerate} products generated successfully!`;
-  }catch(err){
+  } catch (err){
     return `Error: ||${err.message}|| occured in generating products`;
   }
 };
@@ -28,7 +28,7 @@ const generateDummyProduct = async () => {
   const vendorId = await vendorSeeder();
   let zipCodes = [];
   let noOfZipCodes = commonUtils.getRandomNumber(1, 10);
-  for(let i = 0;i < noOfZipCodes;i++){
+  for (let i = 0;i < noOfZipCodes;i++){
     zipCodes.push(faker.address.zipCode());
   }
   const productObject = {
@@ -57,8 +57,8 @@ const generateDummyProduct = async () => {
 
 const generateDummyProductDetails = () => {
   let details = [];
-  let nSizes = commonUtils.getRandomNumber(2,4);
-  for(let i = 0;i < nSizes;i++){
+  let nSizes = commonUtils.getRandomNumber(2, 4);
+  for (let i = 0;i < nSizes;i++){
     let detail = {};
     detail["size"] = commonUtils.getRandomNumber(32, 51);
     let nColors = commonUtils.getRandomNumber(2, 4);

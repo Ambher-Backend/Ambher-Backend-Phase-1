@@ -38,7 +38,7 @@ const ProductSchema = new mongoose.Schema(
       type: [String],
       required: true,
       validate(value) {
-        if(value.length === 0) {
+        if (value.length === 0) {
           throw new Error("One deliverable pincode required");
         }
       }
@@ -128,7 +128,7 @@ const ProductSchema = new mongoose.Schema(
 
 // This validator is trimming all the fields and is removing special characters from string entries.
 // Used function because pre method doesn't support arrow functions as call back.
-ProductSchema.pre("save", async function (next) {
+ProductSchema.pre("save", async function(next) {
   for (const key in this) {
     if (typeof this[key] == "string") {
       this[key] = this[key].trim();

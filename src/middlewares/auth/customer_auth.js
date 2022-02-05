@@ -22,13 +22,13 @@ const CustomerAuth = async (req, res, next) => {
 			}
 		});
 
-		if(!customer) {
+		if (!customer) {
 			throw new Error ("Customer Auth Error");
 		}
-		if(customer.isVerified === false) {
+		if (customer.isVerified === false) {
 			throw new Error ("Customer account not verified");
 		}
-		if(customer.isBlocked === true) {
+		if (customer.isBlocked === true) {
 			throw new Error("Blocked for " + customer.blockedReason);
 		}
 

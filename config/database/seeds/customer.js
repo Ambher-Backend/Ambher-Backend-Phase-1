@@ -7,17 +7,17 @@ const commonUtils = require("../../../src/lib/common_utils");
 
 
 const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
-  try{
+  try {
     if (deleteExisting === true){
       await Customer.deleteMany({});
       commonUtils.successLog(`All documents from collection || Customer || deleted on "${new Date().toString()}" by 'Admin'`);
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 5 : totalToGenerate);
-    for(let i = 0; i < documentsToGenerate; i++) {
+    for (let i = 0; i < documentsToGenerate; i++) {
       await generateDummyCustomer();
     }
     return `${totalToGenerate} customers generated successfully!`;
-  }catch(err){
+  } catch (err){
     return `Error: ||${err.message}|| occured in generating customers`;
   }
 };
@@ -28,7 +28,7 @@ const generateDummyCustomer = async () => {
   const customerObject = {
     name: faker.name.firstName(),
     phoneNumber: faker.phone.phoneNumber(),
-    email: faker.internet.email() ,
+    email: faker.internet.email(),
     password: "12345678",
     dob:faker.date.recent(),
     configuration: {
