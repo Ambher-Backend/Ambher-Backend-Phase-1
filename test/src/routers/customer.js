@@ -35,6 +35,10 @@ describe("Customer APIs", async () => {
   });
 
   describe("Customer Signup APIs", async () => {
+    after(async () => {
+      await Customer.deleteMany({});
+    });
+
     describe("When params are valid", async () => {
       let response = {};
       beforeEach(async () => {
@@ -54,7 +58,14 @@ describe("Customer APIs", async () => {
   });
 
   describe("Customer Login APIs", async () => {
-    // This function is important because
+    before(async () => {
+      await customerSeeder.generateAndSaveDummyCustomer({"email": testEmail});
+    });
+
+    after(async () => {
+      await Customer.deleteMany({});
+    });
+
     afterEach(async () => {
       await toggleVerificationStatus({email: testEmail}, false);
     });
@@ -114,6 +125,10 @@ describe("Customer APIs", async () => {
   });
 
   describe("Customer Logout APIs", async () => {
+    after(async () => {
+      await Customer.deleteMany({});
+    });
+
     describe("When user is not logged in", async () => {
       let response = {};
       beforeEach(async () => {
@@ -202,6 +217,10 @@ describe("Customer APIs", async () => {
   });
 
   describe("Send Verification Email Customer APIs", async () => {
+    after(async () => {
+      await Customer.deleteMany({});
+    });
+
     describe("When request email is invalid", async () => {
       let response = {};
       beforeEach(async () => {
@@ -242,6 +261,10 @@ describe("Customer APIs", async () => {
   });
 
   describe("Verify Email Otp Customer APIs", async () => {
+    after(async () => {
+      await Customer.deleteMany({});
+    });
+
     describe("When request email is invalid", async () => {
       let response = {};
       beforeEach(async () => {
@@ -308,10 +331,5 @@ describe("Customer APIs", async () => {
         expect(response.body.message).to.eql("Customer OTP verified successfully");
       });
     });
-  });
-
-  // This hook will run only once after the test-suite ends for clean-up and other purposes.
-  after(async () => {
-    await Customer.deleteMany({});
   });
 });
