@@ -1,3 +1,4 @@
+[![Node.js CI](https://github.com/Ambher-Backend/Ambher-Backend-Phase-1/actions/workflows/formatter.yml/badge.svg)](https://github.com/Ambher-Backend/Ambher-Backend-Phase-1/actions/workflows/formatter.yml)
 ## Ambher-Backend-Phase-1
 
 
