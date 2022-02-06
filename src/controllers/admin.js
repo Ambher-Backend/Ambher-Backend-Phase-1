@@ -51,7 +51,7 @@ const handleLogin = async (reqBody) => {
 
 const handleGetDetails = async (adminId) => {
 	const admin = await Admin.findById(adminId);
-	if (admin == undefined) {
+	if (!admin) {
 		let err = new Error ("Invalid Admin ID");
 		err.status = 422;
 		throw err;
@@ -80,7 +80,7 @@ const sendEmailOtp = async (adminEmail) => {
 	let admin = await Admin.findOne({
 		email: adminEmail
 	});
-	if (admin == undefined) {
+	if (!admin) {
 		let err = new Error("Invalid Email, Admin Not registered");
 		err.status = 400;
 		throw err;
@@ -97,7 +97,7 @@ const verifyEmailOtp = async (reqBody) => {
 	let admin = await Admin.findOne({ 
 		email: reqBody.adminEmail
 	});
-	if (admin == undefined) {
+	if (!admin) {
 		let err = new Error("Invalid Email, Admin Not registered");
 		err.status = 400;
 		throw err;
@@ -143,7 +143,7 @@ const listVendors = async (reqBody) => {
 
 const vendorDetails = async (vendorId) => {
 	const vendor = await Vendor.findById(vendorId);
-	if (vendor == undefined) {
+	if (!vendor) {
 		let err = new Error ("Vendor Not Found");
 		err.status = 400;
 		throw err;
@@ -182,7 +182,7 @@ const vendorDetails = async (vendorId) => {
 
 const verifyVendor = async (admin, reqBody) => {
 	let vendor = await Vendor.findById(reqBody.vendorId);
-	if (vendor == undefined) {
+	if (!vendor) {
 		let err = new Error("Invalid vendor ID");
 		err.status = 400;
 		throw err;
@@ -225,7 +225,7 @@ const listCustomers = async (reqBody) => {
 
 const customerDetails = async (customerId) => {
 	const customer = await Customer.findById(customerId);
-	if (customer == undefined) {
+	if (!customer) {
 		let err = new Error ("Customer Not Found");
 		err.status = 400;
 		throw err;
@@ -326,7 +326,7 @@ const productDetails = async (productId) => {
 
 const verifyProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
-	if (product == undefined) {
+	if (!product) {
 		let err = new Error("Invalid product ID");
 		err.status = 400;
 		throw err;
@@ -344,7 +344,7 @@ const verifyProduct = async (admin, reqBody) => {
 
 const blockProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
-	if (product == undefined) {
+	if (!product) {
 		let err = new Error("Invalid product ID");
 		err.status = 400;
 		throw err;
