@@ -19,7 +19,7 @@ const responseCodes = require("../lib/constants").RESPONSE_CODES;
 router.post("/signup", adminParamValidator.signUpParamValidation, async (req, res)=>{
   try {
     await helper.handleSignup(req.body);
-    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Admin Created"));
+    res.send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, "Admin Created"));
   } catch (err) {
     const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
@@ -67,7 +67,7 @@ router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth
 router.post("/create-dummy-data", adminParamValidator.generateAdminDummyDataValidation, async (req, res) => {
   try {
     const message = await helper.generateDummyAdmins(req.body);
-    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, message));
+    res.send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, message));
   } catch (err) {
     const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
