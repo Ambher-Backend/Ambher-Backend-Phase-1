@@ -100,7 +100,7 @@ class ParamValidator{
 // checks email format.
 const checkEmailFormat = (email) => {
   if (!validator.isEmail(email)){
-    throw commonUtils.generateError(responseCodes.BAD_REQUEST_CODE, "Email is not valid");
+    throw new Error ("Email is not valid");
   }
 };
 
@@ -108,7 +108,7 @@ const checkEmailFormat = (email) => {
 // check indian phone number
 const checkPhoneNumber = (phoneNumber) => {
   if (!validator.isMobilePhone(phoneNumber, ["en-IN"])){
-    throw commonUtils.generateError(responseCodes.BAD_REQUEST_CODE, "Phone Number is Invalid");
+    throw new Error ("Phone Number is Invalid");
   }
 };
 

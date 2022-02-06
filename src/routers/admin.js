@@ -21,7 +21,7 @@ router.post("/signup", adminParamValidator.signUpParamValidation, async (req, re
     await helper.handleSignup(req.body);
     res.send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, "Admin Created"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -33,7 +33,7 @@ router.post("/login", adminParamValidator.loginAdminParamValidation, async (req,
     const adminLoginResponse = await helper.handleLogin(req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, adminLoginResponse.adminObjectToExpose, adminLoginResponse.message));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -45,7 +45,7 @@ router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, 
     const adminResponse = await helper.handleGetDetails(req.params.adminId);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, adminResponse, "Success"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -57,7 +57,7 @@ router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth
     await helper.handleLogout(req.body, req.user);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Admin Logged out"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -69,7 +69,7 @@ router.post("/create-dummy-data", adminParamValidator.generateAdminDummyDataVali
     const message = await helper.generateDummyAdmins(req.body);
     res.send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, message));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -81,7 +81,7 @@ router.post("/new-email-otp", adminParamValidator.sendEmailOtpValidation, async 
     await helper.sendEmailOtp(req.body.adminEmail);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Admin Email OTP sent successfully"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -93,7 +93,7 @@ router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, a
     const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifiedEmailOtpMessage));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -108,7 +108,7 @@ router.post("/vendors", adminParamValidator.listVendorsValidation, AdminAuth, as
     const filteredVendors = await helper.listVendors(req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredVendors, "Vendor List"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -120,7 +120,7 @@ router.get("/vendor-details/:vendorId", adminParamValidator.viewVendorDetailsVal
     const vendorDetailsResponse = await helper.vendorDetails(req.params.vendorId);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorDetailsResponse, "Vendor Details"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -132,7 +132,7 @@ router.post("/verify-vendor", adminParamValidator.verifyVendorAccountValidation,
     const verifyVendorAccountMessage = await helper.verifyVendor(req.user, req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyVendorAccountMessage));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -147,7 +147,7 @@ router.post("/customers", adminParamValidator.listCustomersValidation, AdminAuth
     const filteredCustomers = await helper.listCustomers(req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredCustomers, "Customer List"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -159,7 +159,7 @@ router.get("/customer-details/:customerId", adminParamValidator.viewCustomerDeta
     const customerDetailsResponse = await helper.customerDetails(req.params.customerId);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerDetailsResponse, "Customer Details"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -174,7 +174,7 @@ router.post("/products", adminParamValidator.listProductsValidation, AdminAuth, 
     const filteredProducts = await helper.listProducts(req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredProducts, "Product List"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -186,7 +186,7 @@ router.get("/product-details/:productId", adminParamValidator.viewProductDetails
     const productDetailsResponse = await helper.productDetails(req.params.productId);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, productDetailsResponse, "Product Details"));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -198,7 +198,7 @@ router.post("/verify-product", adminParamValidator.verifyProductValidation, Admi
     const verifyProductMessage = await helper.verifyProduct(req.user, req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyProductMessage));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
@@ -210,7 +210,7 @@ router.post("/block-product", adminParamValidator.blockProductValidation, AdminA
     const blockProductMessage = await helper.blockProduct(req.user, req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, blockProductMessage));
   } catch (err) {
-    const statusCode = (!err.status) ? responseCodes.INTERNAL_SERVER_ERROR_CODE : err.status;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });

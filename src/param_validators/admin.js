@@ -102,13 +102,13 @@ const generateAdminDummyDataValidation = (req, res, next) => {
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-      throw commonUtils.generateError(responseCodes.UNAUTHORISED_ERROR_CODE, "Dummy Data Creation Not Allowed on Production Server");
+      throw commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Dummy Data Creation Not Allowed on Production Server");
     }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    const statusCode = (!err.status) ? responseCodes.BAD_REQUEST_CODE : err.status;
+    const statusCode = err.status || responseCodes.BAD_REQUEST_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
