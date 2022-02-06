@@ -336,7 +336,7 @@ describe("Customer APIs", async () => {
           .send(requestBody);
       });
 
-      it("sends otp successfully", async () => {
+      it("verifies otp successfully", async () => {
         expect(response.body.status).to.eql(200);
         expect(response.body.message).to.eql("Customer OTP verified successfully");
       });
