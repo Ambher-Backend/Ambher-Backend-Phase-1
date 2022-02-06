@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 if (config.util.getEnv("NODE_ENV") !== "test")
 {
-  app.use(morgan("dev"));  
+  app.use(morgan("dev"));
 }
 // loading routers
 app.use("/documents", documentRouter);

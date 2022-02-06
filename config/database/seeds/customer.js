@@ -14,7 +14,7 @@ const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 5 : totalToGenerate);
     for (let i = 0; i < documentsToGenerate; i++) {
-      await generateDummyCustomer();
+      await generateAndSaveDummyCustomer();
     }
     return `${totalToGenerate} customers generated successfully!`;
   } catch (err){
@@ -23,37 +23,43 @@ const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
 };
 
 
-const generateDummyCustomer = async () => {
-  const reviews = generateDummyReviews();
-  const customerObject = {
-    name: faker.name.firstName(),
-    phoneNumber: faker.phone.phoneNumber(),
-    email: faker.internet.email(),
-    password: "12345678",
-    dob:faker.date.recent(),
-    configuration: {
-      isVerified: true,
-      isBlocked: false,
-    },
-    blockedReason: "",
-    address:[
-      {
-        flatNo:faker.random.alphaNumeric(2),
-        buildingNo:faker.random.alphaNumeric(2),
-        streetName:faker.address.streetName(),
-        city:faker.address.city(),
-        state:faker.address.state(),
-        country:faker.address.country(),
-        zipCode:faker.address.zipCode(),
-        lat:faker.address.latitude(),
-        lon:faker.address.longitude()
-      }
-    ],
-    reviews: reviews
-  };
-  const customer = new Customer(customerObject);
+const generateAndSaveDummyCustomer = async (options = {}) => {
+  const customer = new Customer(generateDummyCustomerObject(options = options));
   await customer.save();
   return customer._id;
+};
+
+
+const generateDummyCustomerObject = (options = {}) => {
+  const customerObject = {
+    name: faker.name.firstName(),
+    phoneNumber: commonUtils.genPhoneNumber(),
+    email: options["email"] === undefined ? faker.internet.email() : options["email"],
+    password: "12345678",
+    dob: faker.date.recent(),
+    configuration: {
+      isVerified: options["isVerified"] === true ? true : false,
+      isBlocked: options["isBlocked"] === true ? true : false,
+    },
+    blockedReason: "",
+    address: [
+      {
+        flatNo: faker.random.alphaNumeric(2),
+        buildingNo: faker.random.alphaNumeric(2),
+        streetName: faker.address.streetName(),
+        city: faker.address.city(),
+        state: faker.address.state(),
+        country: faker.address.country(),
+        zipCode: faker.address.zipCode(),
+        lat: faker.address.latitude(),
+        lon: faker.address.longitude()
+      }
+    ],
+  };
+  if (options["isVerified"] === true){
+    customerObject.reviews = generateDummyReviews();
+  }
+  return customerObject;
 };
 
 
@@ -74,4 +80,4 @@ const generateDummyReviews = () => {
 
 
 
-module.exports = {generateDummyCustomerData, generateDummyCustomer};
+module.exports = {generateDummyCustomerData, generateAndSaveDummyCustomer, generateDummyCustomerObject};

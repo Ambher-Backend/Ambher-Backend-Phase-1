@@ -15,12 +15,12 @@ const signUpParamValidation = (req, res, next) => {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["name", "phoneNumber", "email", "password", "dob", "profilePictureUrl"];
 
-    validator.validate("name", String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50);
-    validator.validate("phoneNumber", String, allowBlank=false, acceptedValues=undefined, minLength=10, maxLength=10);
+    validator.validate("name", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50);
+    validator.validate("phoneNumber", String, allowBlank = false, acceptedValues = undefined, minLength = 10, maxLength = 10);
     validator.validate("email", String);
-    validator.validate("password", String, allowBlank=false, acceptedValues=undefined, minLength=8);
+    validator.validate("password", String, allowBlank = false, acceptedValues = undefined, minLength = 8);
     validator.validate("dob", String);
-    validator.validate("profilePictureUrl", Number, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    validator.validate("profilePictureUrl", Number, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
@@ -95,14 +95,14 @@ const generateCustomerDummyDataValidation = (req, res, next) => {
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
 
     validator.validate("internalAuthKey", String);
-    validator.validate("deleteExisting", Boolean, allowBlank=false, acceptedValues=[true, false]);
-    validator.validate("total", Number, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    validator.validate("deleteExisting", Boolean, allowBlank = false, acceptedValues = [true, false]);
+    validator.validate("total", Number, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50, regex = undefined, required = false);
 
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-			throw new Error("Dummy Data Creation Not Allowed on Production Server");
-		}
+      throw new Error("Dummy Data Creation Not Allowed on Production Server");
+    }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
@@ -151,5 +151,5 @@ const verifyEmailOtpValidation = (req, res, next) => {
 
 
 module.exports = {signUpParamValidation, loginCustomerParamValidation, getCustomerParamValidation,
-logoutCustomerParamValidation, generateCustomerDummyDataValidation, sendEmailOtpValidation,
-verifyEmailOtpValidation};
+  logoutCustomerParamValidation, generateCustomerDummyDataValidation, sendEmailOtpValidation,
+  verifyEmailOtpValidation};
