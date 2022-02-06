@@ -312,7 +312,7 @@ describe("Customer APIs", async () => {
           .send(requestBody);
       });
 
-      it("returns invalid opt error", async () => {
+      it("returns invalid otp error", async () => {
         expect(response.body.status).to.eql(400);
         expect(response.body.message).to.eql("Wrong Customer Email OTP");
       });
