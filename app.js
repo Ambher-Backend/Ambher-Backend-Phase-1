@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 5000;
 
 // Internal Imports
 const commonUtils = require("./src/lib/common_utils");
+const responseCodes = require("./src/lib/constants").RESPONSE_CODES;
 
 
 // Router Imports
@@ -42,9 +43,9 @@ app.use("/public", publicRouter);
 
 app.get("/", async (req, res) => {
   try {
-    res.send(commonUtils.responseUtil(200, null, "Api is working fine"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Api is working fine"));
   } catch (err){
-    res.send(commonUtils.responseUtil(500, null, err.message));
+    res.send(commonUtils.responseUtil(responseCodes.INTERNAL_SERVER_ERROR_CODE, null, err.message));
   }
 });
 

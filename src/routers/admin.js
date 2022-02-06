@@ -169,7 +169,7 @@ router.get("/customer-details/:customerId", adminParamValidator.viewCustomerDeta
 //**************************Admin Products Routes*******************************
 //
 //view product list based on filters
-router.post("/products", adminParamValidator.viewProductsValidation, AdminAuth, async (req, res) => {
+router.post("/products", adminParamValidator.listProductsValidation, AdminAuth, async (req, res) => {
   try {
     const filteredProducts = await helper.listProducts(req.body);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredProducts, "Product List"));
