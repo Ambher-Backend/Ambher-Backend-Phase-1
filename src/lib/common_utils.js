@@ -77,7 +77,7 @@ const generateError = (status, message) => {
   let err = new Error (message);
   err.status = status;
   return err;
-}
+};
 
 
 module.exports = {responseUtil, errorLog, successLog, getOtp, genCode,

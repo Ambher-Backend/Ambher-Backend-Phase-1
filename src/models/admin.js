@@ -8,8 +8,8 @@ dotenv.config();
 
 
 //internal imports
-const commonUtils = require('../lib/common_utils');
-const responseCodes = require('../lib/constants').RESPONSE_CODES;
+const commonUtils = require("../lib/common_utils");
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
 
 //defining schema

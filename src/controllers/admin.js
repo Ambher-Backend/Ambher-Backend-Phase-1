@@ -32,11 +32,11 @@ const handleSignup = async (reqBody) => {
 
 const handleLogin = async (reqBody) => {
   let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
-	if (adminResponse === "Password Incorrect") {
-		const adminObjectToExpose = null;
-		const message = adminResponse;
-		return {adminObjectToExpose, message};
-	}
+  if (adminResponse === "Password Incorrect") {
+    const adminObjectToExpose = null;
+    const message = adminResponse;
+    return {adminObjectToExpose, message};
+  }
   if (adminResponse.configuration.isVerified === false) {
     const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject["toVerify"]);
     const message = "Admin Email needs to be verified";
@@ -57,9 +57,9 @@ const handleLogin = async (reqBody) => {
 
 const handleGetDetails = async (adminId) => {
   const admin = await Admin.findById(adminId);
-	if (!admin) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Admin ID");
-	}
+  if (!admin) {
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Admin ID");
+  }
   const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(admin.toObject(), eventKeyExposeObject["get"]);
   return adminObjectToExpose;
 };
@@ -85,8 +85,8 @@ const sendEmailOtp = async (adminEmail) => {
     email: adminEmail
   });
   if (!admin) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Email, Admin Not registered");
-	}
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Email, Admin Not registered");
+  }
   const otpToSend = commonUtils.getOtp();
   admin.emailOtps.push(otpToSend);
   await admin.save();
@@ -100,8 +100,8 @@ const verifyEmailOtp = async (reqBody) => {
     email: reqBody.adminEmail
   });
   if (!admin) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Email, Admin Not registered");
-	}
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Email, Admin Not registered");
+  }
   const otpToVerify = admin.emailOtps[admin.emailOtps.length - 1];
   if (otpToVerify === reqBody.otp) {
     admin.configuration.isVerified = true;
@@ -142,8 +142,8 @@ const listVendors = async (reqBody) => {
 const vendorDetails = async (vendorId) => {
   const vendor = await Vendor.findById(vendorId);
   if (!vendor) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor Not Found");
-	}
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor Not Found");
+  }
   const address = commonUtils.filterObjectByAllowedKeys(
     vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
   );
@@ -179,11 +179,11 @@ const vendorDetails = async (vendorId) => {
 const verifyVendor = async (admin, reqBody) => {
   let vendor = await Vendor.findById(reqBody.vendorId);
   if (!vendor) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid vendor ID");
-	}
-	if (vendor.configuration.isVerified === false) {
-		throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Vendor needs to verify their email");
-	}
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid vendor ID");
+  }
+  if (vendor.configuration.isVerified === false) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Vendor needs to verify their email");
+  }
   if (vendor.configuration.isVerified === false){throw new Error("Vendor needs to verify their email");}
   vendor.configuration.isVerifiedByAdmin = true;
   vendor.verifiedBy = admin._id;
@@ -219,8 +219,8 @@ const listCustomers = async (reqBody) => {
 const customerDetails = async (customerId) => {
   const customer = await Customer.findById(customerId);
   if (!customer) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Customer Not Found");
-	}
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Customer Not Found");
+  }
   const address = commonUtils.filterObjectByAllowedKeys(
     customer.address[0].toObject(), ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
   );
@@ -279,8 +279,8 @@ const listProducts = async (reqBody) => {
 const productDetails = async (productId) => {
   const product = await Product.findById(productId);
   if (!product) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Product Not Found");
-	}
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Product Not Found");
+  }
   const ownerVendor = await Vendor.findById(product.vendorId);
   let productResponse = {
     _id: product._id,
@@ -316,8 +316,8 @@ const productDetails = async (productId) => {
 const verifyProduct = async (admin, reqBody) => {
   let product = await Product.findById(reqBody.productId);
   if (!product) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid product ID");
-	}
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid product ID");
+  }
   product.configuration.isVerifiedByAdmin = true;
   product.verifiedBy = admin._id;
   await product.save();
@@ -332,11 +332,11 @@ const verifyProduct = async (admin, reqBody) => {
 const blockProduct = async (admin, reqBody) => {
   let product = await Product.findById(reqBody.productId);
   if (!product) {
-		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid product ID");
-	}
-	if (product.configuration.isVerifiedByAdmin === false) {
-		throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Product needs to be verified first");
-	}
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid product ID");
+  }
+  if (product.configuration.isVerifiedByAdmin === false) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Product needs to be verified first");
+  }
   product.configuration.isBlocked = true;
   product.blockedBy = admin._id;
   product.blockedReason = reqBody.blockedReason;

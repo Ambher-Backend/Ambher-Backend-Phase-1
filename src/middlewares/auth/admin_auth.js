@@ -6,7 +6,7 @@ dotenv.config();
 //internal imports
 const commonUtils = require("../../lib/common_utils");
 const Admin = require("../../models/admin");
-const responseCodes = require('../../lib/constants').RESPONSE_CODES;
+const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 const AdminAuth = async (req, res, next) => {
   try {
@@ -33,9 +33,9 @@ const AdminAuth = async (req, res, next) => {
     req.currentToken = token;
     next();
   } catch (err) {
-		commonUtils.errorLog(err.message);
+    commonUtils.errorLog(err.message);
     const statusCode = responseCodes.UNAUTHORISED_ERROR_CODE;
-		res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
