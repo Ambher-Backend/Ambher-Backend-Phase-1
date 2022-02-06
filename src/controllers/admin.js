@@ -9,6 +9,7 @@ const seeder = require("../../config/database/seeder");
 const fetchFilteredVendors = require("../services/fetch_filtered_vendors");
 const fetchFilteredCustomers = require("../services/fetch_filtered_customers");
 const fetchFilteredProducts = require("../services/fetch_filtered_products");
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
@@ -31,6 +32,11 @@ const handleSignup = async (reqBody) => {
 
 const handleLogin = async (reqBody) => {
 	let adminResponse = await Admin.findByCredentials(reqBody.email, reqBody.password);
+	if (adminResponse === "Password Incorrect") {
+		const adminObjectToExpose = null;
+		const message = adminResponse;
+		return {adminObjectToExpose, message};
+	}
 	if (adminResponse.configuration.isVerified === false) {
 		const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(adminResponse.toObject(), eventKeyExposeObject["toVerify"]);	
 		const message = "Admin Email needs to be verified";
@@ -52,9 +58,7 @@ const handleLogin = async (reqBody) => {
 const handleGetDetails = async (adminId) => {
 	const admin = await Admin.findById(adminId);
 	if (!admin) {
-		let err = new Error ("Invalid Admin ID");
-		err.status = 422;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Admin ID");
 	}
 	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(admin.toObject(), eventKeyExposeObject["get"]);
 	return adminObjectToExpose;
@@ -81,9 +85,7 @@ const sendEmailOtp = async (adminEmail) => {
 		email: adminEmail
 	});
 	if (!admin) {
-		let err = new Error("Invalid Email, Admin Not registered");
-		err.status = 400;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Email, Admin Not registered");
 	}
 	const otpToSend = commonUtils.getOtp();
 	admin.emailOtps.push(otpToSend);
@@ -98,9 +100,7 @@ const verifyEmailOtp = async (reqBody) => {
 		email: reqBody.adminEmail
 	});
 	if (!admin) {
-		let err = new Error("Invalid Email, Admin Not registered");
-		err.status = 400;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Email, Admin Not registered");
 	}
 	const otpToVerify = admin.emailOtps[admin.emailOtps.length - 1];
 	if (otpToVerify === reqBody.otp) {
@@ -109,9 +109,7 @@ const verifyEmailOtp = async (reqBody) => {
 		return "Admin Email OTP verified successfully";
 	}
 	else {
-		let err = new Error("Wrong Admin Email OTP");
-		err.status = 422;
-		throw err;
+		return "Wrong Admin Email OTP";
 	}
 };
 
@@ -144,9 +142,7 @@ const listVendors = async (reqBody) => {
 const vendorDetails = async (vendorId) => {
 	const vendor = await Vendor.findById(vendorId);
 	if (!vendor) {
-		let err = new Error ("Vendor Not Found");
-		err.status = 400;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor Not Found");
 	}
 	const address = commonUtils.filterObjectByAllowedKeys(
 		vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
@@ -183,14 +179,10 @@ const vendorDetails = async (vendorId) => {
 const verifyVendor = async (admin, reqBody) => {
 	let vendor = await Vendor.findById(reqBody.vendorId);
 	if (!vendor) {
-		let err = new Error("Invalid vendor ID");
-		err.status = 400;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid vendor ID");
 	}
 	if (vendor.configuration.isVerified === false) {
-		let err = new Error("Vendor needs to verify their email");
-		err.status = 405;
-		throw err;
+		throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Vendor needs to verify their email");
 	}
 	vendor.configuration.isVerifiedByAdmin = true;
 	vendor.verifiedBy = admin._id;
@@ -226,9 +218,7 @@ const listCustomers = async (reqBody) => {
 const customerDetails = async (customerId) => {
 	const customer = await Customer.findById(customerId);
 	if (!customer) {
-		let err = new Error ("Customer Not Found");
-		err.status = 400;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Customer Not Found");
 	}
 	const address = commonUtils.filterObjectByAllowedKeys(
 		customer.address[0].toObject(), ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
@@ -288,9 +278,7 @@ const listProducts = async (reqBody) => {
 const productDetails = async (productId) => {
 	const product = await Product.findById(productId);
 	if (!product) {
-		let err = new Error ("Product Not Found");
-		err.status = 400;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Product Not Found");
 	}
 	const ownerVendor = await Vendor.findById(product.vendorId);
 	let productResponse = {
@@ -327,9 +315,7 @@ const productDetails = async (productId) => {
 const verifyProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
 	if (!product) {
-		let err = new Error("Invalid product ID");
-		err.status = 400;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid product ID");
 	}
 	product.configuration.isVerifiedByAdmin = true;
 	product.verifiedBy = admin._id;
@@ -345,14 +331,10 @@ const verifyProduct = async (admin, reqBody) => {
 const blockProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
 	if (!product) {
-		let err = new Error("Invalid product ID");
-		err.status = 400;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid product ID");
 	}
 	if (product.configuration.isVerifiedByAdmin === false) {
-		let err = new Error("Product needs to be verified first");
-		err.status = 405;
-		throw err;
+		throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Product needs to be verified first");
 	}
 	product.configuration.isBlocked = true;
 	product.blockedBy = admin._id;

@@ -6,6 +6,12 @@ const bcrypt = require("bcryptjs");
 
 dotenv.config();
 
+
+//internal imports
+const commonUtils = require('../lib/common_utils');
+const responseCodes = require('../lib/constants').RESPONSE_CODES;
+
+
 //defining schema
 
 const AdminSchema = new mongoose.Schema({
@@ -88,15 +94,11 @@ AdminSchema.statics.findByCredentials = async (email, password) => {
 		email: email,
 	});
 	if (!admin) {
-		let err = new Error ("Admin not found");
-		err.status = 422;
-		throw err;
+		throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Admin not found");
 	}
 	const passwordMatched = await bcrypt.compare(password, admin.password);
 	if (!passwordMatched) {
-		let err = new Error ("Password Incorrect");
-		err.status = 422;
-		throw err;
+		return "Password Incorrect";
 	}
 	return admin;
 };
