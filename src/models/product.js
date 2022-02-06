@@ -23,7 +23,7 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
     gender: {
-      type:String,
+      type: String,
       enum: {
         values: ["Male", "Female", "Unisex"],
         message: "{VALUE} gender is not supported"

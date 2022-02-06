@@ -16,13 +16,13 @@ const generateDocumentDummyDataValidation = (req, res, next) => {
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
 
     validator.validate("internalAuthKey", String);
-    validator.validate("deleteExisting", Boolean, allowBlank=false, acceptedValues=[true, false]);
-    validator.validate("total", Number, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
+    validator.validate("deleteExisting", Boolean, allowBlank = false, acceptedValues = [true, false]);
+    validator.validate("total", Number, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50, regex = undefined, required = false);
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-			throw new Error("Dummy Data Creation Not Allowed on Production Server");
-		}
+      throw new Error("Dummy Data Creation Not Allowed on Production Server");
+    }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
