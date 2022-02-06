@@ -110,7 +110,7 @@ AdminSchema.pre("save", async function(next) {
 		this.password = hash;
 	}
 	for (const key in this){
-		if (typeof(this[key]) == "string" && key !== "password"){
+		if (typeof(this[key]) === "string" && key !== "password"){
 			this[key] = this[key].trim();
 		}
 	}

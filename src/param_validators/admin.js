@@ -105,7 +105,7 @@ const generateAdminDummyDataValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil( (err.status == undefined) ? 400 : err.status, null, err.message));
+    res.send(commonUtils.responseUtil( (!err.status) ? 400 : err.status, null, err.message));
   }
 };
 
