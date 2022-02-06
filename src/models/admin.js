@@ -87,7 +87,7 @@ AdminSchema.statics.findByCredentials = async (email, password) => {
 	const admin = await Admin.findOne({
 		email: email,
 	});
-	if (admin == undefined) {
+	if (!admin) {
 		let err = new Error ("Admin not found");
 		err.status = 422;
 		throw err;
