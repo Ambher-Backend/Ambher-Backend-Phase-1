@@ -18,6 +18,7 @@ let testEmail = "";
 let testPassword = "";
 
 
+// Utility method to toggle the customer verification status
 const toggleVerificationStatus = async (filter, status) => {
   await Customer.updateOne(
     filter,
@@ -28,19 +29,26 @@ const toggleVerificationStatus = async (filter, status) => {
 
 
 describe("Customer APIs", async () => {
-  // This hook will run only once before the test-suite starts
+  /*
+  This `before` block hook will be executed before the starting of this test suite.
+  Purpose of this block is to assigned values to those variables, which are going to be used all over the suite.
+  */
   before(async () => {
     testEmail = "democustomer@gmail.com";
     testPassword = "12345678";
   });
 
   describe("Customer Signup APIs", async () => {
+
+
+    // This after block is triggered only once after the "Customer Signup APIs" test suite is complete.
     after(async () => {
       await Customer.deleteMany({});
     });
 
     describe("When params are valid", async () => {
       let response = {};
+      // this is initializing the request body, sending request and storing response in a variable.
       beforeEach(async () => {
         const requestBody = customerSeeder.generateDummyCustomerObject({"email": testEmail});
 
@@ -58,10 +66,12 @@ describe("Customer APIs", async () => {
   });
 
   describe("Customer Login APIs", async () => {
+    // this block is creating a dummy customer in the db with supplied email.
     before(async () => {
       await customerSeeder.generateAndSaveDummyCustomer({"email": testEmail});
     });
 
+    // this block is deleting dummy customers in the db for the "Customer Login APIs" test suite.
     after(async () => {
       await Customer.deleteMany({});
     });
