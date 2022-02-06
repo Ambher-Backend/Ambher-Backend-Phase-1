@@ -12,10 +12,10 @@ if (process.env.NODE_ENV === "production"){
 const commonUtils = require("../../src/lib/common_utils");
 
 const dbProperties = {
-  useNewUrlParser:true,
-  useUnifiedTopology:true,
-  useCreateIndex:true,
-  useFindAndModify:false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
 };
 
 mongoose.connect(DbUri, dbProperties).then(()=>{

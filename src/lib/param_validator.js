@@ -3,18 +3,23 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 
+//internal imports
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const commonUtils = require("../lib/common_utils");
+
+
 class ParamValidator{
   constructor(reqBody){
     this.reqBody = reqBody;
   }
 
-  
+
   // paramName -> name of the parameter to be checked in request body
   // type -> expected type of the parameter
   // checkBlank -> works for string and array parameter and check if the value is not blank
   // acceptedValues -> acceptable values of the parameter(optional)(Array)
   // minLength and maxLength are for string and array, if any other data type is passed, then it may cause errors.
-  // regex -> for String, validates by regex 
+  // regex -> for String, validates by regex
   // required ->  field indicates, if the current parameter is required.
   validate(paramName, type, allowBlank = false, acceptedValues = undefined, minLength = undefined,
     maxLength = undefined, regex = undefined, required = true) {
@@ -29,14 +34,14 @@ class ParamValidator{
 
 
   // validates the presence of a validator
-  checkPresence(paramName, required=true){
+  checkPresence(paramName, required = true){
     if (required && this.reqBody[paramName] === undefined){
       throw new Error(`Required Parameter: |${paramName}| is not present.`);
     }
   }
 
 
-  // validates the type of parameter  
+  // validates the type of parameter
   checkType(paramName, type){
     if (this.reqBody[paramName].constructor !== type){
       throw new Error(`Parameter: |${paramName}| data type is invalid.`);
@@ -95,7 +100,7 @@ class ParamValidator{
 // checks email format.
 const checkEmailFormat = (email) => {
   if (!validator.isEmail(email)){
-    throw new Error("Email is not valid");
+    throw new Error ("Email is not valid");
   }
 };
 
@@ -103,7 +108,7 @@ const checkEmailFormat = (email) => {
 // check indian phone number
 const checkPhoneNumber = (phoneNumber) => {
   if (!validator.isMobilePhone(phoneNumber, ["en-IN"])){
-    throw new Error("Phone Number is Invalid");
+    throw new Error ("Phone Number is Invalid");
   }
 };
 
@@ -111,7 +116,7 @@ const checkPhoneNumber = (phoneNumber) => {
 // check internal authorization key
 const checkInternalAuthKey = (key) => {
   if (key !== process.env.INTERNAL_AUTH_ID){
-    throw new Error("Un-authorized action");
+    throw commonUtils.generateError(responseCodes.UNAUTHORISED_ERROR_CODE, "Un-authorized action");
   }
 };
 

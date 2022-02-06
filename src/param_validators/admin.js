@@ -5,6 +5,7 @@ const config = require("config");
 const paramValidator = require("../lib/param_validator").ParamValidator;
 const commonValidators = require("../lib/param_validator");
 const commonUtils = require("../lib/common_utils");
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
 
 // POST
@@ -15,18 +16,19 @@ const signUpParamValidation = (req, res, next) => {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["name", "phoneNumber", "email", "password"];
 
-    validator.validate("name", String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50);
-    validator.validate("phoneNumber", String, allowBlank=false, acceptedValues=undefined, minLength=10, maxLength=10);
+    validator.validate("name", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50);
+    validator.validate("phoneNumber", String, allowBlank = false, acceptedValues = undefined, minLength = 10, maxLength = 10);
     validator.validate("email", String);
-    validator.validate("password", String, allowBlank=false, acceptedValues=undefined, minLength=8);
+    validator.validate("password", String, allowBlank = false, acceptedValues = undefined, minLength = 8);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
-    
+
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -45,7 +47,8 @@ const loginAdminParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -57,11 +60,12 @@ const logoutAdminParamValidation = (req, res, next) => {
     const acceptedParams = ["currentToken"];
 
     validator.validate("currentToken", String);
-    
+
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -75,11 +79,12 @@ const getAdminParamValidation = (req, res, next) => {
 
     validator.validate("adminId", String);
     validator1.validate("currentToken", String);
-    
+
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -91,19 +96,20 @@ const generateAdminDummyDataValidation = (req, res, next) => {
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
 
     validator.validate("internalAuthKey", String);
-    validator.validate("deleteExisting", Boolean, allowBlank=false, acceptedValues=[true, false]);
-    validator.validate("total", Number, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    
+    validator.validate("deleteExisting", Boolean, allowBlank = false, acceptedValues = [true, false]);
+    validator.validate("total", Number, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50, regex = undefined, required = false);
+
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-			throw new Error("Dummy Data Creation Not Allowed on Production Server");
-		}
+      throw commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Dummy Data Creation Not Allowed on Production Server");
+    }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -121,7 +127,8 @@ const sendEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -140,7 +147,8 @@ const verifyEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -157,7 +165,8 @@ const verifyVendorAccountValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -173,16 +182,17 @@ const listVendorsValidation = (req, res, next) => {
 
     // filter custom validation
     const filterValidator = new paramValidator(req.body.filter);
-    filterValidator.validate("query", String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    filterValidator.validate("isVerified", Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
-    filterValidator.validate("isVerifiedByAdmin", Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
-    filterValidator.validate("isBlocked", Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
-    filterValidator.validate("address", Object, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate("query", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50, regex = undefined, required = false);
+    filterValidator.validate("isVerified", Boolean, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
+    filterValidator.validate("isVerifiedByAdmin", Boolean, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
+    filterValidator.validate("isBlocked", Boolean, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
+    filterValidator.validate("address", Object, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -197,14 +207,15 @@ const listCustomersValidation = (req, res, next) => {
     validator.validate("currentToken", String);
 
     const filterValidator = new paramValidator(req.body.filter);
-    filterValidator.validate("query", String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    filterValidator.validate("isVerified", Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
-    filterValidator.validate("isBlocked", Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate("query", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50, regex = undefined, required = false);
+    filterValidator.validate("isVerified", Boolean, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
+    filterValidator.validate("isBlocked", Boolean, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -218,12 +229,13 @@ const viewVendorDetailsValidation = (req, res, next) => {
 
     validator.validate("vendorId", String);
     validator1.validate("currentToken", String);
-    
+
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -237,18 +249,19 @@ const viewCustomerDetailsValidation = (req, res, next) => {
 
     validator.validate("customerId", String);
     validator1.validate("currentToken", String);
-    
+
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
 
 //POST
-const viewProductsValidation = (req, res, next) => {
+const listProductsValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["filter", "currentToken"];
@@ -258,17 +271,18 @@ const viewProductsValidation = (req, res, next) => {
 
     const filterValidator = new paramValidator(req.body.filter);
     const acceptedFilterKeys = ["query", "isVerifiedByAdmin", "isBlocked", "pincode", "gender"];
-    filterValidator.validate("query", String, allowBlank=false, acceptedValues=undefined, minLength=1, maxLength=50, regex=undefined, required=false);
-    filterValidator.validate("isVerifiedByAdmin", Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
-    filterValidator.validate("isBlocked", Boolean, allowBlank=false, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
-    filterValidator.validate("pincode", Array, allowBlank=true, acceptedValues=undefined, minLength=undefined, maxLength=undefined, regex=undefined, required=false);
-    filterValidator.validate("gender", String, allowBlank=true, acceptedValues=["Male", "Female", "Unisex"], minLength=undefined, maxLength=undefined, regex=undefined, required=false);
+    filterValidator.validate("query", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50, regex = undefined, required = false);
+    filterValidator.validate("isVerifiedByAdmin", Boolean, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
+    filterValidator.validate("isBlocked", Boolean, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
+    filterValidator.validate("pincode", Array, allowBlank = true, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
+    filterValidator.validate("gender", String, allowBlank = true, acceptedValues = ["Male", "Female", "Unisex"], minLength = undefined, maxLength = undefined, regex = undefined, required = false);
 
     req.body.filter = commonUtils.filterObjectByAllowedKeys(req.body.filter, acceptedFilterKeys);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -282,12 +296,13 @@ const viewProductDetailsValidation = (req, res, next) => {
 
     validator.validate("productId", String);
     validator1.validate("currentToken", String);
-    
+
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -304,7 +319,8 @@ const verifyProductValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -322,9 +338,10 @@ const blockProductValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
-}; 
+};
 
 
 //POST
@@ -340,14 +357,15 @@ const blockVendorValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 /* eslint-enable */
 
 module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
-logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
-verifyEmailOtpValidation, verifyVendorAccountValidation, listVendorsValidation, listCustomersValidation,
-viewVendorDetailsValidation, viewCustomerDetailsValidation, viewProductsValidation,
-viewProductDetailsValidation, verifyProductValidation, blockProductValidation,
-blockVendorValidation};
+  logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
+  verifyEmailOtpValidation, verifyVendorAccountValidation, listVendorsValidation, listCustomersValidation,
+  viewVendorDetailsValidation, viewCustomerDetailsValidation, listProductsValidation,
+  viewProductDetailsValidation, verifyProductValidation, blockProductValidation,
+  blockVendorValidation};

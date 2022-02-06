@@ -17,7 +17,7 @@ const generateDummyAdminData = async (deleteExisting, totalToGenerate) => {
       await generateDummyAdmin();
     }
     return `${totalToGenerate} admins generated successfully!`;
-  } catch (err){
+  } catch (err) {
     return `Error: ||${err.message}|| occured in generating admins`;
   }
 };

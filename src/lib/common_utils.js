@@ -17,6 +17,7 @@ const successLog = (message) => {
   console.log(chalk.bgGreen.black(message));
 };
 
+
 const getOtp = () => {
   let val = Math.floor(Math.random() * 1000000);
   if (val.toString().length === 5) {
@@ -25,17 +26,28 @@ const getOtp = () => {
   return val;
 };
 
+
 const getRandomNumber = (min, max) => {
-  return parseInt(Math.random()*(max-min+1))+min;
+  return parseInt(Math.random() * (max - min + 1)) + min;
 };
+
 
 const genCode = (n = 10) => {
   n = n || 16;
   let result = "";
   while (n--){
-    result += Math.floor(Math.random()*16).toString(16).toUpperCase();
+    result += Math.floor(Math.random() * 16).toString(16).toUpperCase();
   }
   return result;
+};
+
+
+const genPhoneNumber = () => {
+  let phNo = "94";
+  for (let i = 0;i < 8;i++) {
+    phNo += getRandomNumber(0, 9).toString();
+  }
+  return phNo;
 };
 
 
@@ -60,4 +72,13 @@ const paginate = (objectArray) => {
   return paginatedObjectArray;
 };
 
-module.exports = {responseUtil, errorLog, successLog, getOtp, genCode, filterObjectByAllowedKeys, paginate, getRandomNumber};
+
+const generateError = (status, message) => {
+  let err = new Error (message);
+  err.status = status;
+  return err;
+};
+
+
+module.exports = {responseUtil, errorLog, successLog, getOtp, genCode,
+  filterObjectByAllowedKeys, paginate, getRandomNumber, genPhoneNumber, generateError};

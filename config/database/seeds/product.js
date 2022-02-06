@@ -5,6 +5,7 @@ const faker = require("faker");
 const Product = require("../../../src/models/product");
 const commonUtils = require("../../../src/lib/common_utils");
 const vendorSeeder = require("./vendor").generateDummyVendor;
+const adminSeeder = require("./admin").generateDummyAdmin;
 
 
 const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
@@ -26,6 +27,7 @@ const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
 
 const generateDummyProduct = async () => {
   const vendorId = await vendorSeeder();
+  const adminId = await adminSeeder();
   let zipCodes = [];
   let noOfZipCodes = commonUtils.getRandomNumber(1, 10);
   for (let i = 0;i < noOfZipCodes;i++){
@@ -47,7 +49,8 @@ const generateDummyProduct = async () => {
     productCode: commonUtils.genCode(),
     configuration: {
       isVerifiedByAdmin: true
-    }
+    },
+    verifiedBy: adminId
   };
   const product = new Product(productObject);
   await product.save();
