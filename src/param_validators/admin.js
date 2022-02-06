@@ -96,14 +96,16 @@ const generateAdminDummyDataValidation = (req, res, next) => {
     
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
-    if (config.util.getEnv("NODE_ENV") === "production"){
-			throw new Error("Dummy Data Creation Not Allowed on Production Server");
+    if (config.util.getEnv("NODE_ENV") === "production") {
+			let err = new Error("Dummy Data Creation Not Allowed on Production Server");
+      err.status = 401;
+      throw err;
 		}
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    res.send(commonUtils.responseUtil( (err.status == undefined) ? 400 : err.status, null, err.message));
   }
 };
 
@@ -248,7 +250,7 @@ const viewCustomerDetailsValidation = (req, res, next) => {
 
 
 //POST
-const viewProductsValidation = (req, res, next) => {
+const listProductsValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["filter", "currentToken"];
@@ -348,6 +350,6 @@ const blockVendorValidation = (req, res, next) => {
 module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
 logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
 verifyEmailOtpValidation, verifyVendorAccountValidation, listVendorsValidation, listCustomersValidation,
-viewVendorDetailsValidation, viewCustomerDetailsValidation, viewProductsValidation,
+viewVendorDetailsValidation, viewCustomerDetailsValidation, listProductsValidation,
 viewProductDetailsValidation, verifyProductValidation, blockProductValidation,
 blockVendorValidation};

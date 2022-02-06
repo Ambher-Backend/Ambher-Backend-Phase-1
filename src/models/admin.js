@@ -87,12 +87,16 @@ AdminSchema.statics.findByCredentials = async (email, password) => {
 	const admin = await Admin.findOne({
 		email: email,
 	});
-	if (!admin) {
-		throw new Error ("Admin not found");
+	if (admin == undefined) {
+		let err = new Error ("Admin not found");
+		err.status = 422;
+		throw err;
 	}
 	const passwordMatched = await bcrypt.compare(password, admin.password);
 	if (!passwordMatched) {
-		throw new Error ("Password Incorrect");
+		let err = new Error ("Password Incorrect");
+		err.status = 422;
+		throw err;
 	}
 	return admin;
 };

@@ -51,6 +51,11 @@ const handleLogin = async (reqBody) => {
 
 const handleGetDetails = async (adminId) => {
 	const admin = await Admin.findById(adminId);
+	if (admin == undefined) {
+		let err = new Error ("Invalid Admin ID");
+		err.status = 422;
+		throw err;
+	}
 	const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(admin.toObject(), eventKeyExposeObject["get"]);
 	return adminObjectToExpose;
 };
@@ -75,7 +80,11 @@ const sendEmailOtp = async (adminEmail) => {
 	let admin = await Admin.findOne({
 		email: adminEmail
 	});
-	if (admin === undefined){throw new Error("Invalid Email, Admin Not registered");}
+	if (admin == undefined) {
+		let err = new Error("Invalid Email, Admin Not registered");
+		err.status = 400;
+		throw err;
+	}
 	const otpToSend = commonUtils.getOtp();
 	admin.emailOtps.push(otpToSend);
 	await admin.save();
@@ -88,7 +97,11 @@ const verifyEmailOtp = async (reqBody) => {
 	let admin = await Admin.findOne({ 
 		email: reqBody.adminEmail
 	});
-	if (admin === undefined){throw new Error("Invalid Email, Admin Not registered");}
+	if (admin == undefined) {
+		let err = new Error("Invalid Email, Admin Not registered");
+		err.status = 400;
+		throw err;
+	}
 	const otpToVerify = admin.emailOtps[admin.emailOtps.length - 1];
 	if (otpToVerify === reqBody.otp) {
 		admin.configuration.isVerified = true;
@@ -96,7 +109,9 @@ const verifyEmailOtp = async (reqBody) => {
 		return "Admin Email OTP verified successfully";
 	}
 	else {
-		throw new Error("Wrong Admin Email OTP");
+		let err = new Error("Wrong Admin Email OTP");
+		err.status = 422;
+		throw err;
 	}
 };
 
@@ -128,7 +143,11 @@ const listVendors = async (reqBody) => {
 
 const vendorDetails = async (vendorId) => {
 	const vendor = await Vendor.findById(vendorId);
-	if (!vendor) {throw new Error ("Vendor Not Found");}
+	if (vendor == undefined) {
+		let err = new Error ("Vendor Not Found");
+		err.status = 400;
+		throw err;
+	}
 	const address = commonUtils.filterObjectByAllowedKeys(
 		vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
 	);
@@ -163,8 +182,16 @@ const vendorDetails = async (vendorId) => {
 
 const verifyVendor = async (admin, reqBody) => {
 	let vendor = await Vendor.findById(reqBody.vendorId);
-	if (vendor === undefined){throw new Error("Invalid vendor ID");}
-	if (vendor.configuration.isVerified === false){throw new Error("Vendor needs to verify their email");}
+	if (vendor == undefined) {
+		let err = new Error("Invalid vendor ID");
+		err.status = 400;
+		throw err;
+	}
+	if (vendor.configuration.isVerified === false) {
+		let err = new Error("Vendor needs to verify their email");
+		err.status = 405;
+		throw err;
+	}
 	vendor.configuration.isVerifiedByAdmin = true;
 	vendor.verifiedBy = admin._id;
 	await vendor.save();
@@ -198,7 +225,11 @@ const listCustomers = async (reqBody) => {
 
 const customerDetails = async (customerId) => {
 	const customer = await Customer.findById(customerId);
-	if (!customer) {throw new Error ("Customer Not Found");}
+	if (customer == undefined) {
+		let err = new Error ("Customer Not Found");
+		err.status = 400;
+		throw err;
+	}
 	const address = commonUtils.filterObjectByAllowedKeys(
 		customer.address[0].toObject(), ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
 	);
@@ -256,7 +287,11 @@ const listProducts = async (reqBody) => {
 //TODO: Add support for orders once schema is ready.
 const productDetails = async (productId) => {
 	const product = await Product.findById(productId);
-	if (!product) {throw new Error ("Product Not Found");}
+	if (!product) {
+		let err = new Error ("Product Not Found");
+		err.status = 400;
+		throw err;
+	}
 	const ownerVendor = await Vendor.findById(product.vendorId);
 	let productResponse = {
 		_id: product._id,
@@ -291,7 +326,11 @@ const productDetails = async (productId) => {
 
 const verifyProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
-	if (product === undefined){throw new Error("Invalid product ID");}
+	if (product == undefined) {
+		let err = new Error("Invalid product ID");
+		err.status = 400;
+		throw err;
+	}
 	product.configuration.isVerifiedByAdmin = true;
 	product.verifiedBy = admin._id;
 	await product.save();
@@ -305,7 +344,16 @@ const verifyProduct = async (admin, reqBody) => {
 
 const blockProduct = async (admin, reqBody) => {
 	let product = await Product.findById(reqBody.productId);
-	if (product === undefined){throw new Error("Invalid product ID");}
+	if (product == undefined) {
+		let err = new Error("Invalid product ID");
+		err.status = 400;
+		throw err;
+	}
+	if (product.configuration.isVerifiedByAdmin === false) {
+		let err = new Error("Product needs to be verified first");
+		err.status = 405;
+		throw err;
+	}
 	product.configuration.isBlocked = true;
 	product.blockedBy = admin._id;
 	product.blockedReason = reqBody.blockedReason;

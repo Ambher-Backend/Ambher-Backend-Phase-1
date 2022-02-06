@@ -5,6 +5,7 @@ const faker = require("faker");
 // Internal Imports
 const Vendor = require("../../../src/models/vendor");
 const commonUtils = require("../../../src/lib/common_utils");
+const adminSeeder = require("./admin").generateDummyAdmin;
 
 
 const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
@@ -26,6 +27,7 @@ const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
 
 const generateDummyVendor = async () => {
   const reviews = generateDummyReviews();
+  const adminId = await adminSeeder();
   const vendorObject = {
     name: faker.name.firstName(),
     phoneNumber: faker.phone.phoneNumber(),
@@ -38,6 +40,7 @@ const generateDummyVendor = async () => {
       isVerifiedByAdmin: true
     },
     blockedReason: "",
+    verifiedBy: adminId,
     address: {
       flatNo:faker.random.alphaNumeric(2),
       buildingNo:faker.random.alphaNumeric(2),

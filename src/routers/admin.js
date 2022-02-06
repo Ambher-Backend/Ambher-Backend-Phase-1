@@ -20,7 +20,7 @@ router.post("/signup", adminParamValidator.signUpParamValidation, async (req, re
 		await helper.handleSignup(req.body);
 		res.send(commonUtils.responseUtil(201, null, "Admin Created"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -31,7 +31,7 @@ router.post("/login", adminParamValidator.loginAdminParamValidation, async (req,
 		const adminLoginResponse = await helper.handleLogin(req.body);
 		res.send(commonUtils.responseUtil(200, adminLoginResponse.adminObjectToExpose, adminLoginResponse.message));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400,  null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status,  null, err.message));
 	}
 });
 
@@ -42,7 +42,7 @@ router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, 
 		const adminResponse = await helper.handleGetDetails(req.params.adminId);
 		res.send(commonUtils.responseUtil(200, adminResponse, "Success"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -53,7 +53,7 @@ router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth
 		await helper.handleLogout(req.body, req.user);
 		res.send(commonUtils.responseUtil(200, null, "Admin Logged out"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	} 
 });
 
@@ -64,7 +64,7 @@ router.post("/create-dummy-data", adminParamValidator.generateAdminDummyDataVali
 		const message = await helper.generateDummyAdmins(req.body);
 		res.send(commonUtils.responseUtil(201, null, message));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(500, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -75,7 +75,7 @@ router.post("/new-email-otp", adminParamValidator.sendEmailOtpValidation, async 
 		await helper.sendEmailOtp(req.body.adminEmail);
 		res.send(commonUtils.responseUtil(200, null, "Admin Email OTP sent successfully"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -86,7 +86,7 @@ router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, a
 		const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req.body);
 		res.send(commonUtils.responseUtil(200, null, verifiedEmailOtpMessage));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -100,7 +100,7 @@ router.post("/vendors", adminParamValidator.listVendorsValidation, AdminAuth, as
 		const filteredVendors = await helper.listVendors(req.body);
 		res.send(commonUtils.responseUtil(200, filteredVendors, "Vendor List"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -111,7 +111,7 @@ router.get("/vendor-details/:vendorId", adminParamValidator.viewVendorDetailsVal
 		const vendorDetailsResponse = await helper.vendorDetails(req.params.vendorId);
 		res.send(commonUtils.responseUtil(200, vendorDetailsResponse, "Vendor Details"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -122,7 +122,7 @@ router.post("/verify-vendor", adminParamValidator.verifyVendorAccountValidation,
 		const verifyVendorAccountMessage = await helper.verifyVendor(req.user, req.body);
 		res.send(commonUtils.responseUtil(200, null, verifyVendorAccountMessage));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -136,7 +136,7 @@ router.post("/customers", adminParamValidator.listCustomersValidation, AdminAuth
 		const filteredCustomers = await helper.listCustomers(req.body);
 		res.send(commonUtils.responseUtil(200, filteredCustomers, "Customer List"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -147,7 +147,7 @@ router.get("/customer-details/:customerId", adminParamValidator.viewCustomerDeta
 		const customerDetailsResponse = await helper.customerDetails(req.params.customerId);
 		res.send(commonUtils.responseUtil(200, customerDetailsResponse, "Customer Details"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -156,12 +156,12 @@ router.get("/customer-details/:customerId", adminParamValidator.viewCustomerDeta
 //**************************Admin Products Routes*******************************
 //
 //view product list based on filters
-router.post("/products", adminParamValidator.viewProductsValidation, AdminAuth, async (req, res) => {
+router.post("/products", adminParamValidator.listProductsValidation, AdminAuth, async (req, res) => {
 	try {
 		const filteredProducts = await helper.listProducts(req.body);
 		res.send(commonUtils.responseUtil(200, filteredProducts, "Product List"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -172,7 +172,7 @@ router.get("/product-details/:productId", adminParamValidator.viewProductDetails
 		const productDetailsResponse = await helper.productDetails(req.params.productId);
 		res.send(commonUtils.responseUtil(200, productDetailsResponse, "Product Details"));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -183,7 +183,7 @@ router.post("/verify-product", adminParamValidator.verifyProductValidation, Admi
 		const verifyProductMessage = await helper.verifyProduct(req.user, req.body);
 		res.send(commonUtils.responseUtil(200, null, verifyProductMessage));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 
@@ -194,7 +194,7 @@ router.post("/block-product", adminParamValidator.blockProductValidation, AdminA
 		const blockProductMessage = await helper.blockProduct(req.user, req.body);
 		res.send(commonUtils.responseUtil(200, null, blockProductMessage));
 	} catch (err) {
-		res.send(commonUtils.responseUtil(400, null, err.message));
+		res.send(commonUtils.responseUtil( (err.status === undefined) ? 500 : err.status, null, err.message));
 	}
 });
 

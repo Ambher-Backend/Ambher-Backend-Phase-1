@@ -95,7 +95,9 @@ class ParamValidator{
 // checks email format.
 const checkEmailFormat = (email) => {
   if (!validator.isEmail(email)){
-    throw new Error("Email is not valid");
+    let err = new Error("Email is not valid");
+    err.status = 400;
+    throw err;
   }
 };
 
@@ -103,7 +105,9 @@ const checkEmailFormat = (email) => {
 // check indian phone number
 const checkPhoneNumber = (phoneNumber) => {
   if (!validator.isMobilePhone(phoneNumber, ["en-IN"])){
-    throw new Error("Phone Number is Invalid");
+    let err = new Error("Phone Number is Invalid");
+    err.status = 400;
+    throw err;
   }
 };
 
@@ -111,7 +115,9 @@ const checkPhoneNumber = (phoneNumber) => {
 // check internal authorization key
 const checkInternalAuthKey = (key) => {
   if (key !== process.env.INTERNAL_AUTH_ID){
-    throw new Error("Un-authorized action");
+    let err = new Error("Un-authorized action");
+    err.status = 401;
+    throw err;
   }
 };
 
