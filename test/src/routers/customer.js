@@ -219,7 +219,7 @@ describe("Customer APIs", async () => {
           .send(requestBody);
       });
 
-      it("return customer data", () => {
+      it("return error", () => {
         expect(response.body.status).to.eql(400);
         expect(response.body.data).to.eql(null);
       });
