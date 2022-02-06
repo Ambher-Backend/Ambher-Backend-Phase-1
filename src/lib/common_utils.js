@@ -72,5 +72,13 @@ const paginate = (objectArray) => {
   return paginatedObjectArray;
 };
 
+
+const generateError = (status, message) => {
+  let err = new Error (message);
+  err.status = status;
+  return err;
+};
+
+
 module.exports = {responseUtil, errorLog, successLog, getOtp, genCode,
-  filterObjectByAllowedKeys, paginate, getRandomNumber, genPhoneNumber};
+  filterObjectByAllowedKeys, paginate, getRandomNumber, genPhoneNumber, generateError};

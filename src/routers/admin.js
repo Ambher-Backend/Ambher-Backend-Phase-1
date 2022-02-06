@@ -9,6 +9,7 @@ const helper = require("../controllers/admin");
 const commonUtils = require("../lib/common_utils");
 const adminParamValidator = require("../param_validators/admin");
 const AdminAuth = require("../middlewares/auth/admin_auth");
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
 
 //
@@ -18,9 +19,10 @@ const AdminAuth = require("../middlewares/auth/admin_auth");
 router.post("/signup", adminParamValidator.signUpParamValidation, async (req, res)=>{
   try {
     await helper.handleSignup(req.body);
-    res.send(commonUtils.responseUtil(201, null, "Admin Created"));
+    res.send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, "Admin Created"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -29,9 +31,10 @@ router.post("/signup", adminParamValidator.signUpParamValidation, async (req, re
 router.post("/login", adminParamValidator.loginAdminParamValidation, async (req, res) => {
   try {
     const adminLoginResponse = await helper.handleLogin(req.body);
-    res.send(commonUtils.responseUtil(200, adminLoginResponse.adminObjectToExpose, adminLoginResponse.message));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, adminLoginResponse.adminObjectToExpose, adminLoginResponse.message));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400,  null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -40,9 +43,10 @@ router.post("/login", adminParamValidator.loginAdminParamValidation, async (req,
 router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, async (req, res) => {
   try {
     const adminResponse = await helper.handleGetDetails(req.params.adminId);
-    res.send(commonUtils.responseUtil(200, adminResponse, "Success"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, adminResponse, "Success"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -51,9 +55,10 @@ router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, 
 router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth, async (req, res) => {
   try {
     await helper.handleLogout(req.body, req.user);
-    res.send(commonUtils.responseUtil(200, null, "Admin Logged out"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Admin Logged out"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -62,9 +67,10 @@ router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth
 router.post("/create-dummy-data", adminParamValidator.generateAdminDummyDataValidation, async (req, res) => {
   try {
     const message = await helper.generateDummyAdmins(req.body);
-    res.send(commonUtils.responseUtil(201, null, message));
+    res.send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, message));
   } catch (err) {
-    res.send(commonUtils.responseUtil(500, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -73,9 +79,10 @@ router.post("/create-dummy-data", adminParamValidator.generateAdminDummyDataVali
 router.post("/new-email-otp", adminParamValidator.sendEmailOtpValidation, async (req, res) => {
   try {
     await helper.sendEmailOtp(req.body.adminEmail);
-    res.send(commonUtils.responseUtil(200, null, "Admin Email OTP sent successfully"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Admin Email OTP sent successfully"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -84,9 +91,10 @@ router.post("/new-email-otp", adminParamValidator.sendEmailOtpValidation, async 
 router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, async (req, res) => {
   try {
     const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req.body);
-    res.send(commonUtils.responseUtil(200, null, verifiedEmailOtpMessage));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifiedEmailOtpMessage));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -98,9 +106,10 @@ router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, a
 router.post("/vendors", adminParamValidator.listVendorsValidation, AdminAuth, async (req, res) => {
   try {
     const filteredVendors = await helper.listVendors(req.body);
-    res.send(commonUtils.responseUtil(200, filteredVendors, "Vendor List"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredVendors, "Vendor List"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -109,9 +118,10 @@ router.post("/vendors", adminParamValidator.listVendorsValidation, AdminAuth, as
 router.get("/vendor-details/:vendorId", adminParamValidator.viewVendorDetailsValidation, AdminAuth, async (req, res) => {
   try {
     const vendorDetailsResponse = await helper.vendorDetails(req.params.vendorId);
-    res.send(commonUtils.responseUtil(200, vendorDetailsResponse, "Vendor Details"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorDetailsResponse, "Vendor Details"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -120,9 +130,10 @@ router.get("/vendor-details/:vendorId", adminParamValidator.viewVendorDetailsVal
 router.post("/verify-vendor", adminParamValidator.verifyVendorAccountValidation, AdminAuth, async (req, res) => {
   try {
     const verifyVendorAccountMessage = await helper.verifyVendor(req.user, req.body);
-    res.send(commonUtils.responseUtil(200, null, verifyVendorAccountMessage));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyVendorAccountMessage));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -134,9 +145,10 @@ router.post("/verify-vendor", adminParamValidator.verifyVendorAccountValidation,
 router.post("/customers", adminParamValidator.listCustomersValidation, AdminAuth, async (req, res) => {
   try {
     const filteredCustomers = await helper.listCustomers(req.body);
-    res.send(commonUtils.responseUtil(200, filteredCustomers, "Customer List"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredCustomers, "Customer List"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -145,9 +157,10 @@ router.post("/customers", adminParamValidator.listCustomersValidation, AdminAuth
 router.get("/customer-details/:customerId", adminParamValidator.viewCustomerDetailsValidation, AdminAuth, async (req, res) => {
   try {
     const customerDetailsResponse = await helper.customerDetails(req.params.customerId);
-    res.send(commonUtils.responseUtil(200, customerDetailsResponse, "Customer Details"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerDetailsResponse, "Customer Details"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -156,12 +169,13 @@ router.get("/customer-details/:customerId", adminParamValidator.viewCustomerDeta
 //**************************Admin Products Routes*******************************
 //
 //view product list based on filters
-router.post("/products", adminParamValidator.viewProductsValidation, AdminAuth, async (req, res) => {
+router.post("/products", adminParamValidator.listProductsValidation, AdminAuth, async (req, res) => {
   try {
     const filteredProducts = await helper.listProducts(req.body);
-    res.send(commonUtils.responseUtil(200, filteredProducts, "Product List"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredProducts, "Product List"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -170,9 +184,10 @@ router.post("/products", adminParamValidator.viewProductsValidation, AdminAuth, 
 router.get("/product-details/:productId", adminParamValidator.viewProductDetailsValidation, AdminAuth, async (req, res) => {
   try {
     const productDetailsResponse = await helper.productDetails(req.params.productId);
-    res.send(commonUtils.responseUtil(200, productDetailsResponse, "Product Details"));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, productDetailsResponse, "Product Details"));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -181,9 +196,10 @@ router.get("/product-details/:productId", adminParamValidator.viewProductDetails
 router.post("/verify-product", adminParamValidator.verifyProductValidation, AdminAuth, async (req, res) => {
   try {
     const verifyProductMessage = await helper.verifyProduct(req.user, req.body);
-    res.send(commonUtils.responseUtil(200, null, verifyProductMessage));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyProductMessage));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 
@@ -192,9 +208,10 @@ router.post("/verify-product", adminParamValidator.verifyProductValidation, Admi
 router.post("/block-product", adminParamValidator.blockProductValidation, AdminAuth, async (req, res) => {
   try {
     const blockProductMessage = await helper.blockProduct(req.user, req.body);
-    res.send(commonUtils.responseUtil(200, null, blockProductMessage));
+    res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, blockProductMessage));
   } catch (err) {
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
 

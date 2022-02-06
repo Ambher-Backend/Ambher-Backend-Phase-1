@@ -3,6 +3,11 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 
+//internal imports
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const commonUtils = require("../lib/common_utils");
+
+
 class ParamValidator{
   constructor(reqBody){
     this.reqBody = reqBody;
@@ -95,7 +100,7 @@ class ParamValidator{
 // checks email format.
 const checkEmailFormat = (email) => {
   if (!validator.isEmail(email)){
-    throw new Error("Email is not valid");
+    throw new Error ("Email is not valid");
   }
 };
 
@@ -103,7 +108,7 @@ const checkEmailFormat = (email) => {
 // check indian phone number
 const checkPhoneNumber = (phoneNumber) => {
   if (!validator.isMobilePhone(phoneNumber, ["en-IN"])){
-    throw new Error("Phone Number is Invalid");
+    throw new Error ("Phone Number is Invalid");
   }
 };
 
@@ -111,7 +116,7 @@ const checkPhoneNumber = (phoneNumber) => {
 // check internal authorization key
 const checkInternalAuthKey = (key) => {
   if (key !== process.env.INTERNAL_AUTH_ID){
-    throw new Error("Un-authorized action");
+    throw commonUtils.generateError(responseCodes.UNAUTHORISED_ERROR_CODE, "Un-authorized action");
   }
 };
 
