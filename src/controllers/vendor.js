@@ -78,7 +78,7 @@ const sendEmailOtp = async (vendorEmail) => {
   let vendor = await Vendor.findOne({
     email: vendorEmail
   });
-  if (vendor === undefined) {
+  if (!vendor) {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Vendor email");
   }
   const otpToSend = commonUtils.getOtp();
@@ -93,7 +93,9 @@ const verifyEmailOtp = async (req) => {
   let vendor = await Vendor.findOne({
     email: req.body.vendorEmail
   });
-  if (vendor === undefined) {throw new Error("Invalid email, Vendor Not Found");}
+  if (!vendor) {
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Email, Vendor Not registered");
+  }
   const otpToVerify = vendor.emailOtps[vendor.emailOtps.length - 1];
   if (otpToVerify === req.body.otp) {
     vendor.configuration.isVerified = true;
