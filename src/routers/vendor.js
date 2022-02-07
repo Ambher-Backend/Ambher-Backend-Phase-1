@@ -34,7 +34,7 @@ router.get("/:vendorId", vendorParamValidator.getVendorParamValidation, VendorAu
     const statusCode = responseCodes.SUCCESS_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, vendorResponse, "Success"));
   } catch (err){
-    const statusCode = err.status || response.Codes.INTERNAL_SERVER_ERROR_CODE;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
