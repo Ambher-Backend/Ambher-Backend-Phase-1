@@ -82,7 +82,7 @@ router.post("/new-email-otp", vendorParamValidator.sendEmailOtpValidation, async
   try {
     await helper.sendEmailOtp(req.body.vendorEmail);
     const statusCode = responseCodes.SUCCESS_CODE;
-    res.status(statusCode)send(commonUtils.responseUtil(statusCode, null, "Vendor Email OTP sent successfully"));
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, "Vendor Email OTP sent successfully"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
