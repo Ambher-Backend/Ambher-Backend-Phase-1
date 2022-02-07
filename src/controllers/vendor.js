@@ -59,6 +59,9 @@ const handleLogout = async (reqBody, currentUser) => {
 
 const handleGetDetails = async (vendorId) => {
   const vendor = await Vendor.findById(vendorId);
+  if (!vendor) {
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Vendor ID");
+  }
   const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendor.toObject(), eventKeyExposeObject["get"]);
   return vendorObjectToExpose;
 };
@@ -75,7 +78,9 @@ const sendEmailOtp = async (vendorEmail) => {
   let vendor = await Vendor.findOne({
     email: vendorEmail
   });
-  if (vendor === undefined) {throw new Error("Invalid email, Vendor Not Found");}
+  if (vendor === undefined) {
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Vendor email");
+  }
   const otpToSend = commonUtils.getOtp();
   vendor.emailOtps.push(otpToSend);
   await vendor.save();
