@@ -35,7 +35,7 @@ const VendorAuth = async (req, res, next) => {
     next();
   } catch (err) {
     const statusCode = responseCodes.UNAUTHORISED_ERROR_CODE;
-    res.status(statusCode).send(commonUtils.responseUtil(statusCode,null,err.message));
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
