@@ -6,7 +6,7 @@ const Customer = require("../../../src/models/customer");
 const commonUtils = require("../../../src/lib/common_utils");
 
 
-const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
+const generateDummyCustomers = async (deleteExisting, totalToGenerate) => {
   try {
     if (deleteExisting === true){
       await Customer.deleteMany({});
@@ -80,4 +80,4 @@ const generateDummyReviews = () => {
 
 
 
-module.exports = {generateDummyCustomerData, generateAndSaveDummyCustomer, generateDummyCustomerObject};
+module.exports = {generateDummyCustomers, generateAndSaveDummyCustomer, generateDummyCustomerObject};
