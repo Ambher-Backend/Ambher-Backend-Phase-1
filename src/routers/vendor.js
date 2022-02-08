@@ -52,7 +52,7 @@ router.post("/login", vendorParamValidator.loginVendorParamValidation, async (re
 
 router.post("/logout", vendorParamValidator.logoutVendorParamValidation, VendorAuth, async (req, res) => {
   try {
-    await helper.handleLogout(req.body, req.user)
+    await helper.handleLogout(req.body, req.user);
     res.send(commonUtils.responseUtil(200, null, "Vendor Logged out"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
