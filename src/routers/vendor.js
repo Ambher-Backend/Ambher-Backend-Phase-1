@@ -18,7 +18,7 @@ const responseCodes = require("../lib/constants").RESPONSE_CODES;
 router.post("/signup", vendorParamValidator.signUpParamValidation, async (req, res) => {
   try {
     await helper.handleSignup(req.body);
-    res.send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, "Vendor added"));
+    res.status(responseCodes.CREATED_CODE).send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, "Vendor added"));
   }
   catch (err){
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -64,7 +64,7 @@ router.post("/logout", vendorParamValidator.logoutVendorParamValidation, VendorA
 router.post("/create-dummy-data", vendorParamValidator.generateVendorDummyDataValidation, async (req, res) => {
   try {
     const verdictMessage = await helper.generateDummyVendors(req.body);
-    res.send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, verdictMessage));
+    res.status(responseCodes.CREATED_CODE).send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, verdictMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
