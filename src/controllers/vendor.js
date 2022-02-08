@@ -60,7 +60,7 @@ const handleLogout = async (reqBody, currentUser) => {
 const handleGetDetails = async (vendorId) => {
   const vendor = await Vendor.findById(vendorId);
   if (!vendor) {
-    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Vendor ID");
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor not found");
   }
   const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendor.toObject(), eventKeyExposeObject["get"]);
   return vendorObjectToExpose;
