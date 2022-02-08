@@ -110,7 +110,7 @@ const generateVendorDummyDataValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    const statusCode = err.status || responseCodes.BAD_REQUEST_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
