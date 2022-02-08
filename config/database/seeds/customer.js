@@ -38,8 +38,8 @@ const generateDummyCustomerObject = (options = {}) => {
     password: "12345678",
     dob: faker.date.recent(),
     configuration: {
-      isVerified: options["isVerified"] === true ? true : false,
-      isBlocked: options["isBlocked"] === true ? true : false,
+      isVerified: options["isVerified"] !== undefined ? options["isVerified"] : true,
+      isBlocked: options["isBlocked"] !== undefined ? options["isBlocked"] : false,
     },
     blockedReason: "",
     address: [

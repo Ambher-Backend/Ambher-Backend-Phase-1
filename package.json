@@ -4,7 +4,7 @@
   "description": "Backend Repository of Ambher",
   "main": "app.js",
   "scripts": {
-    "dev": "export NODE_ENV=development && nodemon app.js",
+    "dev": "export NODE_ENV=production && nodemon app.js",
     "win-dev": "set NODE_ENV=development && nodemon app.js",
     "start": "node app.js",
     "test": "export NODE_ENV=test && nyc --reporter=html mocha --recursive ./test --timeout 10000 --exit",

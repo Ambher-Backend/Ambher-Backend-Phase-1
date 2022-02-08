@@ -5,10 +5,10 @@ const faker = require("faker");
 // Internal Imports
 const Vendor = require("../../../src/models/vendor");
 const commonUtils = require("../../../src/lib/common_utils");
-const adminSeeder = require("./admin").generateDummyAdmin;
+const adminSeed = require("./admin").generateAndSaveDummyAdmin;
 
 
-const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
+const generateDummyVendors = async (deleteExisting, totalToGenerate) => {
   try {
     if (deleteExisting === true){
       await Vendor.deleteMany({});
@@ -16,51 +16,17 @@ const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
     for (let i = 0; i < documentsToGenerate; i++) {
-      await generateDummyVendor();
+      await generateAndSaveDummyVendor();
     }
     return `${totalToGenerate} vendors generated successfully!`;
   } catch (err){
-    return `Error: ||${err.message}|| occured in generating vendors`;
+    return `Error: ||${err.message}|| occurred in generating vendors`;
   }
 };
 
 
-const generateDummyVendor = async () => {
-  const reviews = generateDummyReviews();
-  const adminId = await adminSeeder();
-  const vendorObject = {
-    name: faker.name.firstName(),
-    phoneNumber: faker.phone.phoneNumber(),
-    email: faker.internet.email(),
-    password: "12345678",
-    dob: faker.date.recent(),
-    configuration: {
-      isVerified: true,
-      isBlocked: false,
-      isVerifiedByAdmin: true
-    },
-    blockedReason: "",
-    verifiedBy: adminId,
-    address: {
-      flatNo: faker.random.alphaNumeric(2),
-      buildingNo: faker.random.alphaNumeric(2),
-      streetName: faker.address.streetName(),
-      city: faker.address.city(),
-      state: faker.address.state(),
-      country: faker.address.country(),
-      zipCode: faker.address.zipCode(),
-      lat: faker.address.latitude(),
-      lon: faker.address.longitude()
-    },
-    customerOrderIds: [mongoose.Types.ObjectId()],
-    productIds: [
-      mongoose.Types.ObjectId(),
-      mongoose.Types.ObjectId()
-    ],
-    supportPhones: [faker.phone.phoneNumber()],
-    rating: reviews.rating,
-    reviews: reviews.reviews
-  };
+const generateAndSaveDummyVendor = async (options = {}) => {
+  const vendorObject = await generateDummyVendorObject(options = options);
   const vendor = new Vendor(vendorObject);
   await vendor.save();
   return vendor._id;
@@ -90,4 +56,43 @@ const generateDummyReviews = () => {
 };
 
 
-module.exports = {generateDummyVendorData, generateDummyVendor};
+const generateDummyVendorObject = async (options = {}) => {
+  const reviews = options["isVerified"] === false || options["isVerifiedByAdmin"] === false ? [] : generateDummyReviews();
+  const adminId = await adminSeed({});
+  const vendorObject = {
+    name: faker.name.firstName(),
+    phoneNumber: commonUtils.genPhoneNumber(),
+    email: options["email"] || faker.internet.email(),
+    password: "12345678",
+    dob: faker.date.recent(),
+    configuration: {
+      isVerified: options["isVerified"] !== undefined ? options["isVerified"] : true,
+      isBlocked: options["isBlocked"] !== undefined ? options["isBlocked"] : false,
+      isVerifiedByAdmin: options["isVerifiedByAdmin"] !== undefined ? options["isVerifiedByAdmin"] : true
+    },
+    blockedReason: "",
+    verifiedBy: options["isVerifiedByAdmin"] === false ? undefined : adminId,
+    address: {
+      flatNo: faker.random.alphaNumeric(2),
+      buildingNo: faker.random.alphaNumeric(2),
+      streetName: faker.address.streetName(),
+      city: faker.address.city(),
+      state: faker.address.state(),
+      country: faker.address.country(),
+      zipCode: faker.address.zipCode(),
+      lat: faker.address.latitude(),
+      lon: faker.address.longitude()
+    },
+    customerOrderIds: options["isVerified"] === true || options["isVerifiedByAdmin"] === true ? [mongoose.Types.ObjectId()] : [],
+    productIds: options["isVerified"] === true || options["isVerifiedByAdmin"] === true ? [
+      mongoose.Types.ObjectId(),
+      mongoose.Types.ObjectId()
+    ] : [],
+    supportPhones: [faker.phone.phoneNumber()],
+    rating: reviews.rating,
+    reviews: reviews.reviews
+  };
+  return vendorObject;
+};
+
+module.exports = {generateDummyVendors, generateAndSaveDummyVendor, generateDummyVendorObject};
