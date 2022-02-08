@@ -18,8 +18,7 @@ const responseCodes = require("../lib/constants").RESPONSE_CODES;
 router.post("/signup", vendorParamValidator.signUpParamValidation, async (req, res) => {
   try {
     await helper.handleSignup(req.body);
-    const statusCode = responseCodes.CREATED_CODE;
-    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, "Vendor added"));
+    res.send(commonUtils.responseUtil(201, null, "Vendor added"));
   }
   catch (err){
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -31,8 +30,7 @@ router.post("/signup", vendorParamValidator.signUpParamValidation, async (req, r
 router.get("/:vendorId", vendorParamValidator.getVendorParamValidation, VendorAuth, async (req, res) => {
   try {
     const vendorResponse = await helper.handleGetDetails(req.params.vendorId);
-    const statusCode = responseCodes.SUCCESS_CODE;
-    res.status(statusCode).send(commonUtils.responseUtil(statusCode, vendorResponse, "Success"));
+    res.send(commonUtils.responseUtil(200, vendorResponse, "Success"));
   } catch (err){
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
@@ -44,8 +42,7 @@ router.get("/:vendorId", vendorParamValidator.getVendorParamValidation, VendorAu
 router.post("/login", vendorParamValidator.loginVendorParamValidation, async (req, res) => {
   try {
     const vendorLoginResponse = await helper.handleLogin(req.body);
-    const statusCode = responseCodes.SUCCESS_CODE;
-    res.status(statusCode).send(commonUtils.responseUtil(statusCode, vendorLoginResponse.vendorObjectToExpose, vendorLoginResponse.message));
+    res.send(commonUtils.responseUtil(200, vendorLoginResponse.vendorObjectToExpose, vendorLoginResponse.message));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode,  null, err.message));
@@ -55,9 +52,8 @@ router.post("/login", vendorParamValidator.loginVendorParamValidation, async (re
 
 router.post("/logout", vendorParamValidator.logoutVendorParamValidation, VendorAuth, async (req, res) => {
   try {
-    await helper.handleLogout(req.body, req.user);
-    const statusCode = responseCodes.SUCCESS_CODE;
-    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, "Vendor Logged out"));
+    await helper.handleLogout(req.body, req.user)
+    res.send(commonUtils.responseUtil(200, null, "Vendor Logged out"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
@@ -68,8 +64,7 @@ router.post("/logout", vendorParamValidator.logoutVendorParamValidation, VendorA
 router.post("/create-dummy-data", vendorParamValidator.generateVendorDummyDataValidation, async (req, res) => {
   try {
     const verdictMessage = await helper.generateDummyVendors(req.body);
-    const statusCode = responseCodes.CREATED_CODE;
-    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, verdictMessage));
+    res.send(commonUtils.responseUtil(201, null, verdictMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
@@ -81,8 +76,7 @@ router.post("/create-dummy-data", vendorParamValidator.generateVendorDummyDataVa
 router.post("/new-email-otp", vendorParamValidator.sendEmailOtpValidation, async (req, res) => {
   try {
     await helper.sendEmailOtp(req.body.vendorEmail);
-    const statusCode = responseCodes.SUCCESS_CODE;
-    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, "Vendor Email OTP sent successfully"));
+    res.send(commonUtils.responseUtil(200, null, "Vendor Email OTP sent successfully"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
@@ -94,8 +88,7 @@ router.post("/new-email-otp", vendorParamValidator.sendEmailOtpValidation, async
 router.post("/verify-email-otp", vendorParamValidator.verifyEmailOtpValidation, async (req, res) => {
   try {
     const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req);
-    const statusCode = responseCodes.SUCCESS_CODE;
-    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, verifiedEmailOtpMessage));
+    res.send(commonUtils.responseUtil(200, null, verifiedEmailOtpMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
