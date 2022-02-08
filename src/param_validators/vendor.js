@@ -104,7 +104,7 @@ const generateVendorDummyDataValidation = (req, res, next) => {
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-      throw new Error("Dummy Data Creation Not Allowed on Production Server");
+      throw commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Dummy Data Creation Not Allowed on Production Server");
     }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
