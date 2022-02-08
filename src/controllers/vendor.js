@@ -3,7 +3,7 @@ const Vendor = require("../models/vendor");
 const commonUtils = require("../lib/common_utils");
 const emailUtils = require("../lib/send_email");
 const seeder = require("../../config/database/seeder");
-
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
 const eventKeyExposeObject = {
@@ -59,6 +59,9 @@ const handleLogout = async (reqBody, currentUser) => {
 
 const handleGetDetails = async (vendorId) => {
   const vendor = await Vendor.findById(vendorId);
+  if (!vendor) {
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor not found");
+  }
   const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendor.toObject(), eventKeyExposeObject["get"]);
   return vendorObjectToExpose;
 };
@@ -75,7 +78,9 @@ const sendEmailOtp = async (vendorEmail) => {
   let vendor = await Vendor.findOne({
     email: vendorEmail
   });
-  if (vendor === undefined) {throw new Error("Invalid email, Vendor Not Found");}
+  if (!vendor) {
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Vendor email");
+  }
   const otpToSend = commonUtils.getOtp();
   vendor.emailOtps.push(otpToSend);
   await vendor.save();
@@ -88,7 +93,9 @@ const verifyEmailOtp = async (req) => {
   let vendor = await Vendor.findOne({
     email: req.body.vendorEmail
   });
-  if (vendor === undefined) {throw new Error("Invalid email, Vendor Not Found");}
+  if (!vendor) {
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Email, Vendor Not registered");
+  }
   const otpToVerify = vendor.emailOtps[vendor.emailOtps.length - 1];
   if (otpToVerify === req.body.otp) {
     vendor.configuration.isVerified = true;
