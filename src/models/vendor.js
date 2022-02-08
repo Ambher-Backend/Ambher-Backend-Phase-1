@@ -94,7 +94,7 @@ const VendorSchema = new mongoose.Schema({
     ]
   },
   gstin: {
-  	type: String
+    type: String
   },
   verifiedBy: {
     type: mongoose.Schema.Types.ObjectId

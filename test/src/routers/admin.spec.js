@@ -15,8 +15,10 @@ const BASE_URL = "/admin";
 const app = require(`${relativePath}/app`);
 const Admin = require(`${relativePath}/src/models/admin`);
 const Vendor = require(`${relativePath}/src/models/vendor`);
+const Customer = require(`${relativePath}/src/models/customer`);
 const adminSeeder = require(`${relativePath}/config/database/seeds/admin`);
 const vendorSeeder = require(`${relativePath}/config/database/seeds/vendor`);
+const customerSeeder = require(`${relativePath}/config/database/seeds/customer`);
 
 
 let testEmail = "";
@@ -456,25 +458,24 @@ describe("Admin APIs", async () => {
   });
 
   describe("Admin Customer APIs", async () => {
-    let adminId, adminAuthToken;
-    let vendorIds = [];
+    let adminAuthToken;
+    let customerIds = [];
     before(async () => {
       const generatedAdmin = await generateAndAuthenticateAdmin();
-      adminId = generatedAdmin.adminId;
       adminAuthToken = generatedAdmin.token;
-      let nVendors = 5;
-      while (nVendors--){
-        const generatedVendorId = await vendorSeeder.generateAndSaveDummyVendor({isVerified: false});
-        vendorIds.push(generatedVendorId);
+      let nCustomers = 5;
+      while (nCustomers--){
+        const generatedCustomerId = await customerSeeder.generateAndSaveDummyCustomer({isVerified: false});
+        customerIds.push(generatedCustomerId);
       }
     });
 
     after(async () => {
       await Admin.deleteMany({});
-      await Vendor.deleteMany({});
+      await Customer.deleteMany({});
     });
 
-    describe("When list vendor API is called", async () => {
+    describe("When list customer API is called", async () => {
       let response = {};
       beforeEach(async () => {
         const requestBody = {
@@ -482,74 +483,31 @@ describe("Admin APIs", async () => {
           filter: {}
         };
 
-        response = await postCaller("/vendors", requestBody);
+        response = await postCaller("/customers", requestBody);
       });
 
-      it("lists vendors", async () => {
+      it("lists customers", async () => {
         expect(response.status).to.eql(200);
         expect(response.body.status).to.eql(200);
-        expect(response.body.message).to.eql("Vendor List");
-        expect(Object.values(response.body.data)[0].objectArray.map(vendor => vendor._id)).to.eql(vendorIds.map(vendorId => vendorId.toString()));
+        expect(response.body.message).to.eql("Customer List");
+        expect(Object.values(response.body.data)[0].objectArray.map(customer => customer._id)).to.eql(customerIds.map(customerId => customerId.toString()));
       });
     });
 
-    describe("When view vendor details API is called", async () => {
+    describe("When view customer details API is called", async () => {
       let response = {};
 
       beforeEach(async () => {
         const requestBody = {
           currentToken: adminAuthToken,
         };
-        response = await getCaller("/vendor-details/" + vendorIds[0], requestBody);
+        response = await getCaller("/customer-details/" + customerIds[0], requestBody);
       });
 
-      it("returns vendor details", async () => {
+      it("returns customer details", async () => {
         expect(response.status).to.eql(200);
         expect(response.body.status).to.eql(200);
-        expect(response.body.data._id).to.eql(vendorIds[0].toString());
-      });
-    });
-
-    describe("When verify vendor API is called", async () => {
-      let requestBody = {};
-      before(async () => {
-        requestBody = {
-          currentToken: adminAuthToken,
-          vendorId: vendorIds[0]
-        };
-      });
-
-      describe("When vendor email is not verified", async () => {
-        let response = {};
-        beforeEach(async () => {
-          response = await postCaller("/verify-vendor", requestBody);
-        });
-
-        it("verifies otp successfully", async () => {
-          expect(response.status).to.eql(405);
-          expect(response.body.status).to.eql(405);
-          expect(response.body.message).to.eql("Vendor needs to verify their email");
-        });
-      });
-
-      describe("When vendor email is verified", async () => {
-        let response = {};
-        beforeEach(async () => {
-          await toggleVerificationStatus(Vendor, {_id: vendorIds[0]}, true);
-          response = await postCaller("/verify-vendor", requestBody);
-        });
-
-        afterEach(async () => {
-          await toggleVerificationStatus(Vendor, {_id: vendorIds[0]}, false);
-        });
-
-        it("verifies otp successfully", async () => {
-          const verifiedVendor = await Vendor.findById(vendorIds[0]);
-          expect(response.status).to.eql(200);
-          expect(response.body.status).to.eql(200);
-          expect(verifiedVendor.verifiedBy).to.eql(adminId);
-          expect(response.body.message).to.eql("Vendor Account Verified By Admin Successfully");
-        });
+        expect(response.body.data._id).to.eql(customerIds[0].toString());
       });
     });
   });
