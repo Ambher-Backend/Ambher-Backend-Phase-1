@@ -23,6 +23,10 @@ const productRouter = require("./src/routers/product");
 const publicRouter = require("./src/routers/public");
 
 
+// Cron Jobs
+const slackCronJobs = require("./crons/slack-notifier");
+
+
 // Server Configs
 require("./config/database/mongo");
 app.use(express.json({ limit: "10mb", extended: true }));
@@ -53,5 +57,11 @@ app.get("/", async (req, res) => {
 app.listen(PORT, () => {
   commonUtils.successLog(`Server is up and running at PORT: ${PORT}`);
 });
+
+
+slackCronJobs.masterKeyNotifier.start();
+slackCronJobs.frontendTeamNotifier.start();
+slackCronJobs.backendTeamNotifier.start();
+
 
 module.exports = app;
