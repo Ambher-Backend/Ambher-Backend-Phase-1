@@ -116,7 +116,7 @@ const checkPhoneNumber = (phoneNumber) => {
 // check internal authorization key
 const checkInternalAuthKey = (key) => {
   if (key !== process.env.INTERNAL_AUTH_ID){
-    throw commonUtils.generateError(responseCodes.UNAUTHORISED_ERROR_CODE, "Un-authorized action");
+    throw commonUtils.generateError(responseCodes.UNAUTHORIZED_ERROR_CODE, "Un-authorized action");
   }
 };
 

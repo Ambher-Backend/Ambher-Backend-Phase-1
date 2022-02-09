@@ -6,7 +6,7 @@ const Customer = require("../../../src/models/customer");
 const commonUtils = require("../../../src/lib/common_utils");
 
 
-const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
+const generateDummyCustomers = async (deleteExisting, totalToGenerate) => {
   try {
     if (deleteExisting === true){
       await Customer.deleteMany({});
@@ -38,8 +38,8 @@ const generateDummyCustomerObject = (options = {}) => {
     password: "12345678",
     dob: faker.date.recent(),
     configuration: {
-      isVerified: options["isVerified"] === true ? true : false,
-      isBlocked: options["isBlocked"] === true ? true : false,
+      isVerified: options["isVerified"] !== undefined ? options["isVerified"] : true,
+      isBlocked: options["isBlocked"] !== undefined ? options["isBlocked"] : false,
     },
     blockedReason: "",
     address: [
@@ -80,4 +80,4 @@ const generateDummyReviews = () => {
 
 
 
-module.exports = {generateDummyCustomerData, generateAndSaveDummyCustomer, generateDummyCustomerObject};
+module.exports = {generateDummyCustomers, generateAndSaveDummyCustomer, generateDummyCustomerObject};

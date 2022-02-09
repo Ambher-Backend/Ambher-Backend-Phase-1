@@ -20,7 +20,7 @@ const signUpParamValidation = (req, res, next) => {
     validator.validate("email", String);
     validator.validate("password", String, allowBlank = false, acceptedValues = undefined, minLength = 8);
     validator.validate("dob", String);
-    validator.validate("address", Array);
+    validator.validate("address", Object);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);

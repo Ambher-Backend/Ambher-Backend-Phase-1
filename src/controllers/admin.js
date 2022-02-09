@@ -178,13 +178,9 @@ const vendorDetails = async (vendorId) => {
 
 const verifyVendor = async (admin, reqBody) => {
   let vendor = await Vendor.findById(reqBody.vendorId);
-  if (!vendor) {
-    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid vendor ID");
-  }
   if (vendor.configuration.isVerified === false) {
     throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Vendor needs to verify their email");
   }
-  if (vendor.configuration.isVerified === false){throw new Error("Vendor needs to verify their email");}
   vendor.configuration.isVerifiedByAdmin = true;
   vendor.verifiedBy = admin._id;
   await vendor.save();
@@ -317,6 +313,16 @@ const verifyProduct = async (admin, reqBody) => {
   let product = await Product.findById(reqBody.productId);
   if (!product) {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid product ID");
+  }
+  const ownerVendor = await Vendor.findById(product.vendorId);
+  if (!ownerVendor.configuration.isVerified) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Owner Vendor Email is not verified");
+  }
+  if (!ownerVendor.configuration.isVerifiedByAdmin) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Owner Vendor Admin verification is pending");
+  }
+  if (ownerVendor.configuration.isBlocked === true) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Owner Vendor is blocked");
   }
   product.configuration.isVerifiedByAdmin = true;
   product.verifiedBy = admin._id;
