@@ -202,7 +202,7 @@ router.get("/product-details/:productId", adminProductParamValidator.viewProduct
 //verify product
 router.post("/verify-product", adminProductParamValidator.verifyProductValidation, AdminAuth, async (req, res) => {
   try {
-    const verifyProductMessage = await helperProuct.verifyProduct(req.user, req.body);
+    const verifyProductMessage = await helperProduct.verifyProduct(req.user, req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyProductMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
