@@ -4,10 +4,13 @@ const express = require("express");
 const router = new express.Router();
 
 
+const relativePath = "..";
+
+
 //internal imports
-const helper = require("../controllers/product");
-const commonUtils = require("../lib/common_utils");
-const productParamValidator = require("../param_validators/product");
+const helper = require(`${relativePath}/controllers/product/product`);
+const commonUtils = require(`${relativePath}/lib/common_utils`);
+const productParamValidator = require(`${relativePath}/middlewares/param_validators/product/product`);
 
 
 //generate dummy data route

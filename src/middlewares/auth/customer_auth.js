@@ -3,9 +3,12 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 
+const relativePath = "../..";
+
+
 //internal imports
-const commonUtils = require("../../lib/common_utils");
-const Customer = require("../../models/customer");
+const commonUtils = require(`${relativePath}/lib/common_utils`);
+const Customer = require(`${relativePath}/models/customer`);
 
 
 const CustomerAuth = async (req, res, next) => {

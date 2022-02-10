@@ -4,10 +4,13 @@ const express = require("express");
 const router = new express.Router();
 
 
+const relativePath = "..";
+
+
 //internal imports
-const helper = require("../controllers/public");
-const commonUtils = require("../lib/common_utils");
-const publicValidator = require("../param_validators/public");
+const helper = require(`${relativePath}/controllers/public/public`);
+const commonUtils = require(`${relativePath}/lib/common_utils`);
+const publicValidator = require(`${relativePath}/middlewares/param_validators/public/public`);
 
 
 //route to get city and state details

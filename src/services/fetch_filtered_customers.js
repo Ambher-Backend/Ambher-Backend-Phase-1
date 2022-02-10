@@ -1,4 +1,8 @@
-const Customer = require("../models/customer");
+const relativePath = "..";
+
+
+//internal imports
+const Customer = require(`${relativePath}/models/customer`);
 
 
 /* filter: {

@@ -1,10 +1,14 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
+
+const relativePath = "../..";
+
+
 //internal imports
-const Vendor = require("../../models/vendor");
-const commonUtils = require("../../lib/common_utils");
-const responseCodes = require("../../lib/constants").RESPONSE_CODES;
+const Vendor = require(`${relativePath}/models/vendor`);
+const commonUtils = require(`${relativePath}/lib/common_utils`);
+const responseCodes = require(`${relativePath}/lib/constants`).RESPONSE_CODES;
 dotenv.config();
 
 //Vendor Authorization middleware function

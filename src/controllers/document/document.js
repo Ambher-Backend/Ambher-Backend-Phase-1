@@ -1,5 +1,8 @@
+const relativePath = "../..";
+
+
 // Internal Imports
-const seeder = require("../../config/database/seeder");
+const seeder = require(`${relativePath}/../config/database/seeder`);
 
 
 const generateDummyDocuments = async (reqBody) => {

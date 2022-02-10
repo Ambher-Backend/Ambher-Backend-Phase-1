@@ -4,8 +4,14 @@ const validator = require("validator");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
-const responseCodes = require("../lib/constants").RESPONSE_CODES;
-const commonUtils = require("../lib/common_utils");
+
+
+const relativePath = "..";
+
+
+//internal imports
+const responseCodes = require(`${relativePath}/lib/constants`).RESPONSE_CODES;
+const commonUtils = require(`${relativePath}/lib/common_utils`);
 
 dotenv.config();
 

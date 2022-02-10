@@ -1,9 +1,12 @@
 const fs = require("fs");
 
 
+const relativePath = "../..";
+
+
 //internal imports
-const constants = require("../lib/constants");
-const commonUtils = require("../lib/common_utils");
+const constants = require(`${relativePath}/lib/constants`);
+const commonUtils = require(`${relativePath}/lib/common_utils`);
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.

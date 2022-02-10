@@ -5,10 +5,14 @@ const express = require("express");
 const router = new express.Router();
 
 
+const relativePath = "..";
+
+
+
 // Internal Imports
-const helper = require("../controllers/document");
-const commonUtils = require("../lib/common_utils");
-const documentParamValidator = require("../param_validators/document");
+const helper = require(`${relativePath}/controllers/document/document`);
+const commonUtils = require(`${relativePath}/lib/common_utils`);
+const documentParamValidator = require(`${relativePath}/middlewares/param_validators/document/document`);
 
 
 // Creates 5 dummy documents in the database.
