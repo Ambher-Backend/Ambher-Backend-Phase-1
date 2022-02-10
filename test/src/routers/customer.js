@@ -12,6 +12,7 @@ const relativePath = "../../..";
 const app = require(`${relativePath}/app`);
 const Customer = require(`${relativePath}/src/models/customer`);
 const customerSeeder = require(`${relativePath}/config/database/seeds/customer`);
+const responseCodes = require(`${relativePath}/src/lib/constants`).RESPONSE_CODES;
 
 
 let testEmail = "";
@@ -58,7 +59,7 @@ describe("Customer APIs", async () => {
       });
 
       it("customer is created", async () => {
-        expect(response.body.status).to.eql(201);
+        expect(response.body.status).to.eql(responseCodes.CREATED_CODE);
         expect(response.body.message).to.eql("Customer Created");
         expect(response.body.data).to.eql(null);
       });
@@ -90,7 +91,7 @@ describe("Customer APIs", async () => {
       });
 
       it("login is successful", async () => {
-        expect(response.body.status).to.eql(200);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Customer Login Successful");
         expect(response.body.data.currentToken).to.not.equal(null);
       });
@@ -108,7 +109,7 @@ describe("Customer APIs", async () => {
         });
 
         it("login fails", async () => {
-          expect(response.body.status).to.eql(400);
+          expect(response.body.status).to.eql(responseCodes.INTERNAL_SERVER_ERROR_CODE);
           expect(response.body.message).to.eql("Password Incorrect");
           expect(response.body.data).to.eql(null);
         });
@@ -125,7 +126,7 @@ describe("Customer APIs", async () => {
         });
 
         it("login fails", async () => {
-          expect(response.body.status).to.eql(200);
+          expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
           expect(response.body.message).to.eql(
             "Customer Email needs to be verified"
           );
@@ -152,7 +153,7 @@ describe("Customer APIs", async () => {
       });
 
       it("auth error is raised", () => {
-        expect(response.body.status).to.eql(401);
+        expect(response.body.status).to.eql(responseCodes.UNAUTHORISED_ERROR_CODE);
       });
     });
 
@@ -173,7 +174,7 @@ describe("Customer APIs", async () => {
       });
 
       it("user logs out successfully", () => {
-        expect(response.body.status).to.eql(200);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Customer Logged out");
       });
     });
@@ -197,7 +198,7 @@ describe("Customer APIs", async () => {
       });
 
       it("return customer data", () => {
-        expect(response.body.status).to.eql(200);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Success");
         expect(response.body.data._id).to.not.eql(null);
       });
@@ -220,7 +221,7 @@ describe("Customer APIs", async () => {
       });
 
       it("return error", () => {
-        expect(response.body.status).to.eql(400);
+        expect(response.body.status).to.eql(responseCodes.INTERNAL_SERVER_ERROR_CODE);
         expect(response.body.data).to.eql(null);
       });
     });
@@ -244,7 +245,7 @@ describe("Customer APIs", async () => {
       });
 
       it("returns 'customer not found' error", async () => {
-        expect(response.body.status).to.eql(400);
+        expect(response.body.status).to.eql(responseCodes.NOT_FOUND_ERROR_CODE);
         expect(response.body.message).to.eql("Invalid Customer Email, Customer not found");
       });
     });
@@ -264,7 +265,7 @@ describe("Customer APIs", async () => {
       });
 
       it("sends otp successfully", async () => {
-        expect(response.body.status).to.eql(200);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Customer Email OTP sent successfully");
       });
     });
@@ -289,7 +290,7 @@ describe("Customer APIs", async () => {
       });
 
       it("returns customer not found error", async () => {
-        expect(response.body.status).to.eql(400);
+        expect(response.body.status).to.eql(responseCodes.NOT_FOUND_ERROR_CODE);
         expect(response.body.message).to.eql("Invalid Customer Email, Customer not found");
       });
     });
@@ -313,7 +314,7 @@ describe("Customer APIs", async () => {
       });
 
       it("returns invalid otp error", async () => {
-        expect(response.body.status).to.eql(400);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Wrong Customer Email OTP");
       });
     });
@@ -337,7 +338,7 @@ describe("Customer APIs", async () => {
       });
 
       it("verifies otp successfully", async () => {
-        expect(response.body.status).to.eql(200);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Customer OTP verified successfully");
       });
     });

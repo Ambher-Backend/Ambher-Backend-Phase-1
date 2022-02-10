@@ -6,6 +6,7 @@ dotenv.config();
 //internal imports
 const commonUtils = require("../../lib/common_utils");
 const Customer = require("../../models/customer");
+const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
 const CustomerAuth = async (req, res, next) => {
@@ -36,7 +37,9 @@ const CustomerAuth = async (req, res, next) => {
     req.currentToken = token;
     next();
   } catch (err) {
-    res.send(commonUtils.responseUtil(401, null, err.message));
+    commonUtils.errorLog(err.message);
+    const statusCode = responseCodes.UNAUTHORISED_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
