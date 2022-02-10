@@ -8,6 +8,7 @@ const responseCodes = require(`${relativePath}/lib/constants`).RESPONSE_CODES;
 
 
 //POST
+/* eslint-disable no-undef */
 const verifyVendorAccountValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
@@ -89,6 +90,7 @@ const blockVendorValidation = (req, res, next) => {
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
+/* eslint-enable */
 
 
 module.exports = {verifyVendorAccountValidation, listVendorsValidation, viewVendorDetailsValidation, blockVendorValidation};

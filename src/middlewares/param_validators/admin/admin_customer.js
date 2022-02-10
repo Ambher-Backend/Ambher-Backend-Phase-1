@@ -8,6 +8,7 @@ const responseCodes = require(`${relativePath}/lib/constants`).RESPONSE_CODES;
 
 
 //POST
+/* eslint-disable no-undef */
 const listCustomersValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);

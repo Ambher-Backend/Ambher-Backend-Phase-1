@@ -154,6 +154,7 @@ const verifyEmailOtpValidation = (req, res, next) => {
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
+/* eslint-enable */
 
 
 module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
