@@ -4,6 +4,8 @@ const validator = require("validator");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const commonUtils = require("../lib/common_utils");
 
 dotenv.config();
 
@@ -91,6 +93,9 @@ const VendorSchema = new mongoose.Schema({
       }
     ]
   },
+  gstin: {
+    type: String
+  },
   verifiedBy: {
     type: mongoose.Schema.Types.ObjectId
   },
@@ -143,7 +148,7 @@ VendorSchema.statics.findByCredentials = async (email, password) => {
     email: email
   });
   if (!vendor) {
-    throw new Error ("Vendor not found");
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor not found");
   }
   const passwordMatched = await bcrypt.compare(password, vendor.password);
   if (!passwordMatched) {

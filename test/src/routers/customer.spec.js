@@ -1,3 +1,5 @@
+require("../../spec_helper");
+
 const request = require("supertest");
 const expect = require("chai").expect;
 const describe = require("mocha").describe;
