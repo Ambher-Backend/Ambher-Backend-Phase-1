@@ -1,8 +1,5 @@
-const relativePath = "../..";
-
-
 // Internal Imports
-const seeder = require(`${relativePath}/../config/database/seeder`);
+const seeder = require("../../../config/database/seeder");
 
 
 //function to generate 5 admin data or on the basis of request

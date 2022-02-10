@@ -5,14 +5,11 @@ const express = require("express");
 const router = new express.Router();
 
 
-const relativePath = "..";
-
-
 //internal imports
-const commonUtils = require(`${relativePath}/lib/common_utils`);
-const helper = require(`${relativePath}/controllers/customer/customer`);
-const CustomerAuth = require(`${relativePath}/middlewares/auth/customer_auth`);
-const customerParamValidator = require(`${relativePath}/middlewares/param_validators/customer/customer`);
+const commonUtils = require("../lib/common_utils");
+const helper = require("../controllers/customer/customer");
+const CustomerAuth = require("../middlewares/auth/customer_auth");
+const customerParamValidator = require("../middlewares/param_validators/customer/customer");
 
 
 //signup route

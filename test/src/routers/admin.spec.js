@@ -7,18 +7,17 @@ const it = require("mocha").it;
 const { before, beforeEach, after, afterEach } = require("mocha");
 
 
-const relativePath = "../../..";
 const BASE_URL = "/admin";
 
 
 // Internal Imports
-const app = require(`${relativePath}/app`);
-const Admin = require(`${relativePath}/src/models/admin`);
-const Vendor = require(`${relativePath}/src/models/vendor`);
-const Customer = require(`${relativePath}/src/models/customer`);
-const adminSeeder = require(`${relativePath}/config/database/seeds/admin`);
-const vendorSeeder = require(`${relativePath}/config/database/seeds/vendor`);
-const customerSeeder = require(`${relativePath}/config/database/seeds/customer`);
+const app = require("../../../app");
+const Admin = require("../../../src/models/admin");
+const Vendor = require("../../../src/models/vendor");
+const Customer = require("../../../src/models/customer");
+const adminSeeder = require("../../../config/database/seeds/admin");
+const vendorSeeder = require("../../../config/database/seeds/vendor");
+const customerSeeder = require("../../../config/database/seeds/customer");
 
 
 let testEmail = "";

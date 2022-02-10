@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 // Internal Imports
 const Customer = require("../../../src/models/customer");
 const commonUtils = require("../../../src/lib/common_utils");
+const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
 const generateDummyCustomers = async (deleteExisting, totalToGenerate) => {
@@ -18,7 +19,7 @@ const generateDummyCustomers = async (deleteExisting, totalToGenerate) => {
     }
     return `${totalToGenerate} customers generated successfully!`;
   } catch (err){
-    return `Error: ||${err.message}|| occured in generating customers`;
+    throw commonUtils.generateError(responseCodes.INTERNAL_SERVER_ERROR, `Error: ||${err.message}|| occured in generating products`);
   }
 };
 

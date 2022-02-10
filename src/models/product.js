@@ -2,11 +2,8 @@ const mongoose = require("mongoose");
 const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
 
-const relativePath = "..";
-
-
 // Internal Imports
-const commonUtils = require(`${relativePath}/lib/common_utils`);
+const commonUtils = require("../lib/common_utils");
 
 //defining schema
 

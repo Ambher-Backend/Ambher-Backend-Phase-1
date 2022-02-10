@@ -6,15 +6,12 @@ const router = new express.Router();
 dotenv.config();
 
 
-const relativePath = "..";
-
-
 //internal imports
-const commonUtils = require(`${relativePath}/lib/common_utils`);
-const VendorAuth = require(`${relativePath}/middlewares/auth/vendor_auth`);
-const helper = require(`${relativePath}/controllers/vendor/vendor`);
-const vendorParamValidator = require(`${relativePath}/middlewares/param_validators/vendor/vendor`);
-const responseCodes = require(`${relativePath}/lib/constants`).RESPONSE_CODES;
+const commonUtils = require("../lib/common_utils");
+const VendorAuth = require("../middlewares/auth/vendor_auth");
+const helper = require("../controllers/vendor/vendor");
+const vendorParamValidator = require("../middlewares/param_validators/vendor/vendor");
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
 
 //registration for vendor

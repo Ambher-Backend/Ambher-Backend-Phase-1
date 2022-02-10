@@ -1,12 +1,9 @@
-const relativePath = "../..";
-
-
 // Internal Imports
-const Admin = require(`${relativePath}/models/admin`);
-const Customer = require(`${relativePath}/models/customer`);
-const commonUtils = require(`${relativePath}/lib/common_utils`);
-const fetchFilteredCustomers = require(`${relativePath}/services/fetch_filtered_customers`);
-const responseCodes = require(`${relativePath}/lib/constants`).RESPONSE_CODES;
+const Admin = require("../../models/admin");
+const Customer = require("../../models/customer");
+const commonUtils = require("../../lib/common_utils");
+const fetchFilteredCustomers = require("../../services/fetch_filtered_customers");
+const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
 //

@@ -1,12 +1,9 @@
-const relativePath = "../..";
-
-
 // Internal Imports
-const Admin = require(`${relativePath}/models/admin`);
-const commonUtils = require(`${relativePath}/lib/common_utils`);
-const emailUtils = require(`${relativePath}/lib/send_email`);
-const seeder = require(`${relativePath}/../config/database/seeder`);
-const responseCodes = require(`${relativePath}/lib/constants`).RESPONSE_CODES;
+const Admin = require("../../models/admin");
+const commonUtils = require("../../lib/common_utils");
+const emailUtils = require("../../lib/send_email");
+const seeder = require("../../../config/database/seeder");
+const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.

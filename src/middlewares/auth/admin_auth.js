@@ -3,13 +3,10 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 
-const relativePath = "../..";
-
-
 //internal imports
-const commonUtils = require(`${relativePath}/lib/common_utils`);
-const Admin = require(`${relativePath}/models/admin`);
-const responseCodes = require(`${relativePath}/lib/constants`).RESPONSE_CODES;
+const commonUtils = require("../../lib/common_utils");
+const Admin = require("../../models/admin");
+const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
 const AdminAuth = async (req, res, next) => {

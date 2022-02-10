@@ -1,13 +1,10 @@
 const config = require("config");
 
 
-const relativePath = "../../..";
-
-
 // Internal Imports
-const paramValidator = require(`${relativePath}/lib/param_validator`).ParamValidator;
-const commonValidators = require(`${relativePath}/lib/param_validator`);
-const commonUtils = require(`${relativePath}/lib/common_utils`);
+const paramValidator = require("../../../lib/param_validator").ParamValidator;
+const commonValidators = require("../../../lib/param_validator");
+const commonUtils = require("../../../lib/common_utils");
 
 
 // POST
