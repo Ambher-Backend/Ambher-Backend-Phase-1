@@ -3,7 +3,7 @@ const Customer = require("../../models/customer");
 const commonUtils = require("../../lib/common_utils");
 const emailUtils = require("../../lib/send_email");
 const seeder = require("../../../config/database/seeder");
-const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.

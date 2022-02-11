@@ -2,16 +2,10 @@ const config = require("config");
 
 
 // Internal Imports
-<<<<<<< HEAD:src/param_validators/customer.js
-const paramValidator = require("../lib/param_validator").ParamValidator;
-const commonValidators = require("../lib/param_validator");
-const commonUtils = require("../lib/common_utils");
-const responseCodes = require("../lib/constants").RESPONSE_CODES;
-=======
 const paramValidator = require("../../../lib/param_validator").ParamValidator;
 const commonValidators = require("../../../lib/param_validator");
 const commonUtils = require("../../../lib/common_utils");
->>>>>>> master:src/middlewares/param_validators/customer/customer.js
+const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
 
 
 // POST
