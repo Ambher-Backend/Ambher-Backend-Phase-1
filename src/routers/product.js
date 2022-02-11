@@ -5,15 +5,19 @@ const router = new express.Router();
 
 
 //internal imports
-const helper = require("../controllers/product/product");
+const baseHelper = require("../controllers/product/base");
 const commonUtils = require("../lib/common_utils");
-const productParamValidator = require("../middlewares/param_validators/product/product");
+const baseParamValidator = require("../middlewares/param_validators/product/base");
+
+
+const {productHelper} = baseHelper;
+const {productParamValidator} = baseParamValidator;
 
 
 //generate dummy data route
 router.post("/create-dummy-data", productParamValidator.generateProductDummyDataValidation, async (req, res) => {
   try {
-    const message = await helper.generateDummyProducts(req.body);
+    const message = await productHelper.generateDummyProducts(req.body);
     res.send(commonUtils.responseUtil(201, null, message));
   } catch (err) {
     commonUtils.errorLog(err.message);

@@ -5,10 +5,10 @@ const router = new express.Router();
 
 
 //internal imports
-const baseHelper = require("../controllers/admin/admin_base");
+const baseHelper = require("../controllers/admin/base");
 const commonUtils = require("../lib/common_utils");
-const baseParamValidator = require("../middlewares/param_validators/admin/admin_base");
-const AdminAuth = require("../middlewares/auth/admin_auth");
+const baseParamValidator = require("../middlewares/param_validators/admin/base");
+const adminAuth = require("../middlewares/auth/admin_auth");
 const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
 
@@ -44,7 +44,7 @@ router.post("/login", adminParamValidator.loginAdminParamValidation, async (req,
 
 
 //get route for admin details
-router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, async (req, res) => {
+router.get("/:adminId", adminParamValidator.getAdminParamValidation, adminAuth, async (req, res) => {
   try {
     const adminResponse = await adminHelper.handleGetDetails(req.params.adminId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, adminResponse, "Success"));
@@ -56,7 +56,7 @@ router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, 
 
 
 //logout route
-router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth, async (req, res) => {
+router.post("/logout", adminParamValidator.logoutAdminParamValidation, adminAuth, async (req, res) => {
   try {
     await adminHelper.handleLogout(req.body, req.user);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Admin Logged out"));
@@ -107,7 +107,7 @@ router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, a
 //**************************Admin Vendor Routes*******************************
 //
 //view vendor list based on filters
-router.post("/vendors", vendorParamValidator.listVendorsValidation, AdminAuth, async (req, res) => {
+router.post("/vendors", vendorParamValidator.listVendorsValidation, adminAuth, async (req, res) => {
   try {
     const filteredVendors = await vendorHelper.listVendors(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredVendors, "Vendor List"));
@@ -119,7 +119,7 @@ router.post("/vendors", vendorParamValidator.listVendorsValidation, AdminAuth, a
 
 
 //view individual vendor details
-router.get("/vendor-details/:vendorId", vendorParamValidator.viewVendorDetailsValidation, AdminAuth, async (req, res) => {
+router.get("/vendor-details/:vendorId", vendorParamValidator.viewVendorDetailsValidation, adminAuth, async (req, res) => {
   try {
     const vendorDetailsResponse = await vendorHelper.vendorDetails(req.params.vendorId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorDetailsResponse, "Vendor Details"));
@@ -131,7 +131,7 @@ router.get("/vendor-details/:vendorId", vendorParamValidator.viewVendorDetailsVa
 
 
 //verify vendor account
-router.post("/verify-vendor", vendorParamValidator.verifyVendorAccountValidation, AdminAuth, async (req, res) => {
+router.post("/verify-vendor", vendorParamValidator.verifyVendorAccountValidation, adminAuth, async (req, res) => {
   try {
     const verifyVendorAccountMessage = await vendorHelper.verifyVendor(req.user, req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyVendorAccountMessage));
@@ -146,7 +146,7 @@ router.post("/verify-vendor", vendorParamValidator.verifyVendorAccountValidation
 //**************************Admin Customer Routes*******************************
 //
 //view customer list based on filters
-router.post("/customers", customerParamValidator.listCustomersValidation, AdminAuth, async (req, res) => {
+router.post("/customers", customerParamValidator.listCustomersValidation, adminAuth, async (req, res) => {
   try {
     const filteredCustomers = await customerHelper.listCustomers(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredCustomers, "Customer List"));
@@ -158,7 +158,7 @@ router.post("/customers", customerParamValidator.listCustomersValidation, AdminA
 
 
 //view individual customer details
-router.get("/customer-details/:customerId", customerParamValidator.viewCustomerDetailsValidation, AdminAuth, async (req, res) => {
+router.get("/customer-details/:customerId", customerParamValidator.viewCustomerDetailsValidation, adminAuth, async (req, res) => {
   try {
     const customerDetailsResponse = await customerHelper.customerDetails(req.params.customerId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerDetailsResponse, "Customer Details"));
@@ -173,7 +173,7 @@ router.get("/customer-details/:customerId", customerParamValidator.viewCustomerD
 //**************************Admin Products Routes*******************************
 //
 //view product list based on filters
-router.post("/products", productParamValidator.listProductsValidation, AdminAuth, async (req, res) => {
+router.post("/products", productParamValidator.listProductsValidation, adminAuth, async (req, res) => {
   try {
     const filteredProducts = await productHelper.listProducts(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredProducts, "Product List"));
@@ -185,7 +185,7 @@ router.post("/products", productParamValidator.listProductsValidation, AdminAuth
 
 
 //view individual product details
-router.get("/product-details/:productId", productParamValidator.viewProductDetailsValidation, AdminAuth, async (req, res) => {
+router.get("/product-details/:productId", productParamValidator.viewProductDetailsValidation, adminAuth, async (req, res) => {
   try {
     const productDetailsResponse = await productHelper.productDetails(req.params.productId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, productDetailsResponse, "Product Details"));
@@ -197,7 +197,7 @@ router.get("/product-details/:productId", productParamValidator.viewProductDetai
 
 
 //verify product
-router.post("/verify-product", productParamValidator.verifyProductValidation, AdminAuth, async (req, res) => {
+router.post("/verify-product", productParamValidator.verifyProductValidation, adminAuth, async (req, res) => {
   try {
     const verifyProductMessage = await productHelper.verifyProduct(req.user, req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyProductMessage));
@@ -209,7 +209,7 @@ router.post("/verify-product", productParamValidator.verifyProductValidation, Ad
 
 
 //block product
-router.post("/block-product", productParamValidator.blockProductValidation, AdminAuth, async (req, res) => {
+router.post("/block-product", productParamValidator.blockProductValidation, adminAuth, async (req, res) => {
   try {
     const blockProductMessage = await productHelper.blockProduct(req.user, req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, blockProductMessage));

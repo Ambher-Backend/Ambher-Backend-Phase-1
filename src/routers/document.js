@@ -6,15 +6,19 @@ const router = new express.Router();
 
 
 // Internal Imports
-const helper = require("../controllers/document/document");
+const baseHelper = require("../controllers/document/base");
 const commonUtils = require("../lib/common_utils");
-const documentParamValidator = require("../middlewares/param_validators/document/document");
+const baseParamValidator = require("../middlewares/param_validators/document/base");
+
+
+const {documentHelper} = baseHelper;
+const {documentParamValidator} = baseParamValidator;
 
 
 // Creates 5 dummy documents in the database.
 router.post("/create-dummy-data", documentParamValidator.generateDocumentDummyDataValidation, async (req, res) => {
   try {
-    const verdict = await helper.generateDummyDocuments(req.body);
+    const verdict = await documentHelper.generateDummyDocuments(req.body);
     res.send(commonUtils.responseUtil(201, null, verdict));
   } catch (err){
     commonUtils.errorLog(err.message);
