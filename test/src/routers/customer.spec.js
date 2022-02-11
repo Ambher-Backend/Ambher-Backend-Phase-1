@@ -155,7 +155,7 @@ describe("Customer APIs", async () => {
       });
 
       it("auth error is raised", () => {
-        expect(response.body.status).to.eql(responseCodes.UNAUTHORISED_ERROR_CODE);
+        expect(response.body.status).to.eql(responseCodes.UNAUTHORIZED_ERROR_CODE);
       });
     });
 
