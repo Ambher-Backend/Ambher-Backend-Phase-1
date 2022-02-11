@@ -5,11 +5,15 @@ const router = new express.Router();
 
 
 //internal imports
-const helper = require("../controllers/admin");
+const baseHelper = require("../controllers/admin/base");
 const commonUtils = require("../lib/common_utils");
-const adminParamValidator = require("../param_validators/admin");
-const AdminAuth = require("../middlewares/auth/admin_auth");
+const baseParamValidator = require("../middlewares/param_validators/admin/base");
+const adminAuth = require("../middlewares/auth/admin_auth");
 const responseCodes = require("../lib/constants").RESPONSE_CODES;
+
+
+const {adminHelper, vendorHelper, customerHelper, productHelper} = baseHelper;
+const {adminParamValidator, vendorParamValidator, customerParamValidator, productParamValidator} = baseParamValidator;
 
 
 //
@@ -18,7 +22,7 @@ const responseCodes = require("../lib/constants").RESPONSE_CODES;
 //signup route
 router.post("/signup", adminParamValidator.signUpParamValidation, async (req, res)=>{
   try {
-    await helper.handleSignup(req.body);
+    await adminHelper.handleSignup(req.body);
     res.status(responseCodes.CREATED_CODE).send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, "Admin Created"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -30,7 +34,7 @@ router.post("/signup", adminParamValidator.signUpParamValidation, async (req, re
 //login route
 router.post("/login", adminParamValidator.loginAdminParamValidation, async (req, res) => {
   try {
-    const adminLoginResponse = await helper.handleLogin(req.body);
+    const adminLoginResponse = await adminHelper.handleLogin(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, adminLoginResponse.adminObjectToExpose, adminLoginResponse.message));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -40,9 +44,9 @@ router.post("/login", adminParamValidator.loginAdminParamValidation, async (req,
 
 
 //get route for admin details
-router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, async (req, res) => {
+router.get("/:adminId", adminParamValidator.getAdminParamValidation, adminAuth, async (req, res) => {
   try {
-    const adminResponse = await helper.handleGetDetails(req.params.adminId);
+    const adminResponse = await adminHelper.handleGetDetails(req.params.adminId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, adminResponse, "Success"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -52,9 +56,9 @@ router.get("/:adminId", adminParamValidator.getAdminParamValidation, AdminAuth, 
 
 
 //logout route
-router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth, async (req, res) => {
+router.post("/logout", adminParamValidator.logoutAdminParamValidation, adminAuth, async (req, res) => {
   try {
-    await helper.handleLogout(req.body, req.user);
+    await adminHelper.handleLogout(req.body, req.user);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Admin Logged out"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -66,7 +70,7 @@ router.post("/logout", adminParamValidator.logoutAdminParamValidation, AdminAuth
 //generate dummy data route
 router.post("/create-dummy-data", adminParamValidator.generateAdminDummyDataValidation, async (req, res) => {
   try {
-    const message = await helper.generateDummyAdmins(req.body);
+    const message = await adminHelper.generateDummyAdmins(req.body);
     res.status(responseCodes.CREATED_CODE).send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, message));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -78,7 +82,7 @@ router.post("/create-dummy-data", adminParamValidator.generateAdminDummyDataVali
 //send a new otp to admin email
 router.post("/new-email-otp", adminParamValidator.sendEmailOtpValidation, async (req, res) => {
   try {
-    await helper.sendEmailOtp(req.body.adminEmail);
+    await adminHelper.sendEmailOtp(req.body.adminEmail);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Admin Email OTP sent successfully"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -90,7 +94,7 @@ router.post("/new-email-otp", adminParamValidator.sendEmailOtpValidation, async 
 //verify the email otp of admin
 router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, async (req, res) => {
   try {
-    const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req.body);
+    const verifiedEmailOtpMessage = await adminHelper.verifyEmailOtp(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifiedEmailOtpMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -103,9 +107,9 @@ router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, a
 //**************************Admin Vendor Routes*******************************
 //
 //view vendor list based on filters
-router.post("/vendors", adminParamValidator.listVendorsValidation, AdminAuth, async (req, res) => {
+router.post("/vendors", vendorParamValidator.listVendorsValidation, adminAuth, async (req, res) => {
   try {
-    const filteredVendors = await helper.listVendors(req.body);
+    const filteredVendors = await vendorHelper.listVendors(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredVendors, "Vendor List"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -115,9 +119,9 @@ router.post("/vendors", adminParamValidator.listVendorsValidation, AdminAuth, as
 
 
 //view individual vendor details
-router.get("/vendor-details/:vendorId", adminParamValidator.viewVendorDetailsValidation, AdminAuth, async (req, res) => {
+router.get("/vendor-details/:vendorId", vendorParamValidator.viewVendorDetailsValidation, adminAuth, async (req, res) => {
   try {
-    const vendorDetailsResponse = await helper.vendorDetails(req.params.vendorId);
+    const vendorDetailsResponse = await vendorHelper.vendorDetails(req.params.vendorId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorDetailsResponse, "Vendor Details"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -127,9 +131,9 @@ router.get("/vendor-details/:vendorId", adminParamValidator.viewVendorDetailsVal
 
 
 //verify vendor account
-router.post("/verify-vendor", adminParamValidator.verifyVendorAccountValidation, AdminAuth, async (req, res) => {
+router.post("/verify-vendor", vendorParamValidator.verifyVendorAccountValidation, adminAuth, async (req, res) => {
   try {
-    const verifyVendorAccountMessage = await helper.verifyVendor(req.user, req.body);
+    const verifyVendorAccountMessage = await vendorHelper.verifyVendor(req.user, req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyVendorAccountMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -142,9 +146,9 @@ router.post("/verify-vendor", adminParamValidator.verifyVendorAccountValidation,
 //**************************Admin Customer Routes*******************************
 //
 //view customer list based on filters
-router.post("/customers", adminParamValidator.listCustomersValidation, AdminAuth, async (req, res) => {
+router.post("/customers", customerParamValidator.listCustomersValidation, adminAuth, async (req, res) => {
   try {
-    const filteredCustomers = await helper.listCustomers(req.body);
+    const filteredCustomers = await customerHelper.listCustomers(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredCustomers, "Customer List"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -154,9 +158,9 @@ router.post("/customers", adminParamValidator.listCustomersValidation, AdminAuth
 
 
 //view individual customer details
-router.get("/customer-details/:customerId", adminParamValidator.viewCustomerDetailsValidation, AdminAuth, async (req, res) => {
+router.get("/customer-details/:customerId", customerParamValidator.viewCustomerDetailsValidation, adminAuth, async (req, res) => {
   try {
-    const customerDetailsResponse = await helper.customerDetails(req.params.customerId);
+    const customerDetailsResponse = await customerHelper.customerDetails(req.params.customerId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerDetailsResponse, "Customer Details"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -169,9 +173,9 @@ router.get("/customer-details/:customerId", adminParamValidator.viewCustomerDeta
 //**************************Admin Products Routes*******************************
 //
 //view product list based on filters
-router.post("/products", adminParamValidator.listProductsValidation, AdminAuth, async (req, res) => {
+router.post("/products", productParamValidator.listProductsValidation, adminAuth, async (req, res) => {
   try {
-    const filteredProducts = await helper.listProducts(req.body);
+    const filteredProducts = await productHelper.listProducts(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, filteredProducts, "Product List"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -181,9 +185,9 @@ router.post("/products", adminParamValidator.listProductsValidation, AdminAuth, 
 
 
 //view individual product details
-router.get("/product-details/:productId", adminParamValidator.viewProductDetailsValidation, AdminAuth, async (req, res) => {
+router.get("/product-details/:productId", productParamValidator.viewProductDetailsValidation, adminAuth, async (req, res) => {
   try {
-    const productDetailsResponse = await helper.productDetails(req.params.productId);
+    const productDetailsResponse = await productHelper.productDetails(req.params.productId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, productDetailsResponse, "Product Details"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -193,9 +197,9 @@ router.get("/product-details/:productId", adminParamValidator.viewProductDetails
 
 
 //verify product
-router.post("/verify-product", adminParamValidator.verifyProductValidation, AdminAuth, async (req, res) => {
+router.post("/verify-product", productParamValidator.verifyProductValidation, adminAuth, async (req, res) => {
   try {
-    const verifyProductMessage = await helper.verifyProduct(req.user, req.body);
+    const verifyProductMessage = await productHelper.verifyProduct(req.user, req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifyProductMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -205,9 +209,9 @@ router.post("/verify-product", adminParamValidator.verifyProductValidation, Admi
 
 
 //block product
-router.post("/block-product", adminParamValidator.blockProductValidation, AdminAuth, async (req, res) => {
+router.post("/block-product", productParamValidator.blockProductValidation, adminAuth, async (req, res) => {
   try {
-    const blockProductMessage = await helper.blockProduct(req.user, req.body);
+    const blockProductMessage = await productHelper.blockProduct(req.user, req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, blockProductMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;

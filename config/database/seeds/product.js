@@ -4,8 +4,9 @@ const faker = require("faker");
 // Internal Imports
 const Product = require("../../../src/models/product");
 const commonUtils = require("../../../src/lib/common_utils");
-const vendorSeeder = require("./vendor").generateDummyVendor;
-const adminSeeder = require("./admin").generateDummyAdmin;
+const vendorSeeder = require("./vendor").generateAndSaveDummyVendor;
+const adminSeeder = require("./admin").generateAndSaveDummyAdmin;
+const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
 const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
@@ -20,7 +21,7 @@ const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
     }
     return `${totalToGenerate} products generated successfully!`;
   } catch (err){
-    return `Error: ||${err.message}|| occured in generating products`;
+    throw commonUtils.generateError(responseCodes.INTERNAL_SERVER_ERROR, `Error: ||${err.message}|| occured in generating products`);
   }
 };
 

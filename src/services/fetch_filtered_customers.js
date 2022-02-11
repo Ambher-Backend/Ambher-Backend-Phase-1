@@ -1,3 +1,4 @@
+//internal imports
 const Customer = require("../models/customer");
 
 

@@ -8,7 +8,8 @@ const commonUtils = require("../../lib/common_utils");
 const Admin = require("../../models/admin");
 const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
-const AdminAuth = async (req, res, next) => {
+
+const adminAuth = async (req, res, next) => {
   try {
     const token = req.body.currentToken;
     const decoded = jwt.verify(token, process.env.JWT_KEY);
@@ -39,4 +40,4 @@ const AdminAuth = async (req, res, next) => {
 };
 
 
-module.exports = AdminAuth;
+module.exports = adminAuth;

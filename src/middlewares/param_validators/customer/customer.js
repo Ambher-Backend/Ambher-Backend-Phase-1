@@ -2,10 +2,11 @@ const config = require("config");
 
 
 // Internal Imports
-const paramValidator = require("../lib/param_validator").ParamValidator;
-const commonValidators = require("../lib/param_validator");
-const commonUtils = require("../lib/common_utils");
-const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const paramValidator = require("../../../lib/param_validator").ParamValidator;
+const commonValidators = require("../../../lib/param_validator");
+const commonUtils = require("../../../lib/common_utils");
+const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
+
 
 // POST
 // TODO: Remove this ignore and fix named variables issue
@@ -13,14 +14,14 @@ const responseCodes = require("../lib/constants").RESPONSE_CODES;
 const signUpParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["name", "phoneNumber", "email", "password", "dob", "address"];
+    const acceptedParams = ["name", "phoneNumber", "email", "password", "dob", "profilePictureUrl"];
 
     validator.validate("name", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50);
     validator.validate("phoneNumber", String, allowBlank = false, acceptedValues = undefined, minLength = 10, maxLength = 10);
     validator.validate("email", String);
     validator.validate("password", String, allowBlank = false, acceptedValues = undefined, minLength = 8);
     validator.validate("dob", String);
-    validator.validate("address", Object);
+    validator.validate("profilePictureUrl", Number, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
@@ -34,8 +35,8 @@ const signUpParamValidation = (req, res, next) => {
 };
 
 
-// POST
-const loginVendorParamValidation = (req, res, next) => {
+// LOGIN
+const loginCustomerParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["email", "password"];
@@ -55,7 +56,7 @@ const loginVendorParamValidation = (req, res, next) => {
 
 
 // POST
-const logoutVendorParamValidation = (req, res, next) => {
+const logoutCustomerParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["currentToken"];
@@ -72,16 +73,17 @@ const logoutVendorParamValidation = (req, res, next) => {
 
 
 // GET
-const getVendorParamValidation = (req, res, next) => {
+const getCustomerParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
-    const acceptedParams = ["vendorId", "currentToken"];
+    const acceptedParams = ["currentToken"];
+    const acceptedParams1 = ["customerId"];
 
-    validator.validate("vendorId", String);
+    validator.validate("customerId", String);
     validator1.validate("currentToken", String);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams1);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
@@ -92,7 +94,7 @@ const getVendorParamValidation = (req, res, next) => {
 
 
 // POST
-const generateVendorDummyDataValidation = (req, res, next) => {
+const generateCustomerDummyDataValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
@@ -104,13 +106,13 @@ const generateVendorDummyDataValidation = (req, res, next) => {
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-      throw commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Dummy Data Creation Not Allowed on Production Server");
+      throw new Error("Dummy Data Creation Not Allowed on Production Server");
     }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    const statusCode = err.status || responseCodes.BAD_REQUEST_CODE;
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
@@ -120,11 +122,11 @@ const generateVendorDummyDataValidation = (req, res, next) => {
 const sendEmailOtpValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["vendorEmail"];
+    const acceptedParams = ["customerEmail"];
 
-    validator.validate("vendorEmail", String);
+    validator.validate("customerEmail", String);
 
-    commonValidators.checkEmailFormat(req.body.vendorEmail);
+    commonValidators.checkEmailFormat(req.body.customerEmail);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
@@ -139,12 +141,12 @@ const sendEmailOtpValidation = (req, res, next) => {
 const verifyEmailOtpValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["vendorEmail", "otp"];
+    const acceptedParams = ["customerEmail", "otp"];
 
-    validator.validate("vendorEmail", String);
+    validator.validate("customerEmail", String);
     validator.validate("otp", String);
 
-    commonValidators.checkEmailFormat(req.body.vendorEmail);
+    commonValidators.checkEmailFormat(req.body.customerEmail);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
@@ -156,6 +158,6 @@ const verifyEmailOtpValidation = (req, res, next) => {
 /* eslint-enable */
 
 
-module.exports = {signUpParamValidation, loginVendorParamValidation, getVendorParamValidation,
-  logoutVendorParamValidation, generateVendorDummyDataValidation, sendEmailOtpValidation,
+module.exports = {signUpParamValidation, loginCustomerParamValidation, getCustomerParamValidation,
+  logoutCustomerParamValidation, generateCustomerDummyDataValidation, sendEmailOtpValidation,
   verifyEmailOtpValidation};
