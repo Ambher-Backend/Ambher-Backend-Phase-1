@@ -1,3 +1,4 @@
+//internal imports
 const Product = require("../models/product");
 
 

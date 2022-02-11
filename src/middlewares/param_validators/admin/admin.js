@@ -2,10 +2,11 @@ const config = require("config");
 
 
 // Internal Imports
-const paramValidator = require("../lib/param_validator").ParamValidator;
-const commonValidators = require("../lib/param_validator");
-const commonUtils = require("../lib/common_utils");
-const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const paramValidator = require("../../../lib/param_validator").ParamValidator;
+const commonValidators = require("../../../lib/param_validator");
+const commonUtils = require("../../../lib/common_utils");
+const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
+
 
 // POST
 // TODO: Remove this ignore and fix named variables issue
@@ -13,14 +14,12 @@ const responseCodes = require("../lib/constants").RESPONSE_CODES;
 const signUpParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["name", "phoneNumber", "email", "password", "dob", "address"];
+    const acceptedParams = ["name", "phoneNumber", "email", "password"];
 
     validator.validate("name", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50);
     validator.validate("phoneNumber", String, allowBlank = false, acceptedValues = undefined, minLength = 10, maxLength = 10);
     validator.validate("email", String);
     validator.validate("password", String, allowBlank = false, acceptedValues = undefined, minLength = 8);
-    validator.validate("dob", String);
-    validator.validate("address", Object);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
@@ -34,8 +33,8 @@ const signUpParamValidation = (req, res, next) => {
 };
 
 
-// POST
-const loginVendorParamValidation = (req, res, next) => {
+// LOGIN
+const loginAdminParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["email", "password"];
@@ -55,7 +54,7 @@ const loginVendorParamValidation = (req, res, next) => {
 
 
 // POST
-const logoutVendorParamValidation = (req, res, next) => {
+const logoutAdminParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["currentToken"];
@@ -72,17 +71,16 @@ const logoutVendorParamValidation = (req, res, next) => {
 
 
 // GET
-const getVendorParamValidation = (req, res, next) => {
+const getAdminParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
-    const acceptedParams = ["vendorId", "currentToken"];
+    const acceptedParams = ["adminId", "currentToken"];
 
-    validator.validate("vendorId", String);
+    validator.validate("adminId", String);
     validator1.validate("currentToken", String);
 
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
-    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
     const statusCode = responseCodes.BAD_REQUEST_CODE;
@@ -92,7 +90,7 @@ const getVendorParamValidation = (req, res, next) => {
 
 
 // POST
-const generateVendorDummyDataValidation = (req, res, next) => {
+const generateAdminDummyDataValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
@@ -120,11 +118,11 @@ const generateVendorDummyDataValidation = (req, res, next) => {
 const sendEmailOtpValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["vendorEmail"];
+    const acceptedParams = ["adminEmail"];
 
-    validator.validate("vendorEmail", String);
+    validator.validate("adminEmail", String);
 
-    commonValidators.checkEmailFormat(req.body.vendorEmail);
+    commonValidators.checkEmailFormat(req.body.adminEmail);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
@@ -139,12 +137,12 @@ const sendEmailOtpValidation = (req, res, next) => {
 const verifyEmailOtpValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["vendorEmail", "otp"];
+    const acceptedParams = ["adminEmail", "otp"];
 
-    validator.validate("vendorEmail", String);
+    validator.validate("adminEmail", String);
     validator.validate("otp", String);
 
-    commonValidators.checkEmailFormat(req.body.vendorEmail);
+    commonValidators.checkEmailFormat(req.body.adminEmail);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
@@ -156,6 +154,6 @@ const verifyEmailOtpValidation = (req, res, next) => {
 /* eslint-enable */
 
 
-module.exports = {signUpParamValidation, loginVendorParamValidation, getVendorParamValidation,
-  logoutVendorParamValidation, generateVendorDummyDataValidation, sendEmailOtpValidation,
+module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
+  logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
   verifyEmailOtpValidation};

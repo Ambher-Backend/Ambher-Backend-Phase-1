@@ -2,9 +2,10 @@ const config = require("config");
 
 
 // Internal Imports
-const paramValidator = require("../lib/param_validator").ParamValidator;
-const commonValidators = require("../lib/param_validator");
-const commonUtils = require("../lib/common_utils");
+const paramValidator = require("../../../lib/param_validator").ParamValidator;
+const commonValidators = require("../../../lib/param_validator");
+const commonUtils = require("../../../lib/common_utils");
+const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
 
 
 // POST
@@ -13,14 +14,14 @@ const commonUtils = require("../lib/common_utils");
 const signUpParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["name", "phoneNumber", "email", "password", "dob", "profilePictureUrl"];
+    const acceptedParams = ["name", "phoneNumber", "email", "password", "dob", "address"];
 
     validator.validate("name", String, allowBlank = false, acceptedValues = undefined, minLength = 1, maxLength = 50);
     validator.validate("phoneNumber", String, allowBlank = false, acceptedValues = undefined, minLength = 10, maxLength = 10);
     validator.validate("email", String);
     validator.validate("password", String, allowBlank = false, acceptedValues = undefined, minLength = 8);
     validator.validate("dob", String);
-    validator.validate("profilePictureUrl", Number, allowBlank = false, acceptedValues = undefined, minLength = undefined, maxLength = undefined, regex = undefined, required = false);
+    validator.validate("address", Object);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
@@ -28,13 +29,14 @@ const signUpParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
 
-// LOGIN
-const loginCustomerParamValidation = (req, res, next) => {
+// POST
+const loginVendorParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["email", "password"];
@@ -47,13 +49,14 @@ const loginCustomerParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
 
 // POST
-const logoutCustomerParamValidation = (req, res, next) => {
+const logoutVendorParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["currentToken"];
@@ -63,33 +66,34 @@ const logoutCustomerParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
 
 // GET
-const getCustomerParamValidation = (req, res, next) => {
+const getVendorParamValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
-    const acceptedParams = ["currentToken"];
-    const acceptedParams1 = ["customerId"];
+    const acceptedParams = ["vendorId", "currentToken"];
 
-    validator.validate("customerId", String);
+    validator.validate("vendorId", String);
     validator1.validate("currentToken", String);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams1);
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
 
 // POST
-const generateCustomerDummyDataValidation = (req, res, next) => {
+const generateVendorDummyDataValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
     const acceptedParams = ["internalAuthKey", "deleteExisting", "total"];
@@ -101,13 +105,14 @@ const generateCustomerDummyDataValidation = (req, res, next) => {
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-      throw new Error("Dummy Data Creation Not Allowed on Production Server");
+      throw commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Dummy Data Creation Not Allowed on Production Server");
     }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -116,16 +121,17 @@ const generateCustomerDummyDataValidation = (req, res, next) => {
 const sendEmailOtpValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["customerEmail"];
+    const acceptedParams = ["vendorEmail"];
 
-    validator.validate("customerEmail", String);
+    validator.validate("vendorEmail", String);
 
-    commonValidators.checkEmailFormat(req.body.customerEmail);
+    commonValidators.checkEmailFormat(req.body.vendorEmail);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -134,22 +140,23 @@ const sendEmailOtpValidation = (req, res, next) => {
 const verifyEmailOtpValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.body);
-    const acceptedParams = ["customerEmail", "otp"];
+    const acceptedParams = ["vendorEmail", "otp"];
 
-    validator.validate("customerEmail", String);
+    validator.validate("vendorEmail", String);
     validator.validate("otp", String);
 
-    commonValidators.checkEmailFormat(req.body.customerEmail);
+    commonValidators.checkEmailFormat(req.body.vendorEmail);
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 /* eslint-enable */
 
 
-module.exports = {signUpParamValidation, loginCustomerParamValidation, getCustomerParamValidation,
-  logoutCustomerParamValidation, generateCustomerDummyDataValidation, sendEmailOtpValidation,
+module.exports = {signUpParamValidation, loginVendorParamValidation, getVendorParamValidation,
+  logoutVendorParamValidation, generateVendorDummyDataValidation, sendEmailOtpValidation,
   verifyEmailOtpValidation};
