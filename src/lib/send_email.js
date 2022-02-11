@@ -31,14 +31,9 @@ const sendProductionEmail = (receiverEmail, mailSubject, mailBody) => {
     subject: mailSubject,
     text: mailBody,
   };
+  console.log(`Email initiated for ${receiverEmail}`);
   sgMail
-    .send(msg)
-    .then(() => {
-      console.log(`Email sent to ${receiverEmail}`);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    .send(msg);
 };
 
 
