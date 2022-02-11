@@ -7,7 +7,7 @@
     "dev": "export NODE_ENV=development && nodemon app.js",
     "win-dev": "set NODE_ENV=development && nodemon app.js",
     "start": "node app.js",
-    "test": "set NODE_ENV=test && nyc --reporter=html mocha --recursive ./test --timeout 10000 --exit",
+    "test": "export NODE_ENV=test && nyc --reporter=html mocha --recursive ./test --timeout 10000 --exit",
     "test-single": "npx mocha --timeout 10000 --exit",
     "win-test": "set NODE_ENV=test && nyc --reporter=html mocha --recursive ./test --timeout 10000 --exit",
     "check-linting": "npx eslint config src test app.js",
