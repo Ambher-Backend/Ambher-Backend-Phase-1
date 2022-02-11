@@ -6,7 +6,7 @@ dotenv.config();
 // making it a non promising function to avoid blocking the main thread.
 const sendEmail = (receiverEmail, mailSubject, mailBody) => {
   switch (process.env.NODE_ENV) {
-  case "production":
+  case "production": {
     const sgMail = require("@sendgrid/mail");
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const msg = {
@@ -24,7 +24,8 @@ const sendEmail = (receiverEmail, mailSubject, mailBody) => {
         console.error(error);
       });
     break;
-  case "test":
+  }
+  case "test": {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
@@ -34,7 +35,6 @@ const sendEmail = (receiverEmail, mailSubject, mailBody) => {
         pass: process.env.SENDER_EMAIL_PASSWORD,
       },
     });
-
     console.log(`Email initiated for ${receiverEmail}`);
     transporter.sendMail({
       from: "Ambher Technologies",
@@ -43,7 +43,8 @@ const sendEmail = (receiverEmail, mailSubject, mailBody) => {
       text: mailBody,
     });
     break;
-}
+  }
+  }
 };
 
 module.exports = { sendEmail };
