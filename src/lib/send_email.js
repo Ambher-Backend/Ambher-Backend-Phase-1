@@ -20,7 +20,7 @@ const sendTestEmail = (receiverEmail, mailSubject, mailBody) => {
     })
     .catch((error) => {
       console.error(error);
-    }); 
+    });
 };
 
 
