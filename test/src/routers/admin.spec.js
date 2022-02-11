@@ -19,6 +19,7 @@ const Customer = require(`${relativePath}/src/models/customer`);
 const adminSeeder = require(`${relativePath}/config/database/seeds/admin`);
 const vendorSeeder = require(`${relativePath}/config/database/seeds/vendor`);
 const customerSeeder = require(`${relativePath}/config/database/seeds/customer`);
+const responseCodes = require(`${relativePath}/src/lib/constants`).RESPONSE_CODES;
 
 
 let testEmail = "";
@@ -84,8 +85,8 @@ describe("Admin APIs", async () => {
       });
 
       it("admin is created", async () => {
-        expect(response.status).to.eql(201);
-        expect(response.body.status).to.eql(201);
+        expect(response.status).to.eql(responseCodes.CREATED_CODE);
+        expect(response.body.status).to.eql(responseCodes.CREATED_CODE);
         expect(response.body.message).to.eql("Admin Created");
         expect(response.body.data).to.eql(null);
       });
@@ -116,8 +117,8 @@ describe("Admin APIs", async () => {
       });
 
       it("login is successful", async () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Admin Login Successful");
         expect(response.body.data.currentToken).to.not.equal(null);
       });
@@ -133,8 +134,8 @@ describe("Admin APIs", async () => {
         });
 
         it("login fails", async () => {
-          expect(response.status).to.eql(200);
-          expect(response.body.status).to.eql(200);
+          expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+          expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
           expect(response.body.message).to.eql("Password Incorrect");
           expect(response.body.data).to.eql(null);
         });
@@ -149,8 +150,8 @@ describe("Admin APIs", async () => {
         });
 
         it("login fails", async () => {
-          expect(response.status).to.eql(200);
-          expect(response.body.status).to.eql(200);
+          expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+          expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
           expect(response.body.message).to.eql(
             "Admin Email needs to be verified"
           );
@@ -175,8 +176,8 @@ describe("Admin APIs", async () => {
       });
 
       it("auth error is raised", () => {
-        expect(response.status).to.eql(401);
-        expect(response.body.status).to.eql(401);
+        expect(response.status).to.eql(responseCodes.UNAUTHORIZED_ERROR_CODE);
+        expect(response.body.status).to.eql(responseCodes.UNAUTHORIZED_ERROR_CODE);
       });
     });
 
@@ -195,7 +196,7 @@ describe("Admin APIs", async () => {
       });
 
       it("user logs out successfully", () => {
-        expect(response.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Admin Logged out");
       });
     });
@@ -217,8 +218,8 @@ describe("Admin APIs", async () => {
       });
 
       it("return admin data", () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Success");
         expect(response.body.data._id).to.not.eql(null);
       });
@@ -239,8 +240,8 @@ describe("Admin APIs", async () => {
       });
 
       it("return error", () => {
-        expect(response.status).to.eql(500);
-        expect(response.body.status).to.eql(500);
+        expect(response.status).to.eql(responseCodes.INTERNAL_SERVER_ERROR_CODE);
+        expect(response.body.status).to.eql(responseCodes.INTERNAL_SERVER_ERROR_CODE);
         expect(response.body.data).to.eql(null);
       });
     });
@@ -262,8 +263,8 @@ describe("Admin APIs", async () => {
       });
 
       it("returns 'admin not found' error", async () => {
-        expect(response.status).to.eql(404);
-        expect(response.body.status).to.eql(404);
+        expect(response.status).to.eql(responseCodes.NOT_FOUND_ERROR_CODE);
+        expect(response.body.status).to.eql(responseCodes.NOT_FOUND_ERROR_CODE);
         expect(response.body.message).to.eql("Invalid Email, Admin Not registered");
       });
     });
@@ -281,8 +282,8 @@ describe("Admin APIs", async () => {
       });
 
       it("sends otp successfully", async () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Admin Email OTP sent successfully");
       });
     });
@@ -305,8 +306,8 @@ describe("Admin APIs", async () => {
       });
 
       it("returns admin not found error", async () => {
-        expect(response.status).to.eql(404);
-        expect(response.body.status).to.eql(404);
+        expect(response.status).to.eql(responseCodes.NOT_FOUND_ERROR_CODE);
+        expect(response.body.status).to.eql(responseCodes.NOT_FOUND_ERROR_CODE);
         expect(response.body.message).to.eql("Invalid Email, Admin Not registered");
       });
     });
@@ -328,8 +329,8 @@ describe("Admin APIs", async () => {
       });
 
       it("returns invalid otp error", async () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Wrong Admin Email OTP");
       });
     });
@@ -351,8 +352,8 @@ describe("Admin APIs", async () => {
       });
 
       it("verifies otp successfully", async () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Admin Email OTP verified successfully");
       });
     });
@@ -389,8 +390,8 @@ describe("Admin APIs", async () => {
       });
 
       it("lists vendors", async () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Vendor List");
         expect(Object.values(response.body.data)[0].objectArray.map(vendor => vendor._id)).to.eql(vendorIds.map(vendorId => vendorId.toString()));
       });
@@ -407,8 +408,8 @@ describe("Admin APIs", async () => {
       });
 
       it("returns vendor details", async () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.data._id).to.eql(vendorIds[0].toString());
       });
     });
@@ -429,8 +430,8 @@ describe("Admin APIs", async () => {
         });
 
         it("verifies otp successfully", async () => {
-          expect(response.status).to.eql(405);
-          expect(response.body.status).to.eql(405);
+          expect(response.status).to.eql(responseCodes.ACCESS_ERROR_CODE);
+          expect(response.body.status).to.eql(responseCodes.ACCESS_ERROR_CODE);
           expect(response.body.message).to.eql("Vendor needs to verify their email");
         });
       });
@@ -448,8 +449,8 @@ describe("Admin APIs", async () => {
 
         it("verifies otp successfully", async () => {
           const verifiedVendor = await Vendor.findById(vendorIds[0]);
-          expect(response.status).to.eql(200);
-          expect(response.body.status).to.eql(200);
+          expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+          expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
           expect(verifiedVendor.verifiedBy).to.eql(adminId);
           expect(response.body.message).to.eql("Vendor Account Verified By Admin Successfully");
         });
@@ -487,8 +488,8 @@ describe("Admin APIs", async () => {
       });
 
       it("lists customers", async () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.message).to.eql("Customer List");
         expect(Object.values(response.body.data)[0].objectArray.map(customer => customer._id)).to.eql(customerIds.map(customerId => customerId.toString()));
       });
@@ -505,8 +506,8 @@ describe("Admin APIs", async () => {
       });
 
       it("returns customer details", async () => {
-        expect(response.status).to.eql(200);
-        expect(response.body.status).to.eql(200);
+        expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
+        expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.data._id).to.eql(customerIds[0].toString());
       });
     });
