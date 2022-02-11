@@ -37,7 +37,6 @@ const customerAuth = async (req, res, next) => {
     req.currentToken = token;
     next();
   } catch (err) {
-    commonUtils.errorLog(err.message);
     const statusCode = responseCodes.UNAUTHORIZED_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
