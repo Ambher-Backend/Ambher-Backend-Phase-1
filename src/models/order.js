@@ -6,23 +6,23 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.schema(
   {
     customerId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true
     },
     productItemId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true
     },
     productId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true
     },
     cartItemId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true
     },
     vendorId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true
     },
     paymentId: {
