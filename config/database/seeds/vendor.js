@@ -6,6 +6,7 @@ const faker = require("faker");
 const Vendor = require("../../../src/models/vendor");
 const commonUtils = require("../../../src/lib/common_utils");
 const adminSeed = require("./admin").generateAndSaveDummyAdmin;
+const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
 const generateDummyVendors = async (deleteExisting, totalToGenerate) => {
@@ -20,7 +21,7 @@ const generateDummyVendors = async (deleteExisting, totalToGenerate) => {
     }
     return `${totalToGenerate} vendors generated successfully!`;
   } catch (err){
-    return `Error: ||${err.message}|| occurred in generating vendors`;
+    throw commonUtils.generateError(responseCodes.INTERNAL_SERVER_ERROR, `Error: ||${err.message}|| occured in generating products`);
   }
 };
 

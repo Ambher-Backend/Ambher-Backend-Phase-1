@@ -9,7 +9,7 @@ const Customer = require("../../models/customer");
 const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
-const CustomerAuth = async (req, res, next) => {
+const customerAuth = async (req, res, next) => {
   try {
     if (!(req.body.currentToken)){
       throw new Error("Token not present");
@@ -44,4 +44,4 @@ const CustomerAuth = async (req, res, next) => {
 };
 
 
-module.exports = CustomerAuth;
+module.exports = customerAuth;

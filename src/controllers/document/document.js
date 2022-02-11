@@ -1,5 +1,5 @@
 // Internal Imports
-const seeder = require("../../config/database/seeder");
+const seeder = require("../../../config/database/seeder");
 
 
 const generateDummyDocuments = async (reqBody) => {

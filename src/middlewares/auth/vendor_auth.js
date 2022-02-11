@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
+
 //internal imports
 const Vendor = require("../../models/vendor");
 const commonUtils = require("../../lib/common_utils");
@@ -8,7 +9,7 @@ const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 dotenv.config();
 
 //Vendor Authorization middleware function
-const VendorAuth = async (req, res, next) => {
+const vendorAuth = async (req, res, next) => {
   try {
     if (!req.body.currentToken){
       throw new Error("Token not present");
@@ -39,4 +40,4 @@ const VendorAuth = async (req, res, next) => {
   }
 };
 
-module.exports = VendorAuth;
+module.exports = vendorAuth;

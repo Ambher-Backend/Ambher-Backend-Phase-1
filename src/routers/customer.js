@@ -7,16 +7,20 @@ const router = new express.Router();
 
 //internal imports
 const commonUtils = require("../lib/common_utils");
-const helper = require("../controllers/customer");
-const CustomerAuth = require("../middlewares/auth/customer_auth");
-const customerParamValidator = require("../param_validators/customer");
+const baseHelper = require("../controllers/customer/base");
+const customerAuth = require("../middlewares/auth/customer_auth");
+const baseParamValidator = require("../middlewares/param_validators/customer/base");
 const responseCodes = require("../lib/constants").RESPONSE_CODES;
+
+
+const {customerHelper} = baseHelper;
+const {customerParamValidator} = baseParamValidator;
 
 
 //signup route
 router.post("/signup", customerParamValidator.signUpParamValidation, async (req, res) => {
   try {
-    await helper.handleSignup(req.body);
+    await customerHelper.handleSignup(req.body);
     res.status(responseCodes.CREATED_CODE).send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, "Customer Created"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -28,7 +32,7 @@ router.post("/signup", customerParamValidator.signUpParamValidation, async (req,
 //login route
 router.post("/login", customerParamValidator.loginCustomerParamValidation, async (req, res) => {
   try {
-    const customerLoginResponse = await helper.handleLogin(req.body);
+    const customerLoginResponse = await customerHelper.handleLogin(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerLoginResponse.customerObjectToExpose, customerLoginResponse.message));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -38,9 +42,9 @@ router.post("/login", customerParamValidator.loginCustomerParamValidation, async
 
 
 //logout route
-router.post("/logout", customerParamValidator.logoutCustomerParamValidation, CustomerAuth, async (req, res) => {
+router.post("/logout", customerParamValidator.logoutCustomerParamValidation, customerAuth, async (req, res) => {
   try {
-    await helper.handleLogout(req.body, req.user);
+    await customerHelper.handleLogout(req.body, req.user);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Customer Logged out"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -52,7 +56,7 @@ router.post("/logout", customerParamValidator.logoutCustomerParamValidation, Cus
 //generate dummy data route
 router.post("/create-dummy-data", customerParamValidator.generateCustomerDummyDataValidation, async (req, res) => {
   try {
-    const verdict = await helper.generateDummyCustomers(req.body);
+    const verdict = await customerHelper.generateDummyCustomers(req.body);
     res.status(responseCodes.CREATED_CODE).send(commonUtils.responseUtil(responseCodes.CREATED_CODE, null, verdict));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -62,9 +66,9 @@ router.post("/create-dummy-data", customerParamValidator.generateCustomerDummyDa
 
 
 //get route for Customer details
-router.get("/:customerId", customerParamValidator.getCustomerParamValidation, CustomerAuth, async (req, res) => {
+router.get("/:customerId", customerParamValidator.getCustomerParamValidation, customerAuth, async (req, res) => {
   try {
-    const customerResponse = await helper.handleGetDetails(req.params.customerId);
+    const customerResponse = await customerHelper.handleGetDetails(req.params.customerId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerResponse, "Success"));
   } catch (err){
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -76,7 +80,7 @@ router.get("/:customerId", customerParamValidator.getCustomerParamValidation, Cu
 //send a new otp to customer email
 router.post("/new-email-otp", customerParamValidator.sendEmailOtpValidation, async (req, res) => {
   try {
-    await helper.sendEmailOtp(req.body.customerEmail);
+    await customerHelper.sendEmailOtp(req.body.customerEmail);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, "Customer Email OTP sent successfully"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -88,7 +92,7 @@ router.post("/new-email-otp", customerParamValidator.sendEmailOtpValidation, asy
 //verify customer email otp
 router.post("/verify-email-otp", customerParamValidator.verifyEmailOtpValidation, async (req, res) => {
   try {
-    const verifiedEmailOtpMessage = await helper.verifyEmailOtp(req.body);
+    const verifiedEmailOtpMessage = await customerHelper.verifyEmailOtp(req.body);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, null, verifiedEmailOtpMessage));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;

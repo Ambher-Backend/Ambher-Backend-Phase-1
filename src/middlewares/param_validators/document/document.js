@@ -2,9 +2,9 @@ const config = require("config");
 
 
 // Internal Imports
-const paramValidator = require("../lib/param_validator").ParamValidator;
-const commonValidators = require("../lib/param_validator");
-const commonUtils = require("../lib/common_utils");
+const paramValidator = require("../../../lib/param_validator").ParamValidator;
+const commonValidators = require("../../../lib/param_validator");
+const commonUtils = require("../../../lib/common_utils");
 
 
 // POST
