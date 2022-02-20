@@ -25,6 +25,19 @@ const orderSchema = new mongoose.schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true
     },
+    deliveryAddress: {
+      type: {
+        flatNo: {type: String},
+        buildingNo: {type: String},
+        streetName: {type: String},
+        city: {type: String, required: true},
+        state: {type: String, required: true},
+        country: {type: String, required: true},
+        zipCode: {type: String, required: true},
+        lat: {type: Number},
+        lon: {type: Number}
+      },
+    },
     paymentId: {
       type: String,
     },
