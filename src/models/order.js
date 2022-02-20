@@ -27,13 +27,12 @@ const orderSchema = new mongoose.schema(
     },
     paymentId: {
       type: String,
-      required: true
     },
     status: {
       type: String,
       required: true,
       enum: {
-        values: ["pending approval", "accepted", "rejected", "delivered", "not-delivered", "completed"]
+        values: ["pending approval", "accepted", "rejected", "payment pending","delivered", "not-delivered", "completed"]
       }
     },
     trackingId: {
