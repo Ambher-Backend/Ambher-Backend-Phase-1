@@ -1,0 +1,61 @@
+const mongoose = require("mongoose");
+
+
+// Internal Imports
+const commonUtils = require('../lib/common_utils');
+
+
+//defining schema
+const ProductItemSchema = new mongoose.schema(
+  {
+    parentProductId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
+    },
+    Size: {
+      type: String,
+      required: true
+    },
+    color: {
+      type: String,
+      required: true
+    },
+    quantity: {
+      type: Number,
+      required: true
+    },
+    startDate: {
+      type: String,
+      required: true
+    },
+    endDate: {
+      type: String,
+      required: true,
+    },
+    pricePerDay: {
+      type: String,
+      required: true
+    },
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
+    },
+    available: {
+      type: Boolean,
+      default: false
+    },
+    cartItemId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: false
+    },
+    wishlistId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: false
+    },
+    timestamp: true
+  }
+);
+
+const ProductItem = mongoose.model("ProductItem", ProductItemSchema);
+
+module.exports = ProductItem;
