@@ -12,7 +12,7 @@ const ProductItemSchema = new mongoose.schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true
     },
-    Size: {
+    size: {
       type: String,
       required: true
     },
