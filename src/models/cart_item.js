@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 
-// Internal Imports
-const commonUtils = require('../lib/common_utils');
-
-
 //defining schema
 const CartItemSchema = new mongoose.schema(
   {
@@ -27,7 +23,9 @@ const CartItemSchema = new mongoose.schema(
     endDate: {
       type: String,
       required: true
-    },
+    }
+  },
+  {
     timestamp: true
   }
 );

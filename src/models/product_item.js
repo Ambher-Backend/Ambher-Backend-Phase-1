@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 
-// Internal Imports
-const commonUtils = require('../lib/common_utils');
-
-
 //defining schema
 const ProductItemSchema = new mongoose.schema(
   {
@@ -51,7 +47,9 @@ const ProductItemSchema = new mongoose.schema(
     wishlistId: {
       type: mongoose.Schema.Types.ObjectId,
       required: false
-    },
+    }
+  },
+  {
     timestamp: true
   }
 );
