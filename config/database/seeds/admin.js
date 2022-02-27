@@ -25,15 +25,15 @@ const generateDummyAdmins = async (deleteExisting, totalToGenerate) => {
 
 
 const generateAndSaveDummyAdmin = async (options = {}) => {
-  const admin = new Admin(generateDummyAdminObject(options = options));
+  const admin = new Admin(generateDummyAdminObject(options));
   await admin.save();
   return admin._id;
 };
 
 
-const generateDummyAdminObject = (options = {}) => {
+const generateDummyAdminObject = (options) => {
   const adminObject = {
-    name: faker.name.firstName(),
+    name: options["name"] || faker.name.firstName(),
     phoneNumber: commonUtils.genPhoneNumber(),
     email: options["email"] || faker.internet.email(),
     password: "12345678",

@@ -4,6 +4,8 @@ const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
 // Internal Imports
 const commonUtils = require("../lib/common_utils");
+const {reviewIntercom} = require("../intercom/base");
+
 
 //defining schema
 
@@ -81,15 +83,6 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
-    customerReviews: {
-      type: [
-        {
-          message: {type: String, default: ""},
-          rating: {type: Number, required: true, min: 1, max: 5},
-          pictures: {type: [String], default: []}
-        }
-      ]
-    },
     numberOfRatings: {
       type: Number,
       default: 0
@@ -125,6 +118,14 @@ const ProductSchema = new mongoose.Schema(
   }
 );
 
+
+ProductSchema.methods.updateAndFetchReviewStats = async function() {
+  let product = this;
+  const ratingInfo = await reviewIntercom.fetchReviewStatsByEntityId(product._id);
+  product.rating = ratingInfo.rating;
+  await product.save();
+  return ratingInfo;
+};
 
 // This validator is trimming all the fields and is removing special characters from string entries.
 // Used function because pre method doesn't support arrow functions as call back.

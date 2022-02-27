@@ -5,6 +5,11 @@ const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
+
+// Internal Imports
+const {reviewIntercom} = require("../intercom/base");
+
+
 dotenv.config();
 
 //defining schema
@@ -58,14 +63,6 @@ const CustomerSchema = new mongoose.Schema(
     orderIds: [mongoose.Schema.Types.ObjectId],
     cartItemIds: [mongoose.Schema.Types.ObjectId],
     wishListItemIds: [mongoose.Schema.Types.ObjectId],
-    reviews: [
-      {
-        message: {type: String, default: ""},
-        reviewRating: {type: Number, required: true, min: 1, max: 5},
-        productId: {type: mongoose.Schema.Types.ObjectId},
-        pictures: {type: [String], default: []}
-      }
-    ],
     configuration: {
       isVerified: {
         type: Boolean,
@@ -80,6 +77,10 @@ const CustomerSchema = new mongoose.Schema(
     },
     blockedReason: {
       type: String,
+    },
+    rating: {
+      type: Number,
+      default: 1
     },
     blockedBy: {
       type: mongoose.Schema.Types.ObjectId
@@ -113,6 +114,15 @@ CustomerSchema.methods.generateToken = async function() {
   customer.tokens.push(token);
   await customer.save();
   return token;
+};
+
+
+CustomerSchema.methods.updateAndFetchReviewStats = async function() {
+  let customer = this;
+  const ratingInfo = await reviewIntercom.fetchReviewStatsByEntityId(customer._id);
+  customer.rating = ratingInfo.rating;
+  await customer.save();
+  return ratingInfo;
 };
 
 //static function to find an customer using email and password
