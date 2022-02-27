@@ -24,7 +24,10 @@ const listVendors = async (reqBody) => {
       reviews: vendor.reviews.length,
       rating: vendor.rating,
       totalOrders: vendor.customerOrderIds.length,
-      totalProducts: vendor.productIds.length
+      totalProducts: vendor.productIds.length,
+      isVerifiedByAdmin: vendor.configuration.isVerifiedByAdmin,
+      isVerified: vendor.configuration.isVerified,
+      isBlocked: vendor.configuration.isBlocked
     };
     filteredVendorsResponse.push(vendorResponse);
   }
