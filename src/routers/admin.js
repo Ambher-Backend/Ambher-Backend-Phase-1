@@ -158,9 +158,9 @@ router.post("/customers", customerParamValidator.listCustomersValidation, adminA
 
 
 //view individual customer details
-router.get("/customer-details/:customerId", customerParamValidator.viewCustomerDetailsValidation, adminAuth, async (req, res) => {
+router.get("/customer-details/:customerEmail", customerParamValidator.viewCustomerDetailsValidation, adminAuth, async (req, res) => {
   try {
-    const customerDetailsResponse = await customerHelper.customerDetails(req.params.customerId);
+    const customerDetailsResponse = await customerHelper.customerDetails(req.params.customerEmail);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerDetailsResponse, "Customer Details"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
