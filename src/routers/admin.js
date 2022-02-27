@@ -173,7 +173,7 @@ router.get("/customer-detail/:customerEmail", customerParamValidator.customerSea
     const customer = await customerHelper.customerSearch(req.params.customerEmail);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customer, "Customer fetched"));
   } catch (err) {
-    const statusCode = err.status || response.INTERNAL_SERVER_ERROR_CODE;
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 });
