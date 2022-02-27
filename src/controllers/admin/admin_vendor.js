@@ -29,7 +29,10 @@ const listVendors = async (reqBody) => {
       reviews: reviewStats.reviews.length,
       rating: reviewStats.rating,
       totalOrders: vendor.customerOrderIds.length,
-      totalProducts: vendor.productIds.length
+      totalProducts: vendor.productIds.length,
+      isVerifiedByAdmin: vendor.configuration.isVerifiedByAdmin,
+      isVerified: vendor.configuration.isVerified,
+      isBlocked: vendor.configuration.isBlocked
     };
     filteredVendorsResponse.push(vendorResponse);
   }
