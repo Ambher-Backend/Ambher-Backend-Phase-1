@@ -29,7 +29,9 @@ const listProducts = async (reqBody) => {
         sizeColorsFiltered["colors"] = sizeColorDetail["colors"].map(colorDetails => colorDetails.color);
         return sizeColorsFiltered;
       }),
-      rating: product.rating
+      rating: product.rating,
+      isVerified: product.configuration.isVerifiedByAdmin,
+      isBlocked: product.configuration.isBlocked
     };
     filteredProductsResponse.push(productResponse);
   }
