@@ -14,15 +14,20 @@ const listVendors = async (reqBody) => {
   const filteredVendors = await fetchFilteredVendors.filter(reqBody.filter);
   let filteredVendorsResponse = [];
   for (let vendor of filteredVendors){
+    const reviewStats = await vendor.updateAndFetchReviewStats();
+    const address = commonUtils.filterObjectByAllowedKeys(
+      vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
+    );
+
     const vendorResponse = {
       _id: vendor._id,
       profilePictureUrl: vendor.profilePictureUrl,
       name: vendor.name,
       phoneNumber: vendor.phoneNumber,
       email: vendor.email,
-      address: Object.values(vendor.address).join(", "),
-      reviews: vendor.reviews.length,
-      rating: vendor.rating,
+      address: Object.values(address).join(", "),
+      reviews: reviewStats.reviews.length,
+      rating: reviewStats.rating,
       totalOrders: vendor.customerOrderIds.length,
       totalProducts: vendor.productIds.length
     };
@@ -37,9 +42,12 @@ const vendorDetails = async (vendorId) => {
   if (!vendor) {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor Not Found");
   }
+
   const address = commonUtils.filterObjectByAllowedKeys(
     vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
   );
+
+  const reviewStats = await vendor.updateAndFetchReviewStats();
   let vendorResponse = {
     _id: vendor._id,
     profilePictureUrl: vendor.profilePictureUrl,
@@ -49,7 +57,7 @@ const vendorDetails = async (vendorId) => {
     address: Object.values(address).join(", "),
     totalOrders: vendor.customerOrderIds.length,
     totalProducts: vendor.productIds.length,
-    rating: vendor.reviews.rating,
+    rating: reviewStats.rating,
     isVerifiedByAdmin: vendor.configuration.isVerifiedByAdmin,
     isVerified: vendor.configuration.isVerified,
     isBlocked: vendor.configuration.isBlocked,

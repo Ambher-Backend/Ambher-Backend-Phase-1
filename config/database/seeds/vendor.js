@@ -5,7 +5,6 @@ const faker = require("faker");
 // Internal Imports
 const Vendor = require("../../../src/models/vendor");
 const commonUtils = require("../../../src/lib/common_utils");
-const adminSeed = require("./admin").generateAndSaveDummyAdmin;
 const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
@@ -34,32 +33,7 @@ const generateAndSaveDummyVendor = async (options = {}) => {
 };
 
 
-const generateDummyReviews = () => {
-  let numberOfReviews = commonUtils.getRandomNumber(3, 12);
-  let rating = 0;
-  let reviews = [];
-  let totalRatings = 0;
-  while (numberOfReviews--){
-    const currRating = commonUtils.getRandomNumber(1, 5);
-    totalRatings += currRating;
-    const review = {
-      message: faker.lorem.sentence(),
-      reviewRating: currRating,
-      customerId: mongoose.Types.ObjectId()
-    };
-    reviews.push(review);
-  }
-  rating = totalRatings / reviews.length;
-  return {
-    rating: rating,
-    reviews: reviews
-  };
-};
-
-
 const generateDummyVendorObject = async (options = {}) => {
-  const reviews = options["isVerified"] === false || options["isVerifiedByAdmin"] === false ? [] : generateDummyReviews();
-  const adminId = await adminSeed({});
   const vendorObject = {
     name: faker.name.firstName(),
     phoneNumber: commonUtils.genPhoneNumber(),
@@ -72,7 +46,7 @@ const generateDummyVendorObject = async (options = {}) => {
       isVerifiedByAdmin: options["isVerifiedByAdmin"] !== undefined ? options["isVerifiedByAdmin"] : true
     },
     blockedReason: "",
-    verifiedBy: options["isVerifiedByAdmin"] === false ? undefined : adminId,
+    verifiedBy: options["isVerifiedByAdmin"] === false ? undefined : (options["adminId"] || mongoose.Types.ObjectId()),
     address: {
       flatNo: faker.random.alphaNumeric(2),
       buildingNo: faker.random.alphaNumeric(2),
@@ -90,8 +64,6 @@ const generateDummyVendorObject = async (options = {}) => {
       mongoose.Types.ObjectId()
     ] : [],
     supportPhones: [faker.phone.phoneNumber()],
-    rating: reviews.rating,
-    reviews: reviews.reviews
   };
   return vendorObject;
 };

@@ -13,13 +13,15 @@ const listCustomers = async (reqBody) => {
   const filteredCustomers = await fetchFilteredCustomers.filter(reqBody.filter);
   let filteredCustomersResponse = [];
   for (let customer of filteredCustomers) {
+    const reviewStats = await customer.updateAndFetchReviewStats();
     const customerResponse = {
       _id: customer._id,
       profilePictureUrl: customer.profilePictureUrl,
       name: customer.name,
       phoneNumber: customer.phoneNumber,
       email: customer.email,
-      reviews: customer.reviews.length,
+      reviews: reviewStats.reviews.length,
+      rating: reviewStats.rating,
       totalOrders: customer.orderIds.length
     };
     filteredCustomersResponse.push(customerResponse);
@@ -36,6 +38,8 @@ const customerDetails = async (customerId) => {
   const address = commonUtils.filterObjectByAllowedKeys(
     customer.address[0].toObject(), ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
   );
+
+  const reviewStats = await customer.updateAndFetchReviewStats();
   let customerResponse = {
     _id: customer._id,
     profilePictureUrl: customer.profilePictureUrl,
@@ -43,7 +47,7 @@ const customerDetails = async (customerId) => {
     phoneNumber: customer.phoneNumber,
     email: customer.email,
     address: Object.values(address).join(", "),
-    reviews: customer.reviews,
+    reviews: reviewStats.reviews,
     totalOrders: customer.orderIds.length,
     isVerified: customer.configuration.isVerified,
     isBlocked: customer.configuration.isBlocked,

@@ -45,20 +45,22 @@ const productDetails = async (productId) => {
   if (!product) {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Product Not Found");
   }
+
+  const reviewStats = await product.updateAndFetchReviewStats();
   const ownerVendor = await Vendor.findById(product.vendorId);
   let productResponse = {
     _id: product._id,
     profilePictureUrl: product.profilePictureUrl,
     name: product.name,
     shopName: ownerVendor.name,
-    reviews: product.customerReviews,
+    reviews: reviewStats.reviews,
     details: product.details.map(sizeColorDetail => {
       const sizeColorsFiltered = {};
       sizeColorsFiltered["size"] = sizeColorDetail["size"];
       sizeColorsFiltered["colors"] = sizeColorDetail["colors"].map(colorDetails => colorDetails.color);
       return sizeColorsFiltered;
     }),
-    rating: product.rating,
+    rating: reviewStats.rating,
     isVerifiedByAdmin: product.configuration.isVerifiedByAdmin,
     isBlocked: product.configuration.isBlocked,
   };

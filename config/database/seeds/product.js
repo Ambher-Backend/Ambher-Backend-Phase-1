@@ -1,11 +1,10 @@
+const mongoose = require("mongoose");
 const faker = require("faker");
 
 
 // Internal Imports
 const Product = require("../../../src/models/product");
 const commonUtils = require("../../../src/lib/common_utils");
-const vendorSeeder = require("./vendor").generateAndSaveDummyVendor;
-const adminSeeder = require("./admin").generateAndSaveDummyAdmin;
 const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
@@ -17,7 +16,7 @@ const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
     for (let i = 0; i < documentsToGenerate; i++) {
-      await generateDummyProduct();
+      await generateAndSaveDummyProduct();
     }
     return `${totalToGenerate} products generated successfully!`;
   } catch (err){
@@ -26,17 +25,22 @@ const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
 };
 
 
-const generateDummyProduct = async () => {
-  const vendorId = await vendorSeeder();
-  const adminId = await adminSeeder();
+const generateAndSaveDummyProduct = async (options = {}) => {
+  const product = new Product(generateDummyProductObject(options));
+  await product.save();
+  return product._id;
+};
+
+
+const generateDummyProductObject = (options) => {
   let zipCodes = [];
   let noOfZipCodes = commonUtils.getRandomNumber(1, 10);
   for (let i = 0;i < noOfZipCodes;i++){
     zipCodes.push(faker.address.zipCode());
   }
   const productObject = {
-    name: faker.commerce.productName(),
-    vendorId: vendorId,
+    name: options["name"] || faker.commerce.productName(),
+    vendorId: mongoose.Types.ObjectId(),
     description: faker.commerce.productDescription(),
     gender: ["Male", "Female", "Unisex"][commonUtils.getRandomNumber(0, 2)],
     brandName: faker.commerce.productAdjective(),
@@ -51,11 +55,10 @@ const generateDummyProduct = async () => {
     configuration: {
       isVerifiedByAdmin: true
     },
-    verifiedBy: adminId
+    verifiedBy: mongoose.Types.ObjectId()
   };
-  const product = new Product(productObject);
-  await product.save();
-  return product._id;
+
+  return productObject;
 };
 
 
@@ -69,7 +72,7 @@ const generateDummyProductDetails = () => {
     let colorSpecs = [];
     while (nColors--){
       let colorSpec = {
-        color: faker.commerce.color(),
+        color: commonUtils.generateRandomHexCode(),
         displayPictureUrls: [faker.internet.url()],
         quantity: commonUtils.getRandomNumber(5, 104),
         availableAfter: new Date().toString()
@@ -84,4 +87,4 @@ const generateDummyProductDetails = () => {
 
 
 
-module.exports = {generateDummyProductData};
+module.exports = {generateDummyProductData, generateAndSaveDummyProduct};

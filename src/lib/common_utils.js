@@ -32,6 +32,11 @@ const getRandomNumber = (min, max) => {
 };
 
 
+const generateRandomHexCode = () => {
+  return "#" + Math.floor(Math.random() * 16777215).toString(16);
+};
+
+
 const genCode = (n = 10) => {
   n = n || 16;
   let result = "";
@@ -81,4 +86,5 @@ const generateError = (status, message) => {
 
 
 module.exports = {responseUtil, errorLog, successLog, getOtp, genCode,
-  filterObjectByAllowedKeys, paginate, getRandomNumber, genPhoneNumber, generateError};
+  filterObjectByAllowedKeys, paginate, getRandomNumber, genPhoneNumber, generateError,
+  generateRandomHexCode};

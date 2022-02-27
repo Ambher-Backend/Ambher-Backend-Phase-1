@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 //defining schema
 
-const orderSchema = new mongoose.schema(
+const orderSchema = new mongoose.Schema(
   {
     customerId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -367,7 +367,7 @@ describe("Admin APIs", async () => {
       adminAuthToken = generatedAdmin.token;
       let nVendors = 5;
       while (nVendors--){
-        const generatedVendorId = await vendorSeeder.generateAndSaveDummyVendor({isVerified: false});
+        const generatedVendorId = await vendorSeeder.generateAndSaveDummyVendor({isVerified: false, adminId: adminId});
         vendorIds.push(generatedVendorId);
       }
     });

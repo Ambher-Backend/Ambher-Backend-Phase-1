@@ -8,6 +8,7 @@ const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
 //internal imports
 const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const {reviewIntercom} = require("../intercom/base");
 const commonUtils = require("../lib/common_utils");
 
 dotenv.config();
@@ -86,16 +87,6 @@ const VendorSchema = new mongoose.Schema({
     min: 1,
     max: 5
   },
-  reviews: {
-    type: [
-      {
-        message: {type: String, default: ""},
-        reviewRating: {type: Number, required: true, min: 1, max: 5},
-        customerId: {type: mongoose.Schema.Types.ObjectId},
-        pictures: {type: [String], default: []}
-      }
-    ]
-  },
   gstin: {
     type: String
   },
@@ -142,6 +133,15 @@ VendorSchema.methods.generateToken = async function() {
   vendor.tokens.push(token);
   await vendor.save();
   return token;
+};
+
+
+VendorSchema.methods.updateAndFetchReviewStats = async function() {
+  let vendor = this;
+  const ratingInfo = await reviewIntercom.fetchReviewStatsByEntityId(vendor._id);
+  vendor.rating = ratingInfo.rating;
+  await vendor.save();
+  return ratingInfo;
 };
 
 

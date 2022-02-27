@@ -1,5 +1,4 @@
 const faker = require("faker");
-const mongoose = require("mongoose");
 
 // Internal Imports
 const Customer = require("../../../src/models/customer");
@@ -25,7 +24,7 @@ const generateDummyCustomers = async (deleteExisting, totalToGenerate) => {
 
 
 const generateAndSaveDummyCustomer = async (options = {}) => {
-  const customer = new Customer(generateDummyCustomerObject(options = options));
+  const customer = new Customer(generateDummyCustomerObject(options));
   await customer.save();
   return customer._id;
 };
@@ -57,28 +56,8 @@ const generateDummyCustomerObject = (options = {}) => {
       }
     ],
   };
-  if (options["isVerified"] === true){
-    customerObject.reviews = generateDummyReviews();
-  }
   return customerObject;
 };
-
-
-const generateDummyReviews = () => {
-  let numberOfReviews = commonUtils.getRandomNumber(3, 12);
-  let reviews = [];
-  while (numberOfReviews--){
-    const currRating = commonUtils.getRandomNumber(1, 5);
-    const review = {
-      message: faker.lorem.sentence(),
-      reviewRating: currRating,
-      productId: mongoose.Types.ObjectId()
-    };
-    reviews.push(review);
-  }
-  return reviews;
-};
-
 
 
 module.exports = {generateDummyCustomers, generateAndSaveDummyCustomer, generateDummyCustomerObject};
