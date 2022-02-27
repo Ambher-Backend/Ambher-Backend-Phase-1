@@ -61,5 +61,32 @@ const customerDetails = async (customerId) => {
   return customerResponse;
 };
 
+const customerSearch = async (customerEmail) => {
+  const customer = await Customer.findOne({email: customerEmail});
+  if (!customer) {
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Customer Not Found");
+  }
 
-module.exports = {listCustomers, customerDetails};
+  const reviewStats = await customer.updateAndFetchReviewStats();
+  let customerResponse = {
+    _id: customer._id,
+    profilePictureUrl: customer.profilePictureUrl,
+    name: customer.name,
+    phoneNumber: customer.phoneNumber,
+    email: customer.email,
+    reviews: reviewStats.reviews,
+    Orders: customer.orderIds.length,
+    isVerified: customer.configuration.isVerified,
+    isBlocked: customer.configuration.isBlocked,
+  };
+  if (customer.configuration.isBlocked === true) {
+    const blockedAdmin = await Admin.findById (customer.blockedBy);
+    customerResponse.blockedReason = customer.blockedReason;
+    customerResponse.blockedBy = blockedAdmin.name;
+    customerResponse.blockedByEmail = blockedAdmin.email;
+  }
+  return customerResponse;
+};
+
+
+module.exports = {listCustomers, customerDetails, customerSearch};
