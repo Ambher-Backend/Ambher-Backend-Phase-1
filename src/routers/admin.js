@@ -158,9 +158,9 @@ router.post("/customers", customerParamValidator.listCustomersValidation, adminA
 
 
 //view individual customer details
-router.get("/customer-details/:customerEmail", customerParamValidator.viewCustomerDetailsValidation, adminAuth, async (req, res) => {
+router.get("/customer-details/:customerId", customerParamValidator.viewCustomerDetailsValidation, adminAuth, async (req, res) => {
   try {
-    const customerDetailsResponse = await customerHelper.customerDetails(req.params.customerEmail);
+    const customerDetailsResponse = await customerHelper.customerDetails(req.params.customerId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerDetailsResponse, "Customer Details"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -168,6 +168,15 @@ router.get("/customer-details/:customerEmail", customerParamValidator.viewCustom
   }
 });
 
+router.get("/customer-detail/:customerEmail", customerParamValidator.customerSearchValidation, adminAuth, async (req, res) => {
+  try {
+    const customer = await customerHelper.customerSearch(req.params.customerEmail);
+    res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customer, "Customer fetched"));
+  } catch(err) {
+    const statusCode = err.status || response.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+  }
+});
 
 //
 //**************************Admin Products Routes*******************************
