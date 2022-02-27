@@ -2,7 +2,7 @@
 const paramValidator = require("../../../lib/param_validator").ParamValidator;
 const commonUtils = require("../../../lib/common_utils");
 const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
-
+const commonValidators = = require("../../../lib/param_validator");
 
 //POST
 /* eslint-disable no-undef */
@@ -33,10 +33,12 @@ const viewCustomerDetailsValidation = (req, res, next) => {
   try {
     const validator = new paramValidator(req.params);
     const validator1 = new paramValidator(req.body);
-    const acceptedParams = ["customerId", "currentToken"];
+    const acceptedParams = ["customerEmail", "currentToken"];
 
-    validator.validate("customerId", String);
+    validator.validate("customerEmail", String);
     validator1.validate("currentToken", String);
+    
+    commonValidators.checkEmailFormat(req.params.customerEmail);
 
     req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
