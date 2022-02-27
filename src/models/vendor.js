@@ -8,7 +8,6 @@ const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
 //internal imports
 const responseCodes = require("../lib/constants").RESPONSE_CODES;
-const {reviewIntercom} = require("../intercom/base");
 const commonUtils = require("../lib/common_utils");
 
 dotenv.config();
@@ -87,6 +86,28 @@ const VendorSchema = new mongoose.Schema({
     min: 1,
     max: 5
   },
+  reviews: [{
+    message: {
+      type: String,
+      default: ""
+    },
+    rating: {
+      type: Number,
+      default: 1,
+    },
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    pictures: {
+      type: [mongoose.Schema.Types.ObjectId],
+      validate(value){
+        if (value.length > 5){
+          commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Maximum allowed images are 5");
+        }
+      },
+      default: []
+    },
+  }],
   gstin: {
     type: String
   },
@@ -136,12 +157,18 @@ VendorSchema.methods.generateToken = async function() {
 };
 
 
-VendorSchema.methods.updateAndFetchReviewStats = async function() {
-  let vendor = this;
-  const ratingInfo = await reviewIntercom.fetchReviewStatsByEntityId(vendor._id);
-  vendor.rating = ratingInfo.rating;
-  await vendor.save();
-  return ratingInfo;
+VendorSchema.methods.updateReviewStats = async function() {
+  let avgRating = 0;
+  for (let review of this.reviews){
+    avgRating += review.rating;
+  }
+  if (this.reviews.length !== 0){
+    avgRating = avgRating / this.reviews.length;
+  }
+  avgRating |= 1;
+  this.rating = avgRating.toFixed(1);
+  await this.save();
+  return this;
 };
 
 

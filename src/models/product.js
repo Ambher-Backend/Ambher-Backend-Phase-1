@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
 
@@ -16,9 +17,25 @@ const ProductSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    vendorId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
+    vendorDetails: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
+        lowercase: true,
+        validate(value) {
+          if (!validator.isEmail(value)) {
+            throw new Error("Invalid Email");
+          }
+        }
+      }
     },
     description: {
       type: String,
@@ -119,7 +136,7 @@ const ProductSchema = new mongoose.Schema(
 );
 
 
-ProductSchema.methods.updateAndFetchReviewStats = async function() {
+ProductSchema.methods.updateReviewStats = async function() {
   let product = this;
   const ratingInfo = await reviewIntercom.fetchReviewStatsByEntityId(product._id);
   product.rating = ratingInfo.rating;

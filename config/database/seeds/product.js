@@ -40,7 +40,11 @@ const generateDummyProductObject = (options) => {
   }
   const productObject = {
     name: options["name"] || faker.commerce.productName(),
-    vendorId: mongoose.Types.ObjectId(),
+    vendorDetails: {
+      id: mongoose.Types.ObjectId(),
+      name: faker.company.companyName(),
+      email: faker.internet.email()
+    },
     description: faker.commerce.productDescription(),
     gender: ["Male", "Female", "Unisex"][commonUtils.getRandomNumber(0, 2)],
     brandName: faker.commerce.productAdjective(),
@@ -87,4 +91,4 @@ const generateDummyProductDetails = () => {
 
 
 
-module.exports = {generateDummyProductData, generateAndSaveDummyProduct};
+module.exports = {generateDummyProductObject, generateDummyProductData, generateAndSaveDummyProduct};

@@ -26,4 +26,15 @@ const generateReviewObject = (ownerId, entityId, options) => {
 };
 
 
-module.exports = {generateAndSaveDummyReview};
+const generateGeneralReviewObject = (ownerId, options = {}) => {
+  const reviewObject = {
+    message: options["message"] || faker.lorem.sentence(),
+    rating: commonUtils.getRandomNumber(1, 5),
+    ownerId: ownerId,
+    pictures: []
+  };
+  return reviewObject;
+};
+
+
+module.exports = {generateAndSaveDummyReview, generateGeneralReviewObject};

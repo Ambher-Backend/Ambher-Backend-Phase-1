@@ -56,6 +56,11 @@ const genPhoneNumber = () => {
 };
 
 
+const logger = (message) => {
+  console.log(`[${new Date().toString()}] ${message}`);
+};
+
+
 // This method returns the filtered object containing only the allowedKeys
 const filterObjectByAllowedKeys = (current, allowedKeys) => {
   let filtered = {};
@@ -87,4 +92,4 @@ const generateError = (status, message) => {
 
 module.exports = {responseUtil, errorLog, successLog, getOtp, genCode,
   filterObjectByAllowedKeys, paginate, getRandomNumber, genPhoneNumber, generateError,
-  generateRandomHexCode};
+  generateRandomHexCode, logger};
