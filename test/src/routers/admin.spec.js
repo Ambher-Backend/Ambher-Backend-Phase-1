@@ -531,5 +531,24 @@ describe("Admin APIs", async () => {
 
       });
     });
+    
+    describe("When customer search by email API is called but wrong email is sent", async () => {
+      let response = {};
+      let email;
+      beforeEach(async () => {
+      email = "carrot@gmail.com";
+      const requestBody = {
+          currentToken : adminAuthToken
+        };
+        response = await getCaller("/customer-search/" + email , requestBody);
+      });
+      
+      it("returns error", async () => {
+        expect(response.status).to.eql(responseCodes.NOT_FOUND_ERROR_CODE);
+        expect(response.body.status).to.eql(responseCodes.NOT_FOUND_ERROR_CODE);
+        expect(response.body.data).to.eql(null);
+      });
+
+    });
   });
 });
