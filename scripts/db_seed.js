@@ -21,6 +21,7 @@ const {generateAndSaveDummyCustomer} = require("../config/database/seeds/custome
 const {generateAndSaveDummyVendor} = require("../config/database/seeds/vendor");
 const {generateDummyProductObject} = require("../config/database/seeds/product");
 const {generateGeneralReviewObject} = require("../config/database/seeds/review");
+const {generateOrderObject} = require("../config/database/seeds/order");
 
 
 const cleanUp = async () => {
@@ -45,8 +46,8 @@ const seedCustomers = async (adminId) => {
   let customerIds = [];
   for (let i = 0;i < 20;i++){
     const customerId = await generateAndSaveDummyCustomer({
-      "isVerified": commonUtils.getRandomNumber(1, 10) % 2 === 1,
-      "isBlocked": commonUtils.getRandomNumber(1, 10) % 2 === 1,
+      "isVerified": commonUtils.getRandomNumber(1, 10) % 5 !== 1,
+      "isBlocked": commonUtils.getRandomNumber(1, 10) % 5 === 1,
     });
 
     customerIds.push(customerId);
@@ -68,9 +69,9 @@ const seedVendors = async (adminId) => {
   let vendorIds = [];
   for (let i = 0;i < 20;i++){
     const vendorId = await generateAndSaveDummyVendor({
-      "isVerified": commonUtils.getRandomNumber(1, 10) % 2 === 1,
-      "isBlocked": commonUtils.getRandomNumber(1, 10) % 2 === 1,
-      "isVerifiedByAdmin": commonUtils.getRandomNumber(1, 10) % 2 === 1,
+      "isVerified": commonUtils.getRandomNumber(1, 10) % 5 !== 1,
+      "isBlocked": commonUtils.getRandomNumber(1, 10) % 5 === 1,
+      "isVerifiedByAdmin": commonUtils.getRandomNumber(1, 10) % 5 !== 1,
     });
 
     vendorIds.push(vendorId);
@@ -162,6 +163,25 @@ const seedReviews = async (vendorIds, customerIds, productIds) => {
 };
 
 
+const seedOrders = async (vendorIds, customerIds, productIds) => {
+  for (let i = 0;i < 300;i++)
+  {
+    const vendor = await Vendor.findById(vendorIds[commonUtils.getRandomNumber(0, 5)]);
+    const customer = await Customer.findById(customerIds[commonUtils.getRandomNumber(0, 19)]);
+    const product = await Product.findById(productIds[commonUtils.getRandomNumber(0, 99)]);
+    if (vendor.configuration.isBlocked || !vendor.configuration.isVerifiedByAdmin
+      || customer.configuration.blocked || product.configuration.isBlocked ||
+      !product.configuration.isVerifiedByAdmin){
+      continue;
+    }
+    const orderObject = generateOrderObject(customer, vendor, product, {});
+    const order = new Order(orderObject);
+    await order.save();
+    commonUtils.logger(`Order generated with id ${order._id}`);
+  }
+};
+
+
 const seeder = async () => {
   // Generating dummy admin
   const adminId = await generateAndSaveDummyAdmin({
@@ -176,6 +196,7 @@ const seeder = async () => {
   let vendorIds = await seedVendors(adminId);
   let productIds = await seedProducts(vendorIds, adminId);
   await seedReviews(vendorIds, customerIds, productIds);
+  await seedOrders(vendorIds, customerIds, productIds);
 };
 
 cleanUp().then(() => {

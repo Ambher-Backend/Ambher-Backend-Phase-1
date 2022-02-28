@@ -4,6 +4,7 @@ const Vendor = require("../../models/vendor");
 const commonUtils = require("../../lib/common_utils");
 const emailUtils = require("../../lib/send_email");
 const fetchFilteredVendors = require("../../services/fetch_filtered_vendors");
+const {prepareOrderforAdminView} = require("../../services/fetch_filtered_orders");
 const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
@@ -95,4 +96,10 @@ const verifyVendor = async (admin, reqBody) => {
 };
 
 
-module.exports = {listVendors, vendorDetails, verifyVendor};
+const listOrders = async (productId) => {
+  const filteredOrdersList = await prepareOrderforAdminView({productId: productId});
+  return filteredOrdersList;
+};
+
+
+module.exports = {listVendors, vendorDetails, verifyVendor, listOrders};

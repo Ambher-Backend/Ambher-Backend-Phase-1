@@ -3,6 +3,7 @@ const Admin = require("../../models/admin");
 const commonUtils = require("../../lib/common_utils");
 const emailUtils = require("../../lib/send_email");
 const seeder = require("../../../config/database/seeder");
+const {prepareOrderforAdminView} = require("../../services/fetch_filtered_orders");
 const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
@@ -108,4 +109,11 @@ const verifyEmailOtp = async (reqBody) => {
 };
 
 
-module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout, handleGetDetails, sendEmailOtp, verifyEmailOtp};
+const listOrder = async (orderId) => {
+  const filteredOrdersList = await prepareOrderforAdminView({orderId: orderId});
+  return filteredOrdersList;
+};
+
+
+module.exports = {generateDummyAdmins, handleSignup, handleLogin, handleLogout,
+  handleGetDetails, sendEmailOtp, verifyEmailOtp, listOrder};

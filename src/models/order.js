@@ -5,25 +5,49 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema(
   {
-    customerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true
+    customerDetails: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      }
     },
-    productItemId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true
+    productItemDetails: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      },
+      imageUrl: {
+        type: String,
+        required: true
+      }
     },
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true
+    productDetails: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
     },
     cartItemId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true
     },
-    vendorId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true
+    vendorDetails: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      }
     },
     deliveryAddress: {
       type: {
@@ -38,6 +62,14 @@ const orderSchema = new mongoose.Schema(
         lon: {type: Number}
       },
     },
+    startDate: {
+      type: Date,
+      required: true,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+    },
     paymentId: {
       type: String,
     },
@@ -47,6 +79,10 @@ const orderSchema = new mongoose.Schema(
       enum: {
         values: ["pending approval", "accepted", "rejected", "payment pending", "delivered", "not-delivered", "completed"]
       }
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
     },
     trackingId: {
       type: String,

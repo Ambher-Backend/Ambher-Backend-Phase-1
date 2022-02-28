@@ -50,6 +50,25 @@ const viewProductDetailsValidation = (req, res, next) => {
 };
 
 
+
+//GET
+const viewProductOrdersValidation = (req, res, next) => {
+  try {
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ["productId", "currentToken"];
+
+    validator.validate("productId", String);
+    validator.validate("currentToken", String);
+
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  } catch (err) {
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+  }
+};
+
+
 //POST
 const verifyProductValidation = (req, res, next) => {
   try {
@@ -88,4 +107,5 @@ const blockProductValidation = (req, res, next) => {
 /* eslint-enable */
 
 
-module.exports = {listProductsValidation, viewProductDetailsValidation, verifyProductValidation, blockProductValidation};
+module.exports = {listProductsValidation, viewProductDetailsValidation, verifyProductValidation, blockProductValidation,
+  viewProductOrdersValidation};

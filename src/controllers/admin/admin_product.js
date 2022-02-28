@@ -5,6 +5,7 @@ const Product = require("../../models/product");
 const commonUtils = require("../../lib/common_utils");
 const emailUtils = require("../../lib/send_email");
 const fetchFilteredProducts = require("../../services/fetch_filtered_products");
+const {prepareOrderforAdminView} = require("../../services/fetch_filtered_orders");
 const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
@@ -125,4 +126,10 @@ const blockProduct = async (admin, reqBody) => {
 };
 
 
-module.exports = {listProducts, productDetails, verifyProduct, blockProduct};
+const listOrders = async (productId) => {
+  const filteredOrdersList = await prepareOrderforAdminView({productId: productId});
+  return filteredOrdersList;
+};
+
+
+module.exports = {listProducts, productDetails, verifyProduct, blockProduct, listOrders};

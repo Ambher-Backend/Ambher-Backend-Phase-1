@@ -67,6 +67,24 @@ const viewVendorDetailsValidation = (req, res, next) => {
 };
 
 
+//GET
+const listVendorOrdersValidation = (req, res, next) => {
+  try {
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ["vendorId", "currentToken"];
+
+    validator.validate("vendorId", String);
+    validator.validate("currentToken", String);
+
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  } catch (err) {
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+  }
+};
+
+
 
 //POST
 const blockVendorValidation = (req, res, next) => {
@@ -88,4 +106,5 @@ const blockVendorValidation = (req, res, next) => {
 /* eslint-enable */
 
 
-module.exports = {verifyVendorAccountValidation, listVendorsValidation, viewVendorDetailsValidation, blockVendorValidation};
+module.exports = {verifyVendorAccountValidation, listVendorsValidation, viewVendorDetailsValidation, blockVendorValidation,
+  listVendorOrdersValidation};

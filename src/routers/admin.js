@@ -106,6 +106,17 @@ router.post("/verify-email-otp", adminParamValidator.verifyEmailOtpValidation, a
 });
 
 
+router.get("/orders/get-details", adminParamValidator.getOrderDataValidation, async (req, res) => {
+  try {
+    const orderDetails = await adminHelper.listOrder(req.body.orderId);
+    res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, orderDetails, "Order Details"));
+  } catch (err) {
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+  }
+});
+
+
 //
 //**************************Admin Vendor Routes*******************************
 //
@@ -126,6 +137,18 @@ router.get("/vendor-details/", vendorParamValidator.viewVendorDetailsValidation,
   try {
     const vendorDetailsResponse = await vendorHelper.vendorDetails(req.body.vendorId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorDetailsResponse, "Vendor Details"));
+  } catch (err) {
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+  }
+});
+
+
+//view all orders of a vendors
+router.get("/vendor-details/orders", vendorParamValidator.listVendorOrdersValidation, adminAuth, async (req, res) => {
+  try {
+    const vendorOrders = await vendorHelper.listOrders(req.body.vendorId);
+    res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorOrders, "Vendor's Order List"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
@@ -202,6 +225,18 @@ router.get("/product-details/", productParamValidator.viewProductDetailsValidati
   try {
     const productDetailsResponse = await productHelper.productDetails(req.body.productId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, productDetailsResponse, "Product Details"));
+  } catch (err) {
+    const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+  }
+});
+
+
+//view all orders of this product
+router.get("/product-details/orders", productParamValidator.viewProductOrdersValidation, adminAuth, async (req, res) => {
+  try {
+    const vendorOrders = await vendorHelper.listOrders(req.body.productId);
+    res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorOrders, "Product's Order List"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
     res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
