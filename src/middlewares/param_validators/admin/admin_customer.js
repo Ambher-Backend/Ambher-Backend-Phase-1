@@ -2,7 +2,7 @@
 const paramValidator = require("../../../lib/param_validator").ParamValidator;
 const commonUtils = require("../../../lib/common_utils");
 const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
-
+const commonValidators = require("../../../lib/param_validator");
 
 //POST
 /* eslint-disable no-undef */
