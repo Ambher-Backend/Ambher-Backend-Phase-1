@@ -520,7 +520,7 @@ describe("Admin APIs", async () => {
         const requestBody = {
           currentToken: adminAuthToken
         };
-        response = await getCaller("/customer-detail/" + email, requestBody);
+        response = await getCaller("/customer-search/" + email, requestBody);
       });
 
       it("returns customer with that email", async () => {
