@@ -509,7 +509,8 @@ describe("Admin APIs", async () => {
         expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.data._id).to.eql(customerIds[0].toString());
       });
-    });   
+    });
+    
     describe("When customer search by email API is called", async () => {
       let response = {};
       let email;
