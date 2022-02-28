@@ -509,8 +509,7 @@ describe("Admin APIs", async () => {
         expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.data._id).to.eql(customerIds[0].toString());
       });
-    });
-    
+    });   
     describe("When customer search by email API is called", async () => {
       let response = {};
       let email;
@@ -518,11 +517,10 @@ describe("Admin APIs", async () => {
         const dummy = await Customer.findById(customerIds[0]);
         email = dummy.email;
         const requestBody = {
-          currentToken : adminAuthToken
+          currentToken: adminAuthToken
         };
         response = await getCaller("/customer-detail/" + email, requestBody);
-      });
-      
+      });      
       it("returns customer with that email", async () => {
         expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
