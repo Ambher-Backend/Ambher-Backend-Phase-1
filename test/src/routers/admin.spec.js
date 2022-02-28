@@ -521,7 +521,8 @@ describe("Admin APIs", async () => {
           currentToken: adminAuthToken
         };
         response = await getCaller("/customer-detail/" + email, requestBody);
-      });      
+      });
+
       it("returns customer with that email", async () => {
         expect(response.status).to.eql(responseCodes.SUCCESS_CODE);
         expect(response.body.status).to.eql(responseCodes.SUCCESS_CODE);
