@@ -13,15 +13,16 @@ const listCustomers = async (reqBody) => {
   const filteredCustomers = await fetchFilteredCustomers.filter(reqBody.filter);
   let filteredCustomersResponse = [];
   for (let customer of filteredCustomers) {
-    const reviewStats = await customer.updateAndFetchReviewStats();
+    // TODO: Change the reviews architecture.
+    customer = await customer.updateReviewStats();
     const customerResponse = {
       _id: customer._id,
       profilePictureUrl: customer.profilePictureUrl,
       name: customer.name,
       phoneNumber: customer.phoneNumber,
       email: customer.email,
-      reviews: reviewStats.reviews.length,
-      rating: reviewStats.rating,
+      reviews: customer.reviews.length,
+      rating: customer.rating,
       totalOrders: customer.orderIds.length
     };
     filteredCustomersResponse.push(customerResponse);
@@ -31,7 +32,7 @@ const listCustomers = async (reqBody) => {
 
 
 const customerDetails = async (customerId) => {
-  const customer = await Customer.findById(customerId);
+  let customer = await Customer.findById(customerId);
   if (!customer) {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Customer Not Found");
   }
@@ -39,7 +40,7 @@ const customerDetails = async (customerId) => {
     customer.address[0].toObject(), ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
   );
 
-  const reviewStats = await customer.updateAndFetchReviewStats();
+  customer = await customer.updateReviewStats();
   let customerResponse = {
     _id: customer._id,
     profilePictureUrl: customer.profilePictureUrl,
@@ -47,7 +48,8 @@ const customerDetails = async (customerId) => {
     phoneNumber: customer.phoneNumber,
     email: customer.email,
     address: Object.values(address).join(", "),
-    reviews: reviewStats.reviews,
+    reviews: customer.reviews,
+    ratingByVendor: customer.rating,
     totalOrders: customer.orderIds.length,
     isVerified: customer.configuration.isVerified,
     isBlocked: customer.configuration.isBlocked,

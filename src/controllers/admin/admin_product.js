@@ -16,12 +16,11 @@ const listProducts = async (reqBody) => {
   const filteredProducts = await fetchFilteredProducts.filter(reqBody.filter);
   let filteredProductsResponse = [];
   for (let product of filteredProducts) {
-    const ownerVendor = await Vendor.findById(product.vendorId);
     const productResponse = {
       _id: product._id,
       displayPicture: product.details[0].colors[0].displayPictureUrls[0],
       name: product.name,
-      shopName: ownerVendor.name,
+      shopName: product.vendorDetails.name,
       orders: 10,
       details: product.details.map(sizeColorDetail => {
         const sizeColorsFiltered = {};
@@ -29,6 +28,7 @@ const listProducts = async (reqBody) => {
         sizeColorsFiltered["colors"] = sizeColorDetail["colors"].map(colorDetails => colorDetails.color);
         return sizeColorsFiltered;
       }),
+      rentalPrice: product.pricePerDay,
       rating: product.rating,
       isVerified: product.configuration.isVerifiedByAdmin,
       isBlocked: product.configuration.isBlocked
@@ -46,7 +46,7 @@ const productDetails = async (productId) => {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Product Not Found");
   }
 
-  const reviewStats = await product.updateAndFetchReviewStats();
+  const reviewStats = await product.updateReviewStats();
   const ownerVendor = await Vendor.findById(product.vendorId);
   let productResponse = {
     _id: product._id,

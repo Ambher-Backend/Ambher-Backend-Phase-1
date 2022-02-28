@@ -2,6 +2,7 @@ const faker = require("faker");
 
 require("../config/database/mongo");
 
+console.log(`Seeding on ${process.env.NODE_ENV || "development"} environment`);
 
 const Admin = require("../src/models/admin");
 const Customer = require("../src/models/customer");
@@ -18,25 +19,25 @@ const commonUtils = require("../src/lib/common_utils");
 const {generateAndSaveDummyAdmin} = require("../config/database/seeds/admin");
 const {generateAndSaveDummyCustomer} = require("../config/database/seeds/customer");
 const {generateAndSaveDummyVendor} = require("../config/database/seeds/vendor");
-const {generateAndSaveDummyProduct} = require("../config/database/seeds/product");
-const {generateAndSaveDummyReview} = require("../config/database/seeds/review");
+const {generateDummyProductObject} = require("../config/database/seeds/product");
+const {generateGeneralReviewObject} = require("../config/database/seeds/review");
 
 
 const cleanUp = async () => {
   let deletedAdmins = await Admin.deleteMany({});
-  console.log(`[${new Date().toString()}] ${deletedAdmins["deletedCount"]} Admins deleted successfully`);
+  commonUtils.logger(`${deletedAdmins["deletedCount"]} Admins deleted successfully`);
   let deletedVendors = await Vendor.deleteMany({});
-  console.log(`[${new Date().toString()}] ${deletedVendors["deletedCount"]} Vendors deleted successfully`);
+  commonUtils.logger(`${deletedVendors["deletedCount"]} Vendors deleted successfully`);
   const deletedCustomers = await Customer.deleteMany({});
-  console.log(`[${new Date().toString()}] ${deletedCustomers["deletedCount"]} Customers deleted successfully`);
+  commonUtils.logger(`${deletedCustomers["deletedCount"]} Customers deleted successfully`);
   const deletedProducts = await Product.deleteMany({});
-  console.log(`[${new Date().toString()}] ${deletedProducts["deletedCount"]} Products deleted successfully`);
+  commonUtils.logger(`${deletedProducts["deletedCount"]} Products deleted successfully`);
   const deletedDocuments = await Document.deleteMany({});
-  console.log(`[${new Date().toString()}] ${deletedDocuments["deletedCount"]} Documents deleted successfully`);
+  commonUtils.logger(`${deletedDocuments["deletedCount"]} Documents deleted successfully`);
   const deletedOrders = await Order.deleteMany({});
-  console.log(`[${new Date().toString()}] ${deletedOrders["deletedCount"]} Orders deleted successfully`);
+  commonUtils.logger(`${deletedOrders["deletedCount"]} Orders deleted successfully`);
   const deletedReviews = await Review.deleteMany({});
-  console.log(`[${new Date().toString()}] ${deletedReviews["deletedCount"]} Reviews deleted successfully`);
+  commonUtils.logger(`${deletedReviews["deletedCount"]} Reviews deleted successfully`);
 };
 
 
@@ -57,7 +58,7 @@ const seedCustomers = async (adminId) => {
     }
 
     await customer.save();
-    console.log(`[${new Date().toString()}] Customer generated with id ${customerId}`);
+    commonUtils.logger(`Customer generated with id ${customerId}`);
   }
   return customerIds;
 };
@@ -88,7 +89,7 @@ const seedVendors = async (adminId) => {
     vendor.productIds = [];
 
     await vendor.save();
-    console.log(`[${new Date().toString()}] Vendor generated with id ${vendorId}`);
+    commonUtils.logger(`Vendor generated with id ${vendorId}`);
   }
   return vendorIds;
 };
@@ -100,24 +101,27 @@ const seedProducts = async (vendorIds, adminId) => {
   for (const vendorId of vendorIds){
     const vendor = await Vendor.findById(vendorId);
     for (let i = 0;i < 5;i++){
-      const productId = await generateAndSaveDummyProduct();
-      productIds.push(productId);
+      const productObj = generateDummyProductObject({});
 
-      const product = await Product.findById(productId);
-      product.vendorId = vendor._id;
-      if (product.configuration.isBlocked){
-        product.blockedBy = adminId;
-        product.blockedReason = faker.lorem.sentence();
+      productObj.vendorDetails = {};
+      productObj.vendorDetails.id = vendor._id;
+      productObj.vendorDetails.name = vendor.name;
+      productObj.vendorDetails.email = vendor.email;
+      if (productObj.configuration.isBlocked){
+        productObj.blockedBy = adminId;
+        productObj.blockedReason = faker.lorem.sentence();
       }
-      if (product.configuration.isVerifiedByAdmin){
-        product.verifiedBy = adminId;
+      if (productObj.configuration.isVerifiedByAdmin){
+        productObj.verifiedBy = adminId;
       }
-      if (!product.configuration.isVerifiedByAdmin){
-        product.verifiedBy = undefined;
+      if (!productObj.configuration.isVerifiedByAdmin){
+        productObj.verifiedBy = undefined;
       }
 
+      const product = new Product(productObj);
       await product.save();
-      console.log(`[${new Date().toString()}] Product generated with id ${productId}`);
+      productIds.push(product._id);
+      commonUtils.logger(`Product generated with id ${product._id}`);
     }
   }
   return productIds;
@@ -132,24 +136,27 @@ const seedReviews = async (vendorIds, customerIds, productIds) => {
   // generating review for customers given by vendors
   for (const vendorId of vendorIds.slice(1, 6)) {
     for (const customerId of customerIds.slice(1, 6)){
-      const reviewId = await generateAndSaveDummyReview(vendorId, customerId);
-      console.log(`[${new Date().toString()}] Review generated for Customer given by Vendor with id ${reviewId}`);
+      const customerReview = await generateGeneralReviewObject(vendorId);
+      await Customer.findOneAndUpdate({_id: customerId}, {reviews: [customerReview]});
+      commonUtils.logger("Review generated for Customer given by Vendor");
     }
   }
 
   // generating review for products given by customers
   for (const customerId of customerIds.slice(1, 6)) {
     for (const productId of productIds.slice(1, 6)){
-      const reviewId = await generateAndSaveDummyReview(customerId, productId);
-      console.log(`[${new Date().toString()}] Review generated for Product given by Customer with id ${reviewId}`);
+      const productReview = await generateGeneralReviewObject(customerId);
+      await Product.findOneAndUpdate({_id: productId}, {reviews: [productReview]});
+      commonUtils.logger("Review generated for Product given by Customer");
     }
   }
 
   // generating review for vendor given by customers
   for (const customerId of customerIds.slice(1, 6)) {
     for (const vendorId of vendorIds.slice(1, 6)){
-      const reviewId = await generateAndSaveDummyReview(customerId, vendorId);
-      console.log(`[${new Date().toString()}] Review generated for Vendor given by Customer with id ${reviewId}`);
+      const vendorReview = await generateGeneralReviewObject(customerId);
+      await Vendor.findOneAndUpdate({_id: vendorId}, {reviews: [vendorReview]});
+      commonUtils.logger("Review generated for Vendor given by Customer");
     }
   }
 };
@@ -162,7 +169,7 @@ const seeder = async () => {
     email: "admin-test@gmail.com"
   });
 
-  console.log(`[${new Date().toString()}] Admin generated with id ${adminId}`);
+  commonUtils.logger(`Admin generated with id ${adminId}`);
 
   // Generating customers
   let customerIds = await seedCustomers(adminId);

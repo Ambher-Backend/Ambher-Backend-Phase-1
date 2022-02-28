@@ -14,7 +14,7 @@ const listVendors = async (reqBody) => {
   const filteredVendors = await fetchFilteredVendors.filter(reqBody.filter);
   let filteredVendorsResponse = [];
   for (let vendor of filteredVendors){
-    const reviewStats = await vendor.updateAndFetchReviewStats();
+    vendor = await vendor.updateReviewStats();
     const address = commonUtils.filterObjectByAllowedKeys(
       vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
     );
@@ -26,8 +26,8 @@ const listVendors = async (reqBody) => {
       phoneNumber: vendor.phoneNumber,
       email: vendor.email,
       address: Object.values(address).join(", "),
-      reviews: reviewStats.reviews.length,
-      rating: reviewStats.rating,
+      reviews: vendor.reviews.length,
+      rating: vendor.rating,
       totalOrders: vendor.customerOrderIds.length,
       totalProducts: vendor.productIds.length,
       isVerifiedByAdmin: vendor.configuration.isVerifiedByAdmin,
@@ -41,7 +41,7 @@ const listVendors = async (reqBody) => {
 
 
 const vendorDetails = async (vendorId) => {
-  const vendor = await Vendor.findById(vendorId);
+  let vendor = await Vendor.findById(vendorId);
   if (!vendor) {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor Not Found");
   }
@@ -50,7 +50,7 @@ const vendorDetails = async (vendorId) => {
     vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
   );
 
-  const reviewStats = await vendor.updateAndFetchReviewStats();
+  vendor = await vendor.updateReviewStats();
   let vendorResponse = {
     _id: vendor._id,
     profilePictureUrl: vendor.profilePictureUrl,
@@ -60,7 +60,8 @@ const vendorDetails = async (vendorId) => {
     address: Object.values(address).join(", "),
     totalOrders: vendor.customerOrderIds.length,
     totalProducts: vendor.productIds.length,
-    rating: reviewStats.rating,
+    rating: vendor.rating,
+    reviews: vendor.reviews,
     isVerifiedByAdmin: vendor.configuration.isVerifiedByAdmin,
     isVerified: vendor.configuration.isVerified,
     isBlocked: vendor.configuration.isBlocked,
