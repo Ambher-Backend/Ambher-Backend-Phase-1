@@ -62,9 +62,6 @@ const handleGetDetails = async (vendorId, reqUser) => {
     throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Invalid Access");
   }
   const vendor = await Vendor.findById(vendorId);
-  if (!vendor) {
-    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor not found");
-  }
   const vendorObjectToExpose = commonUtils.filterObjectByAllowedKeys(vendor.toObject(), eventKeyExposeObject["get"]);
   return vendorObjectToExpose;
 };

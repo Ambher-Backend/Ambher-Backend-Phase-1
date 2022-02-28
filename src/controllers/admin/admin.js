@@ -54,9 +54,6 @@ const handleGetDetails = async (adminId, reqUser) => {
     throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Invalid Access");
   }
   const admin = await Admin.findById(adminId);
-  if (!admin) {
-    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Admin ID");
-  }
   const adminObjectToExpose = commonUtils.filterObjectByAllowedKeys(admin.toObject(), eventKeyExposeObject["get"]);
   return adminObjectToExpose;
 };
