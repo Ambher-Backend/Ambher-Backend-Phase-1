@@ -77,7 +77,7 @@ const generateDummyProductDetails = () => {
     while (nColors--){
       let colorSpec = {
         color: commonUtils.generateRandomHexCode(),
-        displayPictureUrls: [faker.internet.url()],
+        displayPictureUrls: [faker.image.fashion()],
         quantity: commonUtils.getRandomNumber(5, 104),
         availableAfter: new Date().toString()
       };
