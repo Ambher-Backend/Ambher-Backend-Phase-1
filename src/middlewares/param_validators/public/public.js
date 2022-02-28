@@ -28,7 +28,6 @@ const getStateListValidation = (req, res, next) => {
     const acceptedParams = [];
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
-    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
     res.send(commonUtils.responseUtil(400, null, err.message));
