@@ -52,14 +52,12 @@ const listVendorsValidation = (req, res, next) => {
 //GET
 const viewVendorDetailsValidation = (req, res, next) => {
   try {
-    const validator = new paramValidator(req.params);
-    const validator1 = new paramValidator(req.body);
+    const validator = new paramValidator(req.body);
     const acceptedParams = ["vendorId", "currentToken"];
 
     validator.validate("vendorId", String);
-    validator1.validate("currentToken", String);
+    validator.validate("currentToken", String);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {

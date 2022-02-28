@@ -31,14 +31,12 @@ const listCustomersValidation = (req, res, next) => {
 //GET
 const viewCustomerDetailsValidation = (req, res, next) => {
   try {
-    const validator = new paramValidator(req.params);
-    const validator1 = new paramValidator(req.body);
+    const validator = new paramValidator(req.body);
     const acceptedParams = ["customerId", "currentToken"];
 
     validator.validate("customerId", String);
-    validator1.validate("currentToken", String);
+    validator.validate("currentToken", String);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {
@@ -49,16 +47,14 @@ const viewCustomerDetailsValidation = (req, res, next) => {
 
 const customerSearchValidation = (req, res, next) => {
   try {
-    const validator = new paramValidator(req.params);
-    const validator1 = new paramValidator(req.body);
+    const validator = new paramValidator(req.body);
     const acceptedParams = ["customerEmail", "currentToken"];
 
     validator.validate("customerEmail", String);
-    validator1.validate("currentToken", String);
+    validator.validate("currentToken", String);
 
-    commonValidators.checkEmailFormat(req.params.customerEmail);
+    commonValidators.checkEmailFormat(req.body.customerEmail);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {

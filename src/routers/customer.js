@@ -8,14 +8,16 @@ const router = new express.Router();
 //internal imports
 const commonUtils = require("../lib/common_utils");
 const baseHelper = require("../controllers/customer/base");
+const paramsMerger = require("../../config/initializers/router");
 const customerAuth = require("../middlewares/auth/customer_auth");
 const baseParamValidator = require("../middlewares/param_validators/customer/base");
 const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
 
 const {customerHelper} = baseHelper;
-const {customerParamValidator} = baseParamValidator;
+const  {customerParamValidator} = baseParamValidator;
 
+router.use(paramsMerger);
 
 //signup route
 router.post("/signup", customerParamValidator.signUpParamValidation, async (req, res) => {
@@ -66,9 +68,9 @@ router.post("/create-dummy-data", customerParamValidator.generateCustomerDummyDa
 
 
 //get route for Customer details
-router.get("/:customerId", customerParamValidator.getCustomerParamValidation, customerAuth, async (req, res) => {
+router.get("/", customerParamValidator.getCustomerParamValidation, customerAuth, async (req, res) => {
   try {
-    const customerResponse = await customerHelper.handleGetDetails(req.params.customerId);
+    const customerResponse = await customerHelper.handleGetDetails(req.body.customerId, req.user);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerResponse, "Success"));
   } catch (err){
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;

@@ -188,11 +188,12 @@ describe("Customer APIs", async () => {
         const customer = await Customer.findById(customerId);
         const loginToken = await customer.generateToken();
         const requestBody = {
-          currentToken: loginToken
+          currentToken: loginToken,
+          customerId: customerId,
         };
 
         response = await request(app)
-          .get("/customer/" + customerId)
+          .get("/customer/")
           .send(requestBody);
       });
 
@@ -211,16 +212,17 @@ describe("Customer APIs", async () => {
         const customer = await Customer.findById(customerId);
         const loginToken = await customer.generateToken();
         const requestBody = {
-          currentToken: loginToken
+          currentToken: loginToken,
+          customerId: "1234",
         };
 
         response = await request(app)
-          .get("/customer/" + "12345")
+          .get("/customer/")
           .send(requestBody);
       });
 
       it("return error", () => {
-        expect(response.body.status).to.eql(responseCodes.INTERNAL_SERVER_ERROR_CODE);
+        expect(response.body.status).to.eql(responseCodes.ACCESS_ERROR_CODE);
         expect(response.body.data).to.eql(null);
       });
     });

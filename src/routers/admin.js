@@ -5,6 +5,7 @@ const router = new express.Router();
 
 
 //internal imports
+const paramsMerger = require("../../config/initializers/router");
 const baseHelper = require("../controllers/admin/base");
 const commonUtils = require("../lib/common_utils");
 const baseParamValidator = require("../middlewares/param_validators/admin/base");
@@ -19,7 +20,9 @@ const {adminParamValidator, vendorParamValidator, customerParamValidator, produc
 //
 //**************************General Endpoints*******************************
 //
-//signup route
+//signup route;
+router.use(paramsMerger);
+
 router.post("/signup", adminParamValidator.signUpParamValidation, async (req, res)=>{
   try {
     await adminHelper.handleSignup(req.body);
@@ -44,9 +47,9 @@ router.post("/login", adminParamValidator.loginAdminParamValidation, async (req,
 
 
 //get route for admin details
-router.get("/:adminId", adminParamValidator.getAdminParamValidation, adminAuth, async (req, res) => {
+router.get("/", adminParamValidator.getAdminParamValidation, adminAuth, async (req, res) => {
   try {
-    const adminResponse = await adminHelper.handleGetDetails(req.params.adminId);
+    const adminResponse = await adminHelper.handleGetDetails(req.body.adminId, req.user);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, adminResponse, "Success"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -119,9 +122,9 @@ router.post("/vendors", vendorParamValidator.listVendorsValidation, adminAuth, a
 
 
 //view individual vendor details
-router.get("/vendor-details/:vendorId", vendorParamValidator.viewVendorDetailsValidation, adminAuth, async (req, res) => {
+router.get("/vendor-details/", vendorParamValidator.viewVendorDetailsValidation, adminAuth, async (req, res) => {
   try {
-    const vendorDetailsResponse = await vendorHelper.vendorDetails(req.params.vendorId);
+    const vendorDetailsResponse = await vendorHelper.vendorDetails(req.body.vendorId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorDetailsResponse, "Vendor Details"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -158,9 +161,9 @@ router.post("/customers", customerParamValidator.listCustomersValidation, adminA
 
 
 //view individual customer details
-router.get("/customer-details/:customerId", customerParamValidator.viewCustomerDetailsValidation, adminAuth, async (req, res) => {
+router.get("/customer-details/", customerParamValidator.viewCustomerDetailsValidation, adminAuth, async (req, res) => {
   try {
-    const customerDetailsResponse = await customerHelper.customerDetails(req.params.customerId);
+    const customerDetailsResponse = await customerHelper.customerDetails(req.body.customerId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customerDetailsResponse, "Customer Details"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -168,9 +171,9 @@ router.get("/customer-details/:customerId", customerParamValidator.viewCustomerD
   }
 });
 
-router.get("/customer-search/:customerEmail", customerParamValidator.customerSearchValidation, adminAuth, async (req, res) => {
+router.get("/customer-search/", customerParamValidator.customerSearchValidation, adminAuth, async (req, res) => {
   try {
-    const customer = await customerHelper.customerSearch(req.params.customerEmail);
+    const customer = await customerHelper.customerSearch(req.body.customerEmail);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, customer, "Customer fetched"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;
@@ -195,9 +198,9 @@ router.post("/products", productParamValidator.listProductsValidation, adminAuth
 
 
 //view individual product details
-router.get("/product-details/:productId", productParamValidator.viewProductDetailsValidation, adminAuth, async (req, res) => {
+router.get("/product-details/", productParamValidator.viewProductDetailsValidation, adminAuth, async (req, res) => {
   try {
-    const productDetailsResponse = await productHelper.productDetails(req.params.productId);
+    const productDetailsResponse = await productHelper.productDetails(req.body.productId);
     res.status(responseCodes.SUCCESS_CODE).send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, productDetailsResponse, "Product Details"));
   } catch (err) {
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;

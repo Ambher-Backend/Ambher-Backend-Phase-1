@@ -49,7 +49,10 @@ const handleLogout = async (reqBody, currentUser) => {
 };
 
 
-const handleGetDetails = async (customerId) => {
+const handleGetDetails = async (customerId, reqUser) => {
+  if (customerId !== reqUser._id.toString()) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Invalid Access");
+  }
   const customer = await Customer.findById(customerId);
   const customerObjectToExpose = commonUtils.filterObjectByAllowedKeys(customer.toObject(), eventKeyExposeObject["get"]);
   return customerObjectToExpose;
