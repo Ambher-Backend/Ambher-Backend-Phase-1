@@ -35,10 +35,6 @@ const listProductsValidation = (req, res, next) => {
 //GET
 const viewProductDetailsValidation = (req, res, next) => {
   try {
-    req.body = {
-      ...req.body,
-      ...req.query
-    };
     const validator = new paramValidator(req.body);
     const acceptedParams = ["productId", "currentToken"];
 

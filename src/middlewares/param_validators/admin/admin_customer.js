@@ -31,10 +31,6 @@ const listCustomersValidation = (req, res, next) => {
 //GET
 const viewCustomerDetailsValidation = (req, res, next) => {
   try {
-    req.body = {
-      ...req.body,
-      ...req.query
-    };
     const validator = new paramValidator(req.body);
     const acceptedParams = ["customerId", "currentToken"];
 
