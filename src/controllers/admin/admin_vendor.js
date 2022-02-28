@@ -14,7 +14,6 @@ const listVendors = async (reqBody) => {
   const filteredVendors = await fetchFilteredVendors.filter(reqBody.filter);
   let filteredVendorsResponse = [];
   for (let vendor of filteredVendors){
-    vendor = await vendor.updateReviewStats();
     const address = commonUtils.filterObjectByAllowedKeys(
       vendor.address, ["flatNo", "buildingNo", "streetName", "city", "state", "country", "zipcode"]
     );

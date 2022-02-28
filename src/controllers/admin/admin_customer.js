@@ -14,7 +14,6 @@ const listCustomers = async (reqBody) => {
   let filteredCustomersResponse = [];
   for (let customer of filteredCustomers) {
     // TODO: Change the reviews architecture.
-    customer = await customer.updateReviewStats();
     const customerResponse = {
       _id: customer._id,
       profilePictureUrl: customer.profilePictureUrl,
