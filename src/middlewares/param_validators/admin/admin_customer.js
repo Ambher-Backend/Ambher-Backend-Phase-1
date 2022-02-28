@@ -2,7 +2,7 @@
 const paramValidator = require("../../../lib/param_validator").ParamValidator;
 const commonUtils = require("../../../lib/common_utils");
 const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
-
+const commonValidators = require("../../../lib/param_validator");
 
 //POST
 /* eslint-disable no-undef */
@@ -47,5 +47,25 @@ const viewCustomerDetailsValidation = (req, res, next) => {
   }
 };
 
+const customerSearchValidation = (req, res, next) => {
+  try {
+    const validator = new paramValidator(req.params);
+    const validator1 = new paramValidator(req.body);
+    const acceptedParams = ["customerEmail", "currentToken"];
 
-module.exports = {listCustomersValidation, viewCustomerDetailsValidation};
+    validator.validate("customerEmail", String);
+    validator1.validate("currentToken", String);
+
+    commonValidators.checkEmailFormat(req.params.customerEmail);
+
+    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  } catch (err) {
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+  }
+};
+
+
+module.exports = {listCustomersValidation, viewCustomerDetailsValidation, customerSearchValidation};
