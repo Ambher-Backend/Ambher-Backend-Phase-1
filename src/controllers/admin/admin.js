@@ -49,7 +49,10 @@ const handleLogin = async (reqBody) => {
 };
 
 
-const handleGetDetails = async (adminId) => {
+const handleGetDetails = async (adminId, reqUser) => {
+  if (adminId !== reqUser._id.toString()) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Invalid Access");
+  }
   const admin = await Admin.findById(adminId);
   if (!admin) {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Admin ID");

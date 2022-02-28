@@ -8,8 +8,9 @@ dotenv.config();
 
 //internal imports
 const commonUtils = require("../lib/common_utils");
-const vendorAuth = require("../middlewares/auth/vendor_auth");
 const baseHelper = require("../controllers/vendor/base");
+const vendorAuth = require("../middlewares/auth/vendor_auth");
+const paramsMerger = require("../../config/initializers/router");
 const baseParamValidator = require("../middlewares/param_validators/vendor/base");
 const responseCodes = require("../lib/constants").RESPONSE_CODES;
 
@@ -17,6 +18,7 @@ const responseCodes = require("../lib/constants").RESPONSE_CODES;
 const {vendorHelper} = baseHelper;
 const {vendorParamValidator} = baseParamValidator;
 
+router.use(paramsMerger);
 
 //registration for vendor
 router.post("/signup", vendorParamValidator.signUpParamValidation, async (req, res) => {
@@ -31,9 +33,9 @@ router.post("/signup", vendorParamValidator.signUpParamValidation, async (req, r
 });
 
 
-router.get("/:vendorId", vendorParamValidator.getVendorParamValidation, vendorAuth, async (req, res) => {
+router.get("/", vendorParamValidator.getVendorParamValidation, vendorAuth, async (req, res) => {
   try {
-    const vendorResponse = await vendorHelper.handleGetDetails(req.params.vendorId);
+    const vendorResponse = await vendorHelper.handleGetDetails(req.body.vendorId, req.user);
     res.send(commonUtils.responseUtil(responseCodes.SUCCESS_CODE, vendorResponse, "Success"));
   } catch (err){
     const statusCode = err.status || responseCodes.INTERNAL_SERVER_ERROR_CODE;

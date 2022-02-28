@@ -57,7 +57,10 @@ const handleLogout = async (reqBody, currentUser) => {
 };
 
 
-const handleGetDetails = async (vendorId) => {
+const handleGetDetails = async (vendorId, reqUser) => {
+  if (vendorId !== reqUser._id.toString()) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Invalid Access");
+  }
   const vendor = await Vendor.findById(vendorId);
   if (!vendor) {
     throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor not found");

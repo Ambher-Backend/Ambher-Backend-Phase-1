@@ -17,7 +17,7 @@ const {publicParamValidator} = baseParamValidator;
 //route to get city and state details
 router.get("/city-state/:pincode", publicParamValidator.getCityStateValidation, async (req, res) => {
   try {
-    const cityStateDetails = publicHelper.getCityAndState(req.params);
+    const cityStateDetails = publicHelper.getCityAndState(req.body);
     res.send(commonUtils.responseUtil(200, cityStateDetails, "City and State"));
   } catch (err) {
     commonUtils.errorLog(err.message);

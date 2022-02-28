@@ -209,11 +209,12 @@ describe("Admin APIs", async () => {
         await toggleVerificationStatus(Admin, {_id: adminId}, true);
         const admin = await Admin.findById(adminId);
         const loginToken = await admin.generateToken();
-        const requestBody = {
-          currentToken: loginToken
+        const params = {
+          currentToken: loginToken,
+          adminId: adminId
         };
 
-        response = await getCaller("/" + adminId, requestBody);
+        response = await getCaller("/", params);
       });
 
       it("return admin data", () => {
@@ -231,16 +232,17 @@ describe("Admin APIs", async () => {
         await toggleVerificationStatus(Admin, {_id: adminId}, true);
         const admin = await Admin.findById(adminId);
         const loginToken = await admin.generateToken();
-        const requestBody = {
-          currentToken: loginToken
+        const params = {
+          currentToken: loginToken,
+          adminId: "500"
         };
 
-        response = await getCaller("/" + "12345", requestBody);
+        response = await getCaller("/", params);
       });
 
       it("return error", () => {
-        expect(response.status).to.eql(responseCodes.INTERNAL_SERVER_ERROR_CODE);
-        expect(response.body.status).to.eql(responseCodes.INTERNAL_SERVER_ERROR_CODE);
+        expect(response.status).to.eql(responseCodes.ACCESS_ERROR_CODE);
+        expect(response.body.status).to.eql(responseCodes.ACCESS_ERROR_CODE);
         expect(response.body.data).to.eql(null);
       });
     });
@@ -402,8 +404,9 @@ describe("Admin APIs", async () => {
       beforeEach(async () => {
         const requestBody = {
           currentToken: adminAuthToken,
+          vendorId: vendorIds[0]
         };
-        response = await getCaller("/vendor-details/" + vendorIds[0], requestBody);
+        response = await getCaller("/vendor-details/", requestBody);
       });
 
       it("returns vendor details", async () => {
@@ -500,8 +503,9 @@ describe("Admin APIs", async () => {
       beforeEach(async () => {
         const requestBody = {
           currentToken: adminAuthToken,
+          customerId: customerIds[0]
         };
-        response = await getCaller("/customer-details/" + customerIds[0], requestBody);
+        response = await getCaller("/customer-details/", requestBody);
       });
 
       it("returns customer details", async () => {
@@ -518,9 +522,10 @@ describe("Admin APIs", async () => {
         const dummy = await Customer.findById(customerIds[0]);
         email = dummy.email;
         const requestBody = {
-          currentToken: adminAuthToken
+          currentToken: adminAuthToken,
+          customerEmail: email
         };
-        response = await getCaller("/customer-search/" + email, requestBody);
+        response = await getCaller("/customer-search/", requestBody);
       });
 
       it("returns customer with that email", async () => {
@@ -538,9 +543,10 @@ describe("Admin APIs", async () => {
       beforeEach(async () => {
         email = "carrot@gmail.com";
         const requestBody = {
-          currentToken: adminAuthToken
+          currentToken: adminAuthToken,
+          customerEmail: email
         };
-        response = await getCaller("/customer-search/" + email, requestBody);
+        response = await getCaller("/customer-search/", requestBody);
       });
 
       it("returns error", async () => {

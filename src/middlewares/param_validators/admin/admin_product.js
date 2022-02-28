@@ -35,14 +35,16 @@ const listProductsValidation = (req, res, next) => {
 //GET
 const viewProductDetailsValidation = (req, res, next) => {
   try {
-    const validator = new paramValidator(req.params);
-    const validator1 = new paramValidator(req.body);
+    req.body = {
+      ...req.body,
+      ...req.query
+    };
+    const validator = new paramValidator(req.body);
     const acceptedParams = ["productId", "currentToken"];
 
     validator.validate("productId", String);
-    validator1.validate("currentToken", String);
+    validator.validate("currentToken", String);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err) {

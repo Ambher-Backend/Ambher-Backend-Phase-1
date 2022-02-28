@@ -75,15 +75,12 @@ const logoutCustomerParamValidation = (req, res, next) => {
 // GET
 const getCustomerParamValidation = (req, res, next) => {
   try {
-    const validator = new paramValidator(req.params);
-    const validator1 = new paramValidator(req.body);
-    const acceptedParams = ["currentToken"];
-    const acceptedParams1 = ["customerId"];
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ["currentToken", "customerId"];
 
     validator.validate("customerId", String);
-    validator1.validate("currentToken", String);
+    validator.validate("currentToken", String);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams1);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
