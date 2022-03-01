@@ -69,7 +69,8 @@ const handleGetDetails = async (vendorId, reqUser) => {
 
 //function to generate 10 vendor data or on the basis of request
 const generateDummyVendors = async (reqBody) => {
-  const verdict = await seeder.vendorSeeder(reqBody.deleteExisting, reqBody.total);
+  const adminId = await seeder.generateAndSaveDummyAdmin({});
+  const verdict = await seeder.vendorSeeder(reqBody.deleteExisting, reqBody.total, {"adminId": adminId});
   return verdict;
 };
 

@@ -62,7 +62,7 @@ const productDetails = async (productId) => {
       return sizeColorsFiltered;
     }),
     rating: reviewStats.rating,
-    isVerifiedByAdmin: product.configuration.isVerifiedByAdmin,
+    isVerified: product.configuration.isVerifiedByAdmin,
     isBlocked: product.configuration.isBlocked,
   };
   if (product.configuration.isBlocked === true) {

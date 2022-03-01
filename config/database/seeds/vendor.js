@@ -8,7 +8,7 @@ const commonUtils = require("../../../src/lib/common_utils");
 const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
-const generateDummyVendors = async (deleteExisting, totalToGenerate) => {
+const generateDummyVendors = async (deleteExisting, totalToGenerate,  options = {}) => {
   try {
     if (deleteExisting === true){
       await Vendor.deleteMany({});
@@ -16,7 +16,7 @@ const generateDummyVendors = async (deleteExisting, totalToGenerate) => {
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
     for (let i = 0; i < documentsToGenerate; i++) {
-      await generateAndSaveDummyVendor();
+      await generateAndSaveDummyVendor(options);
     }
     return `${totalToGenerate} vendors generated successfully!`;
   } catch (err){
