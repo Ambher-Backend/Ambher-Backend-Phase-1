@@ -48,7 +48,7 @@ const productDetails = async (productId) => {
   }
 
   const reviewStats = await product.updateReviewStats();
-  const ownerVendor = await Vendor.findById(product.vendorId);
+  const ownerVendor = await Vendor.findById(product.vendorDetails.id);
   let productResponse = {
     _id: product._id,
     profilePictureUrl: product.profilePictureUrl,
