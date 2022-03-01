@@ -16,7 +16,7 @@ const generateDummyProductData = async (deleteExisting, totalToGenerate, options
       commonUtils.successLog(`All documents from collection || Product || deleted on "${new Date().toString()}" by 'Admin'`);
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
-    if(!options["vendorId"]) {
+    if (!options["vendorId"]) {
       const vendor = await Vendor.findById(options["vendorId"]);
       options["vendorName"] = vendor.name;
       options["vendorEmail"] = vendor.email;
