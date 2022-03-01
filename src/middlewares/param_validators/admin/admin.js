@@ -88,6 +88,24 @@ const getAdminParamValidation = (req, res, next) => {
 };
 
 
+// GET
+const getOrderDataValidation = (req, res, next) => {
+  try {
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ["orderId", "currentToken"];
+
+    validator.validate("orderId", String);
+    validator.validate("currentToken", String);
+
+    req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
+    next();
+  } catch (err){
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
+  }
+};
+
+
 // POST
 const generateAdminDummyDataValidation = (req, res, next) => {
   try {
@@ -155,4 +173,4 @@ const verifyEmailOtpValidation = (req, res, next) => {
 
 module.exports = {signUpParamValidation, loginAdminParamValidation, getAdminParamValidation,
   logoutAdminParamValidation, generateAdminDummyDataValidation, sendEmailOtpValidation,
-  verifyEmailOtpValidation};
+  verifyEmailOtpValidation, getOrderDataValidation};

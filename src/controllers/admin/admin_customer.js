@@ -89,4 +89,5 @@ const customerSearch = async (customerEmail) => {
   return customerResponse;
 };
 
+
 module.exports = {listCustomers, customerDetails, customerSearch};
