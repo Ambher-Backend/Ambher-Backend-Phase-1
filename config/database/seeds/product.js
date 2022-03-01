@@ -4,19 +4,25 @@ const faker = require("faker");
 
 // Internal Imports
 const Product = require("../../../src/models/product");
+const Vendor = require("../../../src/models/vendor");
 const commonUtils = require("../../../src/lib/common_utils");
 const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
-const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
+const generateDummyProductData = async (deleteExisting, totalToGenerate, options = {}) => {
   try {
     if (deleteExisting === true){
       await Product.deleteMany({});
       commonUtils.successLog(`All documents from collection || Product || deleted on "${new Date().toString()}" by 'Admin'`);
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
+    if(!options["vendorId"]) {
+      const vendor = await Vendor.findById(options["vendorId"]);
+      options["vendorName"] = vendor.name;
+      options["vendorEmail"] = vendor.email;
+    }
     for (let i = 0; i < documentsToGenerate; i++) {
-      await generateAndSaveDummyProduct();
+      await generateAndSaveDummyProduct(options);
     }
     return `${totalToGenerate} products generated successfully!`;
   } catch (err){
@@ -41,9 +47,9 @@ const generateDummyProductObject = (options) => {
   const productObject = {
     name: options["name"] || faker.commerce.productName(),
     vendorDetails: {
-      id: mongoose.Types.ObjectId(),
-      name: faker.company.companyName(),
-      email: faker.internet.email()
+      id: options["vendorId"] || mongoose.Types.ObjectId(),
+      name: options["vendorName"] || faker.company.companyName(),
+      email: options["vendorEmail"] || faker.internet.email()
     },
     description: faker.commerce.productDescription(),
     gender: ["Male", "Female", "Unisex"][commonUtils.getRandomNumber(0, 2)],
@@ -59,7 +65,7 @@ const generateDummyProductObject = (options) => {
     configuration: {
       isVerifiedByAdmin: true
     },
-    verifiedBy: mongoose.Types.ObjectId()
+    verifiedBy: options["adminId"] || mongoose.Types.ObjectId()
   };
 
   return productObject;
