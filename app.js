@@ -26,6 +26,7 @@ const publicRouter = require("./src/routers/public");
 
 // Server Configs
 require("./config/database/mongo");
+require("./config/listeners/base");
 app.use(express.json({ limit: "10mb", extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
