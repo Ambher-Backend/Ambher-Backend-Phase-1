@@ -135,8 +135,8 @@ const seedProducts = async (vendorIds, adminId) => {
 */
 const seedReviews = async (vendorIds, customerIds, productIds) => {
   // generating review for customers given by vendors
-  for (const vendorId of vendorIds.slice(1, 6)) {
-    for (const customerId of customerIds.slice(1, 6)){
+  for (const vendorId of vendorIds) {
+    for (const customerId of customerIds){
       const customerReview = await generateGeneralReviewObject(vendorId);
       await Customer.findOneAndUpdate({_id: customerId}, {reviews: [customerReview]});
       commonUtils.logger("Review generated for Customer given by Vendor");
@@ -144,8 +144,8 @@ const seedReviews = async (vendorIds, customerIds, productIds) => {
   }
 
   // generating review for products given by customers
-  for (const customerId of customerIds.slice(1, 6)) {
-    for (const productId of productIds.slice(1, 6)){
+  for (const customerId of customerIds) {
+    for (const productId of productIds){
       const productReview = await generateGeneralReviewObject(customerId);
       await Product.findOneAndUpdate({_id: productId}, {reviews: [productReview]});
       commonUtils.logger("Review generated for Product given by Customer");
@@ -153,8 +153,8 @@ const seedReviews = async (vendorIds, customerIds, productIds) => {
   }
 
   // generating review for vendor given by customers
-  for (const customerId of customerIds.slice(1, 6)) {
-    for (const vendorId of vendorIds.slice(1, 6)){
+  for (const customerId of customerIds) {
+    for (const vendorId of vendorIds){
       const vendorReview = await generateGeneralReviewObject(customerId);
       await Vendor.findOneAndUpdate({_id: vendorId}, {reviews: [vendorReview]});
       commonUtils.logger("Review generated for Vendor given by Customer");
