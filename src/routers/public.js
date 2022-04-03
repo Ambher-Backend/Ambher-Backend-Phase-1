@@ -5,15 +5,19 @@ const router = new express.Router();
 
 
 //internal imports
-const helper = require("../controllers/public");
+const baseHelper = require("../controllers/public/base");
 const commonUtils = require("../lib/common_utils");
-const publicValidator = require("../param_validators/public");
+const baseParamValidator = require("../middlewares/param_validators/public/base");
+
+
+const {publicHelper} = baseHelper;
+const {publicParamValidator} = baseParamValidator;
 
 
 //route to get city and state details
-router.get("/city-state/:pincode", publicValidator.getCityStateValidation, async (req, res) => {
+router.get("/city-state/:pincode", publicParamValidator.getCityStateValidation, async (req, res) => {
   try {
-    const cityStateDetails = helper.getCityAndState(req.params);
+    const cityStateDetails = publicHelper.getCityAndState(req.body);
     res.send(commonUtils.responseUtil(200, cityStateDetails, "City and State"));
   } catch (err) {
     commonUtils.errorLog(err.message);
@@ -23,9 +27,9 @@ router.get("/city-state/:pincode", publicValidator.getCityStateValidation, async
 
 
 //route to get all states
-router.get("/state-list", publicValidator.getStateListValidation, async (req, res) => {
+router.get("/state-list", publicParamValidator.getStateListValidation, async (req, res) => {
   try {
-    const stateList = helper.getStates();
+    const stateList = publicHelper.getStates();
     res.send(commonUtils.responseUtil(200, stateList, "State List"));
   } catch (err) {
     commonUtils.errorLog(err.message);

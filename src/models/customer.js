@@ -5,6 +5,12 @@ const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
+
+// Internal Imports
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const commonUtils = require("../lib/common_utils");
+
+
 dotenv.config();
 
 //defining schema
@@ -58,14 +64,6 @@ const CustomerSchema = new mongoose.Schema(
     orderIds: [mongoose.Schema.Types.ObjectId],
     cartItemIds: [mongoose.Schema.Types.ObjectId],
     wishListItemIds: [mongoose.Schema.Types.ObjectId],
-    reviews: [
-      {
-        message: {type: String, default: ""},
-        reviewRating: {type: Number, required: true, min: 1, max: 5},
-        productId: {type: mongoose.Schema.Types.ObjectId},
-        pictures: {type: [String], default: []}
-      }
-    ],
     configuration: {
       isVerified: {
         type: Boolean,
@@ -80,6 +78,32 @@ const CustomerSchema = new mongoose.Schema(
     },
     blockedReason: {
       type: String,
+    },
+    reviews: [{
+      message: {
+        type: String,
+        default: ""
+      },
+      rating: {
+        type: Number,
+        default: 1
+      },
+      ownerId: {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+      pictures: {
+        type: [mongoose.Schema.Types.ObjectId],
+        validate(value){
+          if (value.length > 5){
+            commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Maximum allowed images are 5");
+          }
+        },
+        default: []
+      },
+    }],
+    rating: {
+      type: Number,
+      default: 1
     },
     blockedBy: {
       type: mongoose.Schema.Types.ObjectId
@@ -113,6 +137,21 @@ CustomerSchema.methods.generateToken = async function() {
   customer.tokens.push(token);
   await customer.save();
   return token;
+};
+
+
+CustomerSchema.methods.updateReviewStats = async function() {
+  let avgRating = 0;
+  for (let review of this.reviews){
+    avgRating += review.rating;
+  }
+  if (this.reviews.length !== 0){
+    avgRating = avgRating / this.reviews.length;
+  }
+  avgRating |= 1;
+  this.rating = avgRating.toFixed();
+  await this.save();
+  return this;
 };
 
 //static function to find an customer using email and password

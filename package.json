@@ -8,6 +8,7 @@
     "win-dev": "set NODE_ENV=development && nodemon app.js",
     "start": "node app.js",
     "test": "export NODE_ENV=test && nyc --reporter=html mocha --recursive ./test --timeout 10000 --exit",
+    "test-single": "npx mocha --timeout 10000 --exit",
     "win-test": "set NODE_ENV=test && nyc --reporter=html mocha --recursive ./test --timeout 10000 --exit",
     "check-linting": "npx eslint config src test app.js",
     "fix-linting": "npx eslint config src test app.js --fix"
@@ -25,10 +26,12 @@
   "author": "Ambher",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.6.1",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.2",
+    "compression": "^1.7.4",
     "config": "^3.3.6",
     "cors": "^2.8.5",
     "dotenv": "^12.0.4",

@@ -1,41 +1,56 @@
+const mongoose = require("mongoose");
 const faker = require("faker");
 
 
 // Internal Imports
 const Product = require("../../../src/models/product");
+const Vendor = require("../../../src/models/vendor");
 const commonUtils = require("../../../src/lib/common_utils");
-const vendorSeeder = require("./vendor").generateDummyVendor;
-const adminSeeder = require("./admin").generateDummyAdmin;
+const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
-const generateDummyProductData = async (deleteExisting, totalToGenerate) => {
+const generateDummyProductData = async (deleteExisting, totalToGenerate, options = {}) => {
   try {
     if (deleteExisting === true){
       await Product.deleteMany({});
       commonUtils.successLog(`All documents from collection || Product || deleted on "${new Date().toString()}" by 'Admin'`);
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
+    if (options["vendorId"] !== undefined) {
+      const vendor = await Vendor.findById(options["vendorId"]);
+      options["vendorName"] = vendor.name;
+      options["vendorEmail"] = vendor.email;
+    }
     for (let i = 0; i < documentsToGenerate; i++) {
-      await generateDummyProduct();
+      await generateAndSaveDummyProduct(options);
     }
     return `${totalToGenerate} products generated successfully!`;
   } catch (err){
-    return `Error: ||${err.message}|| occured in generating products`;
+    throw commonUtils.generateError(responseCodes.INTERNAL_SERVER_ERROR, `Error: ||${err.message}|| occured in generating products`);
   }
 };
 
 
-const generateDummyProduct = async () => {
-  const vendorId = await vendorSeeder();
-  const adminId = await adminSeeder();
+const generateAndSaveDummyProduct = async (options = {}) => {
+  const product = new Product(generateDummyProductObject(options));
+  await product.save();
+  return product._id;
+};
+
+
+const generateDummyProductObject = (options) => {
   let zipCodes = [];
   let noOfZipCodes = commonUtils.getRandomNumber(1, 10);
   for (let i = 0;i < noOfZipCodes;i++){
     zipCodes.push(faker.address.zipCode());
   }
   const productObject = {
-    name: faker.commerce.productName(),
-    vendorId: vendorId,
+    name: options["name"] || faker.commerce.productName(),
+    vendorDetails: {
+      id: options["vendorId"] || mongoose.Types.ObjectId(),
+      name: options["vendorName"] || faker.company.companyName(),
+      email: options["vendorEmail"] || faker.internet.email()
+    },
     description: faker.commerce.productDescription(),
     gender: ["Male", "Female", "Unisex"][commonUtils.getRandomNumber(0, 2)],
     brandName: faker.commerce.productAdjective(),
@@ -50,11 +65,10 @@ const generateDummyProduct = async () => {
     configuration: {
       isVerifiedByAdmin: true
     },
-    verifiedBy: adminId
+    verifiedBy: options["adminId"] || mongoose.Types.ObjectId()
   };
-  const product = new Product(productObject);
-  await product.save();
-  return product._id;
+
+  return productObject;
 };
 
 
@@ -68,8 +82,8 @@ const generateDummyProductDetails = () => {
     let colorSpecs = [];
     while (nColors--){
       let colorSpec = {
-        color: faker.commerce.color(),
-        displayPictureUrls: [faker.internet.url()],
+        color: commonUtils.generateRandomHexCode(),
+        displayPictureUrls: [faker.image.fashion()],
         quantity: commonUtils.getRandomNumber(5, 104),
         availableAfter: new Date().toString()
       };
@@ -83,4 +97,4 @@ const generateDummyProductDetails = () => {
 
 
 
-module.exports = {generateDummyProductData};
+module.exports = {generateDummyProductObject, generateDummyProductData, generateAndSaveDummyProduct};

@@ -1,12 +1,12 @@
 const faker = require("faker");
-const mongoose = require("mongoose");
 
 // Internal Imports
 const Customer = require("../../../src/models/customer");
 const commonUtils = require("../../../src/lib/common_utils");
+const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
-const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
+const generateDummyCustomers = async (deleteExisting, totalToGenerate) => {
   try {
     if (deleteExisting === true){
       await Customer.deleteMany({});
@@ -18,13 +18,13 @@ const generateDummyCustomerData = async (deleteExisting, totalToGenerate) => {
     }
     return `${totalToGenerate} customers generated successfully!`;
   } catch (err){
-    return `Error: ||${err.message}|| occured in generating customers`;
+    throw commonUtils.generateError(responseCodes.INTERNAL_SERVER_ERROR, `Error: ||${err.message}|| occured in generating products`);
   }
 };
 
 
 const generateAndSaveDummyCustomer = async (options = {}) => {
-  const customer = new Customer(generateDummyCustomerObject(options = options));
+  const customer = new Customer(generateDummyCustomerObject(options));
   await customer.save();
   return customer._id;
 };
@@ -38,8 +38,8 @@ const generateDummyCustomerObject = (options = {}) => {
     password: "12345678",
     dob: faker.date.recent(),
     configuration: {
-      isVerified: options["isVerified"] === true ? true : false,
-      isBlocked: options["isBlocked"] === true ? true : false,
+      isVerified: options["isVerified"] !== undefined ? options["isVerified"] : true,
+      isBlocked: options["isBlocked"] !== undefined ? options["isBlocked"] : false,
     },
     blockedReason: "",
     address: [
@@ -56,28 +56,8 @@ const generateDummyCustomerObject = (options = {}) => {
       }
     ],
   };
-  if (options["isVerified"] === true){
-    customerObject.reviews = generateDummyReviews();
-  }
   return customerObject;
 };
 
 
-const generateDummyReviews = () => {
-  let numberOfReviews = commonUtils.getRandomNumber(3, 12);
-  let reviews = [];
-  while (numberOfReviews--){
-    const currRating = commonUtils.getRandomNumber(1, 5);
-    const review = {
-      message: faker.lorem.sentence(),
-      reviewRating: currRating,
-      productId: mongoose.Types.ObjectId()
-    };
-    reviews.push(review);
-  }
-  return reviews;
-};
-
-
-
-module.exports = {generateDummyCustomerData, generateAndSaveDummyCustomer, generateDummyCustomerObject};
+module.exports = {generateDummyCustomers, generateAndSaveDummyCustomer, generateDummyCustomerObject};

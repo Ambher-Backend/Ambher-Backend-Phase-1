@@ -1,8 +1,9 @@
 //Internal Imports
-const Customer = require("../models/customer");
-const commonUtils = require("../lib/common_utils");
-const emailUtils = require("../lib/send_email");
-const seeder = require("../../config/database/seeder");
+const Customer = require("../../models/customer");
+const commonUtils = require("../../lib/common_utils");
+const emailUtils = require("../../lib/send_email");
+const seeder = require("../../../config/database/seeder");
+const responseCodes = require("../../lib/constants").RESPONSE_CODES;
 
 
 // If any other key is to be exposed to frontend, then this can be added in this event based key expose.
@@ -48,7 +49,10 @@ const handleLogout = async (reqBody, currentUser) => {
 };
 
 
-const handleGetDetails = async (customerId) => {
+const handleGetDetails = async (customerId, reqUser) => {
+  if (customerId !== reqUser._id.toString()) {
+    throw commonUtils.generateError(responseCodes.ACCESS_ERROR_CODE, "Invalid Access");
+  }
   const customer = await Customer.findById(customerId);
   const customerObjectToExpose = commonUtils.filterObjectByAllowedKeys(customer.toObject(), eventKeyExposeObject["get"]);
   return customerObjectToExpose;
@@ -66,7 +70,7 @@ const sendEmailOtp = async (customerEmail) => {
   let customer = await Customer.findOne({
     email: customerEmail
   });
-  if (customer === null) {throw new Error("Invalid Customer Email, Customer not found");}
+  if (customer === null) {throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Customer Email, Customer not found");}
   const otpToSend = commonUtils.getOtp();
   customer.emailOtps.push(otpToSend);
   await customer.save();
@@ -79,7 +83,7 @@ const verifyEmailOtp = async (reqBody) => {
   let customer = await Customer.findOne({
     email: reqBody.customerEmail
   });
-  if (customer === null) {throw new Error("Invalid Customer Email, Customer not found");}
+  if (customer === null) {throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Invalid Customer Email, Customer not found");}
   const otpToVerify = customer.emailOtps[customer.emailOtps.length - 1];
   if (otpToVerify === reqBody.otp) {
     customer.configuration.isVerified = true;
@@ -87,7 +91,7 @@ const verifyEmailOtp = async (reqBody) => {
     return "Customer OTP verified successfully";
   }
   else {
-    throw new Error("Wrong Customer Email OTP");
+    return "Wrong Customer Email OTP";
   }
 };
 

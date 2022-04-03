@@ -5,10 +5,10 @@ const faker = require("faker");
 // Internal Imports
 const Vendor = require("../../../src/models/vendor");
 const commonUtils = require("../../../src/lib/common_utils");
-const adminSeeder = require("./admin").generateDummyAdmin;
+const responseCodes = require("../../../src/lib/constants").RESPONSE_CODES;
 
 
-const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
+const generateDummyVendors = async (deleteExisting, totalToGenerate,  options = {}) => {
   try {
     if (deleteExisting === true){
       await Vendor.deleteMany({});
@@ -16,31 +16,37 @@ const generateDummyVendorData = async (deleteExisting, totalToGenerate) => {
     }
     let documentsToGenerate = ( (!totalToGenerate) ? 10 : totalToGenerate);
     for (let i = 0; i < documentsToGenerate; i++) {
-      await generateDummyVendor();
+      await generateAndSaveDummyVendor(options);
     }
     return `${totalToGenerate} vendors generated successfully!`;
   } catch (err){
-    return `Error: ||${err.message}|| occured in generating vendors`;
+    throw commonUtils.generateError(responseCodes.INTERNAL_SERVER_ERROR, `Error: ||${err.message}|| occured in generating products`);
   }
 };
 
 
-const generateDummyVendor = async () => {
-  const reviews = generateDummyReviews();
-  const adminId = await adminSeeder();
+const generateAndSaveDummyVendor = async (options = {}) => {
+  const vendorObject = await generateDummyVendorObject(options = options);
+  const vendor = new Vendor(vendorObject);
+  await vendor.save();
+  return vendor._id;
+};
+
+
+const generateDummyVendorObject = async (options = {}) => {
   const vendorObject = {
     name: faker.name.firstName(),
-    phoneNumber: faker.phone.phoneNumber(),
-    email: faker.internet.email(),
+    phoneNumber: commonUtils.genPhoneNumber(),
+    email: options["email"] || faker.internet.email(),
     password: "12345678",
     dob: faker.date.recent(),
     configuration: {
-      isVerified: true,
-      isBlocked: false,
-      isVerifiedByAdmin: true
+      isVerified: options["isVerified"] !== undefined ? options["isVerified"] : true,
+      isBlocked: options["isBlocked"] !== undefined ? options["isBlocked"] : false,
+      isVerifiedByAdmin: options["isVerifiedByAdmin"] !== undefined ? options["isVerifiedByAdmin"] : true
     },
     blockedReason: "",
-    verifiedBy: adminId,
+    verifiedBy: options["isVerifiedByAdmin"] === false ? undefined : (options["adminId"] || mongoose.Types.ObjectId()),
     address: {
       flatNo: faker.random.alphaNumeric(2),
       buildingNo: faker.random.alphaNumeric(2),
@@ -52,42 +58,14 @@ const generateDummyVendor = async () => {
       lat: faker.address.latitude(),
       lon: faker.address.longitude()
     },
-    customerOrderIds: [mongoose.Types.ObjectId()],
-    productIds: [
+    customerOrderIds: options["isVerified"] === true || options["isVerifiedByAdmin"] === true ? [mongoose.Types.ObjectId()] : [],
+    productIds: options["isVerified"] === true || options["isVerifiedByAdmin"] === true ? [
       mongoose.Types.ObjectId(),
       mongoose.Types.ObjectId()
-    ],
+    ] : [],
     supportPhones: [faker.phone.phoneNumber()],
-    rating: reviews.rating,
-    reviews: reviews.reviews
   };
-  const vendor = new Vendor(vendorObject);
-  await vendor.save();
-  return vendor._id;
+  return vendorObject;
 };
 
-
-const generateDummyReviews = () => {
-  let numberOfReviews = commonUtils.getRandomNumber(3, 12);
-  let rating = 0;
-  let reviews = [];
-  let totalRatings = 0;
-  while (numberOfReviews--){
-    const currRating = commonUtils.getRandomNumber(1, 5);
-    totalRatings += currRating;
-    const review = {
-      message: faker.lorem.sentence(),
-      reviewRating: currRating,
-      customerId: mongoose.Types.ObjectId()
-    };
-    reviews.push(review);
-  }
-  rating = totalRatings / reviews.length;
-  return {
-    rating: rating,
-    reviews: reviews
-  };
-};
-
-
-module.exports = {generateDummyVendorData, generateDummyVendor};
+module.exports = {generateDummyVendors, generateAndSaveDummyVendor, generateDummyVendorObject};

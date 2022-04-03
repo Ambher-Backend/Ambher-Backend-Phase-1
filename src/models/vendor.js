@@ -5,6 +5,11 @@ const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const mongooseFuzzySearching = require("mongoose-fuzzy-searching");
 
+
+//internal imports
+const responseCodes = require("../lib/constants").RESPONSE_CODES;
+const commonUtils = require("../lib/common_utils");
+
 dotenv.config();
 
 //defining schema
@@ -81,15 +86,30 @@ const VendorSchema = new mongoose.Schema({
     min: 1,
     max: 5
   },
-  reviews: {
-    type: [
-      {
-        message: {type: String, default: ""},
-        reviewRating: {type: Number, required: true, min: 1, max: 5},
-        customerId: {type: mongoose.Schema.Types.ObjectId},
-        pictures: {type: [String], default: []}
-      }
-    ]
+  reviews: [{
+    message: {
+      type: String,
+      default: ""
+    },
+    rating: {
+      type: Number,
+      default: 1,
+    },
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    pictures: {
+      type: [mongoose.Schema.Types.ObjectId],
+      validate(value){
+        if (value.length > 5){
+          commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Maximum allowed images are 5");
+        }
+      },
+      default: []
+    },
+  }],
+  gstin: {
+    type: String
   },
   verifiedBy: {
     type: mongoose.Schema.Types.ObjectId
@@ -137,13 +157,28 @@ VendorSchema.methods.generateToken = async function() {
 };
 
 
+VendorSchema.methods.updateReviewStats = async function() {
+  let avgRating = 0;
+  for (let review of this.reviews){
+    avgRating += review.rating;
+  }
+  if (this.reviews.length !== 0){
+    avgRating = avgRating / this.reviews.length;
+  }
+  avgRating |= 1;
+  this.rating = avgRating.toFixed(1);
+  await this.save();
+  return this;
+};
+
+
 //static function to find an admin using email and password
 VendorSchema.statics.findByCredentials = async (email, password) => {
   const vendor = await Vendor.findOne({
     email: email
   });
   if (!vendor) {
-    throw new Error ("Vendor not found");
+    throw commonUtils.generateError(responseCodes.NOT_FOUND_ERROR_CODE, "Vendor not found");
   }
   const passwordMatched = await bcrypt.compare(password, vendor.password);
   if (!passwordMatched) {

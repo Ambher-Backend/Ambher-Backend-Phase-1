@@ -2,9 +2,10 @@ const config = require("config");
 
 
 // Internal Imports
-const paramValidator = require("../lib/param_validator").ParamValidator;
-const commonValidators = require("../lib/param_validator");
-const commonUtils = require("../lib/common_utils");
+const paramValidator = require("../../../lib/param_validator").ParamValidator;
+const commonValidators = require("../../../lib/param_validator");
+const commonUtils = require("../../../lib/common_utils");
+const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
 
 
 // POST
@@ -28,7 +29,8 @@ const signUpParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -47,7 +49,8 @@ const loginCustomerParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -63,7 +66,8 @@ const logoutCustomerParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -71,19 +75,17 @@ const logoutCustomerParamValidation = (req, res, next) => {
 // GET
 const getCustomerParamValidation = (req, res, next) => {
   try {
-    const validator = new paramValidator(req.params);
-    const validator1 = new paramValidator(req.body);
-    const acceptedParams = ["currentToken"];
-    const acceptedParams1 = ["customerId"];
+    const validator = new paramValidator(req.body);
+    const acceptedParams = ["currentToken", "customerId"];
 
     validator.validate("customerId", String);
-    validator1.validate("currentToken", String);
+    validator.validate("currentToken", String);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams1);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -107,7 +109,8 @@ const generateCustomerDummyDataValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -125,7 +128,8 @@ const sendEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -144,7 +148,8 @@ const verifyEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 /* eslint-enable */

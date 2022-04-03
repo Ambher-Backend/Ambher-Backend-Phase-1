@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const config = require("config");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 let DbUri = "";
 
@@ -22,4 +25,5 @@ mongoose.connect(DbUri, dbProperties).then(()=>{
   commonUtils.successLog("Connection to Mongo successful");
 }).catch((err) => {
   commonUtils.errorLog(err.message);
+  process.exit();
 });

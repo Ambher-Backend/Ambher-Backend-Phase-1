@@ -2,9 +2,10 @@ const config = require("config");
 
 
 // Internal Imports
-const paramValidator = require("../lib/param_validator").ParamValidator;
-const commonValidators = require("../lib/param_validator");
-const commonUtils = require("../lib/common_utils");
+const paramValidator = require("../../../lib/param_validator").ParamValidator;
+const commonValidators = require("../../../lib/param_validator");
+const commonUtils = require("../../../lib/common_utils");
+const responseCodes = require("../../../lib/constants").RESPONSE_CODES;
 
 
 // POST
@@ -20,7 +21,7 @@ const signUpParamValidation = (req, res, next) => {
     validator.validate("email", String);
     validator.validate("password", String, allowBlank = false, acceptedValues = undefined, minLength = 8);
     validator.validate("dob", String);
-    validator.validate("address", Array);
+    validator.validate("address", Object);
 
     commonValidators.checkEmailFormat(req.body.email);
     commonValidators.checkPhoneNumber(req.body.phoneNumber);
@@ -28,7 +29,8 @@ const signUpParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -47,7 +49,8 @@ const loginVendorParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -63,7 +66,8 @@ const logoutVendorParamValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -71,18 +75,17 @@ const logoutVendorParamValidation = (req, res, next) => {
 // GET
 const getVendorParamValidation = (req, res, next) => {
   try {
-    const validator = new paramValidator(req.params);
-    const validator1 = new paramValidator(req.body);
+    const validator = new paramValidator(req.body);
     const acceptedParams = ["vendorId", "currentToken"];
 
     validator.validate("vendorId", String);
     validator1.validate("currentToken", String);
 
-    req.params = commonUtils.filterObjectByAllowedKeys(req.params, acceptedParams);
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -100,13 +103,14 @@ const generateVendorDummyDataValidation = (req, res, next) => {
 
     commonValidators.checkInternalAuthKey(req.body.internalAuthKey);
     if (config.util.getEnv("NODE_ENV") === "production"){
-      throw new Error("Dummy Data Creation Not Allowed on Production Server");
+      throw commonUtils.generateError(responseCodes.UNPROCESSABLE_ERROR_CODE, "Dummy Data Creation Not Allowed on Production Server");
     }
 
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = err.status || responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -124,7 +128,8 @@ const sendEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 
@@ -143,7 +148,8 @@ const verifyEmailOtpValidation = (req, res, next) => {
     req.body = commonUtils.filterObjectByAllowedKeys(req.body, acceptedParams);
     next();
   } catch (err){
-    res.send(commonUtils.responseUtil(400, null, err.message));
+    const statusCode = responseCodes.BAD_REQUEST_CODE;
+    res.status(statusCode).send(commonUtils.responseUtil(statusCode, null, err.message));
   }
 };
 /* eslint-enable */
